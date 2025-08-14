@@ -25,12 +25,12 @@ Además, la plataforma contará con **función de inicio de sesión**, permitien
 
 ---
 
-## 👥 Roles del Equipo //por definir
+## 👥 Roles en rotación
 
-- **Líder Técnico:**
-- **Backend:**
-- **Frontend:**   
-- **QA & Documentación:**
+- **Líder Técnico:** Cristian Aliaga
+- **Backend:** Alan Muñoz
+- **Frontend:** John Rojas
+- **QA & Documentación:** Nicolás Urbina
 
 Este proyecto es desarrollado con fines académicos para el **Ramo de Proyecto de Programación – Universidad de Talca**.
 
