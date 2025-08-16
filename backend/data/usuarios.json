@@ -5,8 +5,23 @@
         "contrasena": "123"
     },
     {
-        "id": 1,
+        "id": 2,
         "nombre": "Pepito",
         "contrasena": "321"
+    },
+    {
+        "id": 3,
+        "nombre": "alan",
+        "contrasena": "1234"
+    },
+    {
+        "id": 4,
+        "nombre": "kitian",
+        "contrasena": "379812"
+    },
+    {
+        "id": 5,
+        "nombre": "niko",
+        "contrasena": "02381"
     }
 ]
