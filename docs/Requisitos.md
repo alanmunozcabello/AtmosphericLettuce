@@ -1,23 +1,49 @@
-**Requisitos funcionales** 
+Requisitos Funcionales 
+**Gestión de Usuario**
 
-- Registro de usuario => nombre -> contraseña -> correo 
-- Sistema de recuperacion de contraseña atraves de codigo generado y enviado por correo
-- Sistema de búsqueda manual por nombre de la localidad de donde se encuentra
-- gestion de cultivos y superficie (area planatada) el usuario tendra acceso y la posivilidad de guardar sus cultivos 
-- información detallada del clima actual
-- capacidad de dar un pronostico de 7 días 
-- chatbot consejos y recomendaciones dependiendo de sus cultivos y superficie 
-- chatbot capacidad de procesar archivos 
-- Chatbot capacidad de entablar conversación 
-**- chatbot capacidad de detectar enfermedades **
-- Sistema de notificaciones a través de correo 
-- capacidad de guardar información de sobre su localidad  
+-Un sistema de registro de usuario que solicite nombre, contraseña y correo electrónico.
 
-**No funcionales**
--Paginacon ruta HTTPS 
--Los datos tiene que estar Cifradas 
--Interfaz intuitiva y bonita
--Uso de Memoria
+-Un sistema de recuperación de contraseña que genere y envíe un código único al correo del usuario para poder cambiarla.
+
+**Gestión de Localidades y Cultivos**
+
+_Una funcionalidad de búsqueda manual por nombre de la localidad.
+
+_Un módulo para que el usuario pueda gestionar y guardar información sobre sus cultivos y la superficie plantada (área).
+
+_La capacidad de guardar la información de la localidad del usuario.
+
+**Información y Pronósticos Meteorológicos**
+
+-Visualización detallada de las condiciones climáticas actuales.
+
+-Capacidad para ofrecer un pronóstico del tiempo de 7 días.
+
+**Chatbot Integrado**
+
+-Un chatbot capaz de entablar conversaciones.
+
+-El chatbot debe ofrecer consejos y recomendaciones personalizadas basadas en el tipo de cultivo y la superficie del usuario.
+
+-El chatbot debe ser capaz de procesar y analizar archivos.
+
+-El chatbot debe ser capaz de detectar enfermedades en los cultivos.
+
+**Sistema de Notificaciones**
+
+-Un sistema que envíe notificaciones al usuario a través de correo electrónico.
+
+Requisitos No Funcionales 🛡️
+Seguridad:
+
+La plataforma debe utilizar el protocolo de comunicación HTTPS en todas sus rutas para garantizar la seguridad.
+
+Todos los datos sensibles (como contraseñas) deben estar cifrados tanto en tránsito como en reposo.
+
+Usabilidad y Rendimiento:
+
+La interfaz debe ser intuitiva y funcional para una experiencia de usuario fluida.
+
+El sistema debe poder operar de manera eficiente con un consumo máximo de 8 GB de memoria RAM.
 
 
-**Requisitos no funcionales**
