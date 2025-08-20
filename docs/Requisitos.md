@@ -7,11 +7,11 @@ Requisitos Funcionales
 
 **Gestión de Localidades y Cultivos**
 
-_Una funcionalidad de búsqueda manual por nombre de la localidad.
+-Una funcionalidad de búsqueda manual por nombre de la localidad.
 
-_Un módulo para que el usuario pueda gestionar y guardar información sobre sus cultivos y la superficie plantada (área).
+-Un módulo para que el usuario pueda gestionar y guardar información sobre sus cultivos y la superficie plantada (área).
 
-_La capacidad de guardar la información de la localidad del usuario.
+-La capacidad de guardar la información de la localidad del usuario.
 
 **Información y Pronósticos Meteorológicos**
 
@@ -26,8 +26,6 @@ _La capacidad de guardar la información de la localidad del usuario.
 -El chatbot debe ofrecer consejos y recomendaciones personalizadas basadas en el tipo de cultivo y la superficie del usuario.
 
 -El chatbot debe ser capaz de procesar y analizar archivos.
-
--El chatbot debe ser capaz de detectar enfermedades en los cultivos.
 
 **Sistema de Notificaciones**
 
