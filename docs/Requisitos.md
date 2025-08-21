@@ -46,4 +46,12 @@
 
 -El sistema debe poder operar de manera eficiente con un consumo máximo de 8 GB de memoria RAM.
 
+## Requisitos minimos del computador encargado de correr el backend 💻
+- OS: Windows 7, 8, 8.1, 10 u 11, macOS o Linux.
+- CPU: Dual core 2.0GHz minimo.
+- RAM: 8GB recomendados
+- Almacenamiento: 10GB minimo.
+- Conexion a internet.
+
+
 
