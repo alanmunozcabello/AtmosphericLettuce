@@ -1,2 +1,1 @@
-En esta carpeta se van a subir las imagenes realizadas de nuestras diferentes pantallas de nuestra aplicacion
-(Estan en proceso de creacion los mockups)
+En el archivo PDF que se encuentra en esta misma carpeta wireframes se pueden ver las diferentes pantallas que va a tener nuestra pagina, ademas que se especifica con un titulo cual es cada pantalla.
