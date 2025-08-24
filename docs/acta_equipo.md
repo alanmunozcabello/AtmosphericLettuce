@@ -1,10 +1,10 @@
 **Nombre del equipo: Equipo Lechuga**
 
 **Integrantes:**
-- Cristian Aliaga | caliaga24@alumnos.utalca.cl
-- Alan Muñoz | almunoz24@alumnos.utalca.cl
-- John Rojas | johrojas24@alumnos.utalca.cl
-- Nicolás Urbina | nurbina24@alumnos.utalca.cl
+- CrixtianA60 - Cristian Aliaga | caliaga24@alumnos.utalca.cl
+- alanmunozcabello - Alan Muñoz | almunoz24@alumnos.utalca.cl
+- RaskyXD - John Rojas | johrojas24@alumnos.utalca.cl
+- Nicolas-Urbina - Nicolás Urbina | nurbina24@alumnos.utalca.cl
 
 **Servidor de Discord**
 
