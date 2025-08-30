@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from controllers.usuarios_controller import obtener_todos_los_usuarios, guardar_nuevos_usuarios
+from controllers.usuarios_controller import obtener_todos_los_usuarios, registrar_usuario
 
 router=APIRouter()
 
@@ -16,11 +16,5 @@ def ruta_obtener_usuarios(): #enrutador para obtener los usuarios y mostrarlos
     return {"usuarios":obtener_todos_los_usuarios()} #----------------front
 
 @router.post("/usuarios/registrar") #post es para recibir información
-def registrar_usuario(nombre, contrasena): 
-    usuarios=obtener_todos_los_usuarios() #validaciones para registrar un usuario
-    if any(usuario["nombre"]==nombre for usuario in usuarios) or any(usuario["contrasena"]==contrasena for usuario in usuarios):
-        return {"mensaje":"usuario ya registrado o contraseña ya utilizada"} #----------------front
-    nuevo_usuario={"id":len(usuarios)+1, "nombre":nombre, "contrasena":contrasena} #si el usuario o contraseña no existen se crea un nuevo usuario con los parametros de llegada
-    usuarios.append(nuevo_usuario)
-    guardar_nuevos_usuarios(usuarios) #se llama al controlador para procese el guardado del nuevo usuario
-    return {"mensaje":"usuario ingresado correctamente"} #----------------front
+def ruta_registrar_usuario(nombre, contrasena): #se llama al controlador para procese el guardado del nuevo usuario
+    return registrar_usuario(nombre, contrasena) #----------------front
