@@ -6,10 +6,11 @@ La carpeta `src` está organizada siguiendo una arquitectura por capas, facilita
 
 - **routes/**
   - Define los endpoints o rutas de la API. Cada archivo en esta carpeta expone las rutas accesibles para los clientes y delega la lógica a los controladores.
-  -
+  - src/routes/usuarios_routes.py == define las rutas principales de una API usando FastAPI para gestionar usuarios partiendo con el mensaje de bievenida luego el endpoint de ping/pong tambien puede obtener la lista de usuarios rigistrados comunicandose con usuarios_controller
 
 - **controllers/**
   - Contiene la lógica de negocio principal. Los controladores reciben las peticiones desde las rutas, procesan los datos y llaman a los servicios necesarios.
+  - src/controllers/usuarios_controller.py == recibe las peticiones previamente escirtas de routes y las procesa  
 
 - **services/**
   - Encapsula la lógica de acceso a datos y operaciones complejas. Los servicios interactúan con los archivos de datos (`.json`) o bases de datos y devuelven la información procesada a los controladores.
