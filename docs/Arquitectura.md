@@ -9,11 +9,11 @@ La carpeta `src` está organizada siguiendo una arquitectura por capas, facilita
   - src/routes/usuarios_routes.py == define las rutas principales de una API usando FastAPI para gestionar usuarios partiendo con el mensaje de bievenida luego el endpoint de ping/pong tambien puede obtener la lista de usuarios rigistrados comunicandose con usuarios_controller
 
 - **controllers/**
-  - Contiene la lógica de negocio principal. Los controladores reciben las peticiones desde las rutas, procesan los datos y llaman a los servicios necesarios.
+  - Los controladores reciben las peticiones desde las rutas, procesan los datos y llaman a los servicios necesarios.
   - src/controllers/usuarios_controller.py == recibe las peticiones previamente escirtas de routes y las procesa  
 
 - **services/**
-  - Encapsula la lógica de acceso a datos y operaciones complejas. Los servicios interactúan con los archivos de datos (`.json`) o bases de datos y devuelven la información procesada a los controladores.
+  - Contiene la lógica de negocio principal y Encapsula la lógica de acceso a datos y operaciones complejas. Los servicios interactúan con los archivos de datos (`.json`) o bases de datos y devuelven la información procesada a los controladores.
   - src/services/ai_services.py ==  Realiza preguntas a una IA (modelo Mistral) usando una API externa, útil para responder consultas especializadas en agricultura y meteorología.
   - src/chat_service.py == Gestiona el procesamiento de mensajes de chat, integrando análisis de imágenes, PDFs y texto, y utiliza la IA para responder.
   - src/clima_service.py ==  Consulta el clima actual y pronósticos usando la API de OpenWeather, devolviendo la información meteorológica según latitud y longitud.
