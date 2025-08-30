@@ -5,4 +5,4 @@ app = FastAPI()
 app.include_router(usuarios_routes.router)
 
 #iniciar servidor: python -m uvicorn app:app --reload
-#iniciar servidor publico: python -m uvicorn app:app --host 0.0.0.0 --port 8000
+#iniciar servidor LAN publico: python -m uvicorn app:app --host 0.0.0.0 --port 8000

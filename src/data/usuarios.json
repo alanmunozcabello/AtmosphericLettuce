@@ -23,5 +23,15 @@
         "id": 5,
         "nombre": "niko",
         "contrasena": "02381"
+    },
+    {
+        "id": 6,
+        "nombre": "john",
+        "contrasena": "123456"
+    },
+    {
+        "id": 7,
+        "nombre": "plimplomplim",
+        "contrasena": "832910"
     }
 ]
