@@ -14,11 +14,11 @@ La carpeta `src` está organizada siguiendo una arquitectura por capas, facilita
 
 - **services/**
   - Encapsula la lógica de acceso a datos y operaciones complejas. Los servicios interactúan con los archivos de datos (`.json`) o bases de datos y devuelven la información procesada a los controladores.
-  -src/services/ai_services.py ==  Realiza preguntas a una IA (modelo Mistral) usando una API externa, útil para responder consultas especializadas en agricultura y meteorología.
-  -src/chat_service.py == Gestiona el procesamiento de mensajes de chat, integrando análisis de imágenes, PDFs y texto, y utiliza la IA para responder.
-  -src/clima_service.py ==  Consulta el clima actual y pronósticos usando la API de OpenWeather, devolviendo la información meteorológica según latitud y longitud.
-  -src/services/plant_service.py == Analiza imágenes de plantas (por ejemplo, lechuga) para identificar enfermedades usando la API de CropHealth.
-  -src/services/usuarios_service.py == Lee y guarda la información de usuarios en el archivo usuarios.json, gestionando la persistencia de los datos de usuarios.
+  - src/services/ai_services.py ==  Realiza preguntas a una IA (modelo Mistral) usando una API externa, útil para responder consultas especializadas en agricultura y meteorología.
+  - src/chat_service.py == Gestiona el procesamiento de mensajes de chat, integrando análisis de imágenes, PDFs y texto, y utiliza la IA para responder.
+  - src/clima_service.py ==  Consulta el clima actual y pronósticos usando la API de OpenWeather, devolviendo la información meteorológica según latitud y longitud.
+  - src/services/plant_service.py == Analiza imágenes de plantas (por ejemplo, lechuga) para identificar enfermedades usando la API de CropHealth.
+  - src/services/usuarios_service.py == Lee y guarda la información de usuarios en el archivo usuarios.json, gestionando la persistencia de los datos de usuarios.
 
 - **data/**
   - Almacena los archivos de datos, como archivos `.json`, que contienen la información persistente utilizada por la aplicación.
