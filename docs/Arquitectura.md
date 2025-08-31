@@ -31,6 +31,4 @@ La carpeta `src` está organizada siguiendo una arquitectura por capas, facilita
 4. Los servicios acceden a los archivos en `data/` para leer o escribir información.
 5. La respuesta se construye y se envía de vuelta al usuario.
 
----
 
-Esta arquitectura permite un desarrollo más ordenado, facilita las pruebas y el escalado del proyecto.
