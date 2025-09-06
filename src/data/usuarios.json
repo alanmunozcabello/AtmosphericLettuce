@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "nombre": "Pipo",
+        "contrasena": "123"
+    },
+    {
+        "id": 2,
+        "nombre": "Pepito",
+        "contrasena": "321"
+    },
+    {
+        "id": 3,
+        "nombre": "alan",
+        "contrasena": "1234"
+    },
+    {
+        "id": 4,
+        "nombre": "kitian",
+        "contrasena": "379812"
+    },
+    {
+        "id": 5,
+        "nombre": "niko",
+        "contrasena": "02381"
+    },
+    {
+        "id": 6,
+        "nombre": "john",
+        "contrasena": "123456"
+    },
+    {
+        "id": 7,
+        "nombre": "plimplomplim",
+        "contrasena": "832910"
+    }
+]
