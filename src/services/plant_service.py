@@ -34,7 +34,7 @@ def preguntar_enfermedad():#POSIBLEMENTE sea mejor pasar la imágen desde el fro
         return "error:", e
 
 
-# llamada de prueba unicamenteluego se llamará desde las capas
+# llamada de prueba unicamente, luego se llamará desde las capas
 # sin el __name__ == "__main__" no funcionaba
 if __name__=="__main__":
     print(preguntar_enfermedad()) #PASS

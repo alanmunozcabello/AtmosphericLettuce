@@ -35,7 +35,7 @@ def preguntar_mistral(pregunta):
     except Exception as e: #manejo de errores "potente"
         return "error", e
 
-# llamada de prueba unicamenteluego se llamará desde las capas
+# llamada de prueba unicamente, luego se llamará desde las capas
 # sin el __name__ == "__main__" no funcionaba
 if __name__ == "__main__":
     print(preguntar_mistral("cuantas especies de lechugas hay?")) #PASS
