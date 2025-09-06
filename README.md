@@ -1,4 +1,3 @@
-@@ -1,65 +0,0 @@
 # 🌱 AtmosphericLettuce – Proyecto de Programación  
 
 ## 📌 Información General  
