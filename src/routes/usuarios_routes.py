@@ -16,5 +16,5 @@ def ruta_obtener_usuarios(): #enrutador para obtener los usuarios y mostrarlos
     return {"usuarios":obtener_todos_los_usuarios()} #----------------front
 
 @router.post("/usuarios/registrar") #post es para recibir información
-def ruta_registrar_usuario(nombre, contrasena): #se llama al controlador para procese el guardado del nuevo usuario
-    return registrar_usuario(nombre, contrasena) #----------------front
+def ruta_registrar_usuario(correo, nombre, contrasena): #se llama al controlador para procese el guardado del nuevo usuario
+    return registrar_usuario(correo, nombre, contrasena) #----------------front

@@ -1,36 +1,43 @@
 [
     {
         "id": 1,
+        "correo": "pipo123@mail.com",
         "nombre": "Pipo",
         "contrasena": "123"
     },
     {
         "id": 2,
+        "correo": "pepito321@mail.com",
         "nombre": "Pepito",
         "contrasena": "321"
     },
     {
         "id": 3,
+        "correo": "alan1234@mail.com",
         "nombre": "alan",
         "contrasena": "1234"
     },
     {
         "id": 4,
+        "correo": "kitian379@mail.com",
         "nombre": "kitian",
         "contrasena": "379812"
     },
     {
         "id": 5,
+        "correo": "niko023@mail.com",
         "nombre": "niko",
         "contrasena": "02381"
     },
     {
         "id": 6,
+        "correo": "john456@mail.com",
         "nombre": "john",
         "contrasena": "123456"
     },
     {
         "id": 7,
+        "correo": "plim910@mail.com",
         "nombre": "plimplomplim",
         "contrasena": "832910"
     }
