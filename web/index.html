@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Atmospheric Lettuce</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="izquierda">
+      <a href="home.html">
+      <img src="logo en blanco.png" alt="Logo de Atmospheric Lettuce" class="logo">
+      </a>
+    </div>
+
+    <div class="derecha">
+      <form class="form" action="#" method="post" novalidate>
+        <div class="titulo">Iniciar Sesión</div>
+
+        <div class="input-group">
+          <div class="input">
+            <input type="email" name="usuario" placeholder="Correo electrónico" required>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input">
+            <input type="password" name="contrasena" placeholder="Contraseña" required>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <!-- cambiar a submit para enviar al formulario -->
+          <button type="button" class="btn" onclick="window.location.href='home.html'" >Iniciar Sesión</button>
+          
+        </div>
+
+        <div class="registro">
+          <a href="#">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <button type="button" class="btn-secundario" onclick="window.location.href='registro.html'">Crear cuenta</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

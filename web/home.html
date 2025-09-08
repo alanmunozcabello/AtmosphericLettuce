@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Atmospheric Lettuce</title>
+  <link rel="stylesheet" href="homes.css">
+</head>
+<body>
+  <!-- Barra superior -->
+  <div class="barra-superior">
+    <div class="logo">
+      <img src="logo.png" alt="Logo de la empresa">
+    </div>
+    <div class="buscador">
+      <input type="text" placeholder="Introducir ubicación">  
+    </div>
+    <div class="acciones">
+      <div class="icono">🔔</div>
+      <a href="perfil.html">
+      <div class="icono">👤</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="contenido">
+    <!-- Clima -->
+  
+   <div class="tarjeta clima-card" onclick="location.href='dias.html'">
+    <div class="dia">Hoy</div>
+    <div class="temperatura">22°C</div>
+    <div class="minmax">
+      <span class="max">Máx: 26°C</span>
+      <span class="min">Mín: 15°C</span>
+    </div>
+    <div class="descripcion">Soleado</div>
+    <div class="icono-clima">☀️</div>
+  </div>
+
+    <!-- Detalles -->
+    <div class="tarjeta detalles">
+      <div class="titulo">Detalles</div>
+      <div class="info-detalles">💧 Humedad <span class="detail">65%</span></div>
+      <div class="info-detalles">🌬️ Viento <span class="detail">15 km/h</span></div>
+      <div class="info-detalles">🌡️ Sensación Térmica <span class="detail">24°C</span></div>
+    </div>
+
+    <!-- Cultivos -->
+    <div class="tarjeta cultivos">
+      <div class="titulo">Cultivos</div>
+      <div class="info-detalles">✔ Lechuga</div>
+      <div class="info-detalles">✔ Repollo</div>
+    </div>
+
+    <!-- Consejos -->
+    <div class="tarjeta consejos">
+      <div class="titulo">Consejos</div>
+      <div class="info-detalles">✔ Clima perfecto para regar las plantas</div>
+    </div>
+  </div>
+
+  <!-- Botón flotante -->
+  <div class="chatbot">🥬</div>
+</body>
+</html>
