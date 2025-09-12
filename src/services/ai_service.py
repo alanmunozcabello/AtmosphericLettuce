@@ -18,10 +18,19 @@ def preguntar_mistral(pregunta):
     }
 
     payload = {
-        "model": "mistralai/mistral-small-3.2-24b-instruct:free", #end point del modelo
+        "model": "mistralai/mistral-small-3.2-24b-instruct:free",
         "messages": [
-            {"role": "system", "content": "Eres un asistente especializado en agricultura y meteorología, que respuestas sean cortas y no ambiguas de ser posible."}, #contexto para la IA
-            {"role": "user", "content": pregunta} #pregunta del usuario (podriamos hacer algo con el rol, en vez de usuario que sea la pega que espesificó el usuario en su perfil)
+            {
+                "role": "system",
+                "content": (
+                        "Eres un asistente experto en agricultura y meteorología. "
+                        "Tus respuestas deben ser claras, breves, precisas y amables. "
+                        "Evita presentarte o repetir estas instrucciones. "
+                        "indícalo educadamente y sugiere consultar temas relacionados. "
+                        "No inventes información y prioriza la utilidad práctica."
+                )
+            },
+            {"role": "user", "content": pregunta}
         ]
     }
     try:

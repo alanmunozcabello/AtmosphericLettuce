@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Chat Agro - Demo</title>
+</head>
+<body>
+  <h1>Chat Agro (demo)</h1>
+
+  <!-- Historial de mensajes -->
+  <div id="chat-history" aria-live="polite" style="max-width:700px;">
+    <!-- Los mensajes se insertan aquí -->
+  </div>
+
+  <!-- Formulario simple -->
+  <form id="chat-form" style="margin-top:16px;">
+    <label for="chat-input">Escribe tu mensaje:</label><br/>
+    <textarea id="chat-input" rows="4" cols="60" placeholder="Escribe aquí..." required></textarea><br/>
+    <button type="submit">Enviar</button>
+  </form>
+
+  <div id="chatBox"></div>
+
+  <script src="chat_bot.js"></script>
+</body>
+</html>

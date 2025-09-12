@@ -9,7 +9,7 @@ import os
 load_dotenv()
 API_KEY=os.getenv("CROPHEALTH_API_KEY")
 
-def preguntar_enfermedad():#POSIBLEMENTE sea mejor pasar la imágen desde el frontend lista como String!!!!!!!!!!! esto elimina la necesidad de guardar la imágen y acceder a ella como archivo
+def preguntar_enfermedad(imagen):#POSIBLEMENTE sea mejor pasar la imágen desde el frontend lista como String!!!!!!!!!!! esto elimina la necesidad de guardar la imágen y acceder a ella como archivo
     with open("src/services/botrytis.png", "rb") as imagen: #lechuga.png es la imágen de prueba
         imagen_base64=base64.b64encode(imagen.read()).decode("utf-8") #se abre la imágen en binario y se transforma a string (base64 codificada en utf-8)
 
