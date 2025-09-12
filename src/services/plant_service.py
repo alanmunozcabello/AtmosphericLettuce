@@ -9,24 +9,20 @@ import os
 load_dotenv()
 API_KEY=os.getenv("CROPHEALTH_API_KEY")
 
-def preguntar_enfermedad(imagen):#POSIBLEMENTE sea mejor pasar la imágen desde el frontend lista como String!!!!!!!!!!! esto elimina la necesidad de guardar la imágen y acceder a ella como archivo
-    with open("src/services/botrytis.png", "rb") as imagen: #lechuga.png es la imágen de prueba
-        imagen_base64=base64.b64encode(imagen.read()).decode("utf-8") #se abre la imágen en binario y se transforma a string (base64 codificada en utf-8)
-
-    imagen_base64=f"data:image/jpeg;base64,{imagen_base64}" #prefijo necesario para que no explote (requerimiento de crop.health)
+def preguntar_enfermedad(imagen):#la imágen viene en formato Base64 -> String desde el frontend
 
     url = "https://crop.kindwise.com/api/v1/identification" #end point
 
     headers={'Api-Key': API_KEY, #API
             'Content-Type': 'aplication/json'} #requerido por crop.health
     payload = {
-        "images": [imagen_base64],  #lista de imágenes en Base64 (debe ser una lista aunque sea una sola imágen)
+        "images": [imagen],  #lista de imágenes en Base64 (debe ser una lista aunque sea una sola imágen)
     }
 
     try:
         respuesta = requests.post(url, headers=headers, json=payload) #se hace la request
 
-        if respuesta.status_code==200: #si la respuesta es exitosa se muestra/maneja
+        if respuesta.status_code==201: #si la respuesta es exitosa se muestra/maneja, tal parece que el code:200 para estos tipos tambien es de error xd
             return respuesta.text 
         else:
             return f"error {respuesta.status_code}: {respuesta.text}"
@@ -36,5 +32,5 @@ def preguntar_enfermedad(imagen):#POSIBLEMENTE sea mejor pasar la imágen desde 
 
 # llamada de prueba unicamente, luego se llamará desde las capas
 # sin el __name__ == "__main__" no funcionaba
-if __name__=="__main__":
-    print(preguntar_enfermedad()) #PASS
+# if __name__=="__main__":
+#     print(preguntar_enfermedad()) #PASS

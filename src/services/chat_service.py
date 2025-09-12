@@ -1,6 +1,6 @@
 import fitz
 import json
-# from plant_service import preguntar_enfermedad
+from services.plant_service import preguntar_enfermedad
 from services.ai_service import preguntar_mistral
 
 #pseudo implementación de la gestión del chat. NO IMPLEMENTACIÓN COMPLETA!!!!!
@@ -12,24 +12,18 @@ def pdf_to_txt(pdf): #ver como pasar pdf o dirección de almacenamiento, etc. de
         return transcripcion #retorna algo sin sentido de mientras
     pdf.close()
 
-def procesar_consulta(payload): #deberia de ser un diccionario
-    contexto=[] #esto arreglo de diccionarios se le pasará a ai_service
+def procesar_consulta(payload):  # debería ser un diccionario
+    contexto = []  # este arreglo de diccionarios se le pasará a ai_service
+    if payload.get("texto"): #si el payload tiene la clave "texto" se añade al contexto
+        contexto.append({"mensaje usuario": payload["texto"]})
 
-    # mensaje=json.loads(mensaje_string)
-    print(payload)
-    contexto.append(f"mensaje usuario: {payload["texto"]}")
-    # if "imagenes" in mensaje: #por cada imagen en el mensaje llama a preguntar_enfermedad() y se guarda la respuesta
-    #     for imagen in mensaje["imagenes"]:
-    #         resultado_imagen=preguntar_enfermedad(imagen)#revisar funcion en plant_service!!!!!----------------------------------------------
-    #         contexto.append(f"resultado imagen {imagen}: {resultado_imagen}")
+    if payload.get("imagen"): #una ves esté listo volver a esto (implementar soporte para multiples imágenes)------------------------------
+        # for imagen in payload["imagen"]:
+        imagen=payload["imagen"]
+        contexto.append({"json":preguntar_enfermedad(imagen)})
 
-    # if "pdfs" in mensaje: #por cada pdf en el mensaje se transforma a texto llamando a pdf_to_txt() y se guarda la respuesta
-    #     for pdf in mensaje["pdfs"]:
-    #         texto_pdf=pdf_to_txt(pdf)
-    #         contexto.append(f"resultado pdf {pdf}: {texto_pdf}")
-    
-    # if "texto" in mensaje: #se añade el texto del usuario al contexto
-    #     contexto.append(f"mensaje usuario: {mensaje["texto"]}")
+    if payload.get("pdf"): #si el payload tiene la clave "pdf" se comvierten a texto y se añaden al contexto
+        for pdf in payload["pdf"]:
+            contexto.append({"contenido pdf": pdf_to_txt(pdf)})
 
-    return preguntar_mistral(contexto) #retornar la respuesta del chatbot al frontend
-    
+    return preguntar_mistral(contexto)  # retornar la respuesta del chatbot al frontend

@@ -9,6 +9,8 @@ document.getElementById("chat-form").addEventListener("submit", async (event) =>
         return;
     }
 
+    //ver si hay imágenes
+
     // armar diccionario
     const data = { "texto": mensaje };
 
