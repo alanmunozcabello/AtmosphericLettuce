@@ -8,14 +8,11 @@ document.getElementById("chat-form").addEventListener("submit", async (event) =>
         alert("El mensaje no puede estar vacío");
         return;
     }
-
-    //ver si hay imágenes
-
     // armar diccionario
-    const data = { "texto": mensaje };
+    const data = { "texto": mensaje }; //importante hacer el diccionario, sino el backend explota
 
     // enviar al backend
-    const respuesta = await fetch("http://127.0.0.1:8000/chat/consulta", {//endpoint en el backend
+    const respuesta = await fetch("http://127.0.0.1:8000/chat/consulta", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)

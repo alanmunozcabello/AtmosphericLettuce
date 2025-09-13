@@ -12,6 +12,9 @@
     <!-- Los mensajes se insertan aquí -->
   </div>
 
+  <h2>Enviar Texto al backend</h2>
+
+
   <!-- Formulario simple -->
   <form id="chat-form" style="margin-top:16px;">
     <label for="chat-input">Escribe tu mensaje:</label><br/>
@@ -31,5 +34,12 @@
   <div id="chatBox"></div>
 
   <script src="subir_imagen.js"></script>
+
+  <h2>Enviar PDF al backend</h2>
+
+  <input type="file" id="fileInputPdf" accept="pdf/*">
+  <button onclick="enviarPdf()">Enviar</button>
+
+  <script src="subir_pdf.js"></script>
 </body>
 </html>

@@ -10,8 +10,8 @@ async function enviarImagen() {
     const lector = new FileReader();
 
     lector.onloadend = async () => {
-        const base64 = lector.result.split(",")[1]; // quitamos "data:image/jpeg;base64,...."
-        const data = { "imagen": base64 };
+        const base64 = lector.result.split(",")[1]; // nos quedamos unicamente con lo de despues de la coma (el base64)
+        const data = { "imagen": base64 }; //importante hacer el diccionario, sino el backend explota
 
         console.log(data);
 

@@ -1,5 +1,7 @@
 import fitz
 import json
+import base64
+import os
 from services.plant_service import preguntar_enfermedad
 from services.ai_service import preguntar_mistral
 
@@ -19,11 +21,25 @@ def procesar_consulta(payload):  # debería ser un diccionario
 
     if payload.get("imagen"): #una ves esté listo volver a esto (implementar soporte para multiples imágenes)------------------------------
         # for imagen in payload["imagen"]:
-        imagen=payload["imagen"]
+        imagen=payload["imagen"] #extraer la imagen con fomrato string
         contexto.append({"json":preguntar_enfermedad(imagen)})
 
-    if payload.get("pdf"): #si el payload tiene la clave "pdf" se comvierten a texto y se añaden al contexto
-        for pdf in payload["pdf"]:
-            contexto.append({"contenido pdf": pdf_to_txt(pdf)})
+    if payload.get("pdf"): #una ves esté listo volver a esto (implementar soporte para multiples pdf (un for simple y cambiar linea 15 en el script de base64 -> [base64]))
+        pdf_64 = payload["pdf"]
+        pdf_decodificado = base64.b64decode(pdf_64) #decodificar el pdf en base64
+
+        with open("temp.pdf", "wb") as f: #pdf temporal
+            f.write(pdf_decodificado)
+
+        doc = fitz.open("temp.pdf") #extraer contenido del pdf con fitz
+        texto = ""
+        for pagina in doc:
+            texto += pagina.get_text() + "\n"
+        doc.close()
+        os.remove("temp.pdf") #matar el pdf temporal
+
+        contexto.append({"contenido pdf": texto})
+
+        print(contexto)
 
     return preguntar_mistral(contexto)  # retornar la respuesta del chatbot al frontend
