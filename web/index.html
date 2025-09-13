@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Atmospheric Lettuce</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <div class="container">
@@ -14,33 +14,42 @@
     </div>
 
     <div class="derecha">
-      <form class="form" action="#" method="post" novalidate>
-        <div class="titulo">Iniciar Sesión</div>
+      <form class="form" id="login-form" action="#" method="post" novalidate>
+  <div class="titulo">Iniciar Sesión</div>
 
-        <div class="input-group">
-          <div class="input">
-            <input type="email" name="usuario" placeholder="Correo electrónico" required>
-          </div>
-        </div>
+  <div class="input-group">
+    <div class="input">
+      <input id="email" type="email" name="usuario" placeholder="Correo electrónico" required>
+      <span class="error-msg">⚠️ Ingresa un correo válido</span>
+    </div>
+  </div>
 
-        <div class="input-group">
-          <div class="input">
-            <input type="password" name="contrasena" placeholder="Contraseña" required>
-          </div>
-        </div>
+  <div class="input-group">
+    <div class="input" style="position:relative;">
+      <input id="password" type="password" name="contrasena" placeholder="Contraseña" required>
+      <span class="error-msg">⚠️ La contraseña es obligatoria</span>
+      <!-- (Opcional) Toggle ver contraseña -->
+      <button type="button" id="toggle-pass" aria-label="Mostrar/Ocultar" 
+              style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:0; cursor:pointer;">
+        👁️
+      </button>
+    </div>
+  </div>
 
-        <div class="input-group">
-          <!-- cambiar a submit para enviar al formulario -->
-          <button type="button" class="btn" onclick="window.location.href='home.html'" >Iniciar Sesión</button>
-          
-        </div>
+  <div class="input-group">
+    <!-- ahora es submit; JS valida y redirige -->
+    <button type="submit" class="btn" id="btn-login">Iniciar Sesión</button>
+  </div>
 
-        <div class="registro">
-          <a href="#">¿Olvidaste tu contraseña?</a>
-        </div>
+  <div class="registro">
+    <a href="#">¿Olvidaste tu contraseña?</a>
+  </div>
 
-        <button type="button" class="btn-secundario" onclick="window.location.href='registro.html'">Crear cuenta</button>
-      </form>
+  <button type="button" class="btn-secundario" onclick="window.location.href='registro.html'">Crear cuenta</button>
+</form>
+
+<!-- Conecta el JS justo antes de cerrar body -->
+<script src="js/login.js" defer></script>
     </div>
   </div>
 </body>

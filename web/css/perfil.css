@@ -40,9 +40,10 @@ body{
   outline:none;
   transition: box-shadow .15s, border-color .15s;
 }
+
+
 .buscador input:focus{
-  border-color:#9cccf6;
-  box-shadow:0 0 0 3px rgba(93,181,255,.25);
+  border-color: #28a745;               
 }
 
 .acciones{
@@ -157,6 +158,119 @@ body {
 .valor {
   color: #0f172a;
 }
+
+
+
+
+
+/* Botones */
+.btn {
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+}
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+  transition: .15s;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #5db5ff, #55c2a5);
+  color: #fff;
+  border: none;
+}
+
+/* Formulario de edición */
+.form-perfil {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 16px;
+  max-width: 500px;
+}
+.form-perfil .grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.form-perfil label {
+  font-size: 14px;
+  color: #64748b;
+}
+.form-perfil input[type="text"],
+.form-perfil input[type="email"],
+.form-perfil input[type="file"] {
+  padding: 10px 12px;
+  border: 1px solid #e3e5ea;
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+}
+.form-perfil input:focus { border-color: #28a745; }
+
+
+#btn-editar {
+  background:linear-gradient(135deg, #5db5ff, #55c2a5);
+  color: #fff;
+  border: none;
+}
+
+
+/* Estado normal */
+.form-perfil input {
+  padding: 10px 12px;
+  border: 1px solid #e3e5ea;
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+}
+
+/* Cuando el campo es inválido */
+.form-perfil input:invalid {
+  border-color: #dc3545; /* rojo */
+}
+
+/* Mensaje de error oculto por defecto */
+.error-msg {
+  display: none;
+  font-size: 13px;
+  color: #dc3545;
+  margin-top: 4px;
+}
+
+/* Mostrar mensaje cuando el input está inválido */
+input:invalid + .error-msg {
+  display: block;
+}
+
+
+.btn.loading {
+  position: relative;
+  pointer-events: none; /* desactiva clicks mientras carga */
+  opacity: 0.8;
+}
+
+.btn.loading::after {
+  content: "";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  border: 2px solid #fff;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 
 /* Responsive */
 @media (max-width: 700px) {

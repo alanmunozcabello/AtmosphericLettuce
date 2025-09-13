@@ -221,6 +221,63 @@ body{
   cursor:pointer;
 }
 
+
+.form-cultivo{
+  display:flex;
+  gap:10px;
+  margin-bottom:8px;
+}
+.form-cultivo input{
+  flex:1;
+  padding:10px 12px;
+  border:1px solid #e3e5ea;
+  border-radius:10px;
+  font-size:14px;
+  outline:none;
+}
+.form-cultivo input:focus{ border-color:#28a745; }
+.form-cultivo button{
+  padding:10px 14px;
+  border:1px solid #e3e5ea;
+  border-radius:10px;
+  background:linear-gradient(135deg, #5db5ff, #55c2a5);
+  color: #fff; /* <-- Cambia el color del texto aquí */
+  cursor:pointer;
+}
+.form-cultivo button:hover{
+  transform:translateY(-1px);
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+  transition:.15s;
+}
+
+.lista-cultivos{
+  list-style:none;
+  margin:0;
+  padding:0;
+}
+.item-cultivo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 0;
+  font-size:15px;
+  border-top:1px 
+  
+}
+.item-cultivo:first-child{ border-top:0; }
+.item-cultivo .btn-eliminar{
+  margin-left:auto;
+  border:1px solid #e3e5ea;
+  background:#fff;
+  border-radius:8px;
+  padding:4px 8px;
+  cursor:pointer;
+}
+.item-cultivo .btn-eliminar:hover{
+  background:linear-gradient(135deg, #5db5ff, #55c2a5);
+}
+
+
 /* --------- Responsive --------- */
 @media (max-width: 900px){
   .contenido{

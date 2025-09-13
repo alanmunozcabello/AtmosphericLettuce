@@ -111,6 +111,47 @@ body{
     height: auto;         
 }
 
+/* Mensajes de error y borde rojo */
+.error-msg {
+  display: none;
+  font-size: 13px;
+  color: #dc3545;
+  margin-top: 6px;
+}
+.input input.invalid {
+  border-color: #dc3545 !important;
+}
+.input input.invalid + .error-msg {
+  display: block;
+}
+
+/* Estado de carga del botón */
+.btn.loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.9;
+}
+.btn.loading::after {
+  content: "";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  border: 2px solid #fff;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+
+
+
+
+
+
 
 
 

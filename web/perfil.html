@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Atmospheric Lettuce</title>
-  <link rel="stylesheet" href="perfil.css">
+  <link rel="stylesheet" href="css/perfil.css" />
 </head>
 <body>
   <!-- Barra superior -->
   <div class="barra-superior">
     <div class="logo">
       <a href="home.html">
-      <img src="logo.png" alt="Logo de la empresa">
+        <img src="logo.png" alt="Logo de la empresa" />
       </a>
     </div>
     <div class="buscador">
-      <input type="text" placeholder="Introducir ubicación">  
+      <input type="text" placeholder="Introducir ubicación" />
     </div>
     <div class="acciones">
       <div class="icono">🔔</div>
@@ -22,13 +22,11 @@
     </div>
   </div>
 
-
   <div class="contenedor">
-
     <!-- Columna izquierda -->
     <div class="columna-izquierda">
       <div class="avatar-fondo">
-        <img src="voodoo.png" alt="Avatar">
+        <img src="voodoo.png" alt="Avatar" />
       </div>
       <div class="rol">Agricultor</div>
     </div>
@@ -39,7 +37,15 @@
       <div class="desde">Usuario desde marzo de 2020</div>
 
       <div class="tarjeta-perfil">
-        <div class="titulo">Perfil</div>
+        <!-- Boton de acción dentro de la tarjeta -->
+        <div class="titulo" style="display:flex; justify-content:space-between; align-items:center;">
+          <span>Perfil</span>
+          <div class="acciones-perfil">
+            <button id="btn-editar" class="btn">Editar</button>
+            <button id="btn-guardar" class="btn btn-primary" style="display:none;">Guardar</button>
+            <button id="btn-cancelar" class="btn" style="display:none;">Cancelar</button>
+          </div>
+        </div>
 
         <div class="fila">
           <div class="etiqueta">Correo electrónico</div>
@@ -56,8 +62,38 @@
           <div class="valor">Español</div>
         </div>
       </div>
-    </div>
 
+      <!--Formulario oculto de edición -->
+      <form id="form-perfil" class="form-perfil" style="display:none;" autocomplete="off">
+        <div class="grupo">
+          <label>Nombre</label>
+          <input id="inp-nombre" type="text" placeholder="Nombre" required />
+          <span class="error-msg">⚠️ El nombre es obligatorio</span>
+        </div>
+        <div class="grupo">
+          <label>Correo electrónico</label>
+          <input id="inp-correo" type="email" placeholder="correo@ejemplo.com" required/>
+          <span class="error-msg">⚠️ El correo es obligatorio</span>
+        </div>
+        <div class="grupo">
+          <label>Ubicación</label>
+          <input id="inp-ubicacion" type="text" placeholder="Ciudad" />
+        </div>
+        <div class="grupo">
+          <label>Idioma</label>
+          <input id="inp-idioma" type="text" placeholder="Idioma" />
+        </div>
+
+        <!-- Opcional: subir avatar -->
+        <div class="grupo">
+          <label>Avatar</label>
+          <input id="inp-avatar" type="file" accept="image/*" />
+        </div>
+      </form>
+    </div>
   </div>
+
+  <!-- Conecta el JavaScript -->
+  <script src="js/perfil.js" defer></script>
 </body>
 </html>
