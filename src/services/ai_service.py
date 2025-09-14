@@ -25,9 +25,9 @@ def preguntar_mistral(contexto):
     #         ]
     
     mensaje_usuario = json.dumps(contexto, ensure_ascii=False)
-
+    #mistral: mistralai/mistral-small-3.2-24b-instruct:free
     payload = {
-      "model": "mistralai/mistral-small-3.2-24b-instruct:free",
+      "model": "deepseek/deepseek-chat-v3.1:free",
       "messages": [
           {
               "role": "system",

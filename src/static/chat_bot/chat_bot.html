@@ -16,30 +16,20 @@
 
 
   <!-- Formulario simple -->
-  <form id="chat-form" style="margin-top:16px;">
+  <!-- <form id="chat-form" style="margin-top:16px;">
     <label for="chat-input">Escribe tu mensaje:</label><br/>
     <textarea id="chat-input" rows="4" cols="60" placeholder="Escribe aquí..." required></textarea><br/>
-    <button type="submit">Enviar</button>
-  </form>
+  </form> -->
 
-  <script src="subir_texto.js"></script>
+  <input type="text" id="textoInput" placeholder="Escribe un mensaje...">
+  <input type="file" id="fileInput" accept="image/*,application/pdf">
+  <button id="enviarBtn">Enviar</button>
 
-  <h2>Enviar imagen al backend</h2>
-
-  <input type="file" id="fileInput" accept="image/*">
-  <button onclick="enviarImagen()">Enviar</button>
+  <script src="chat_controller.js"></script>
 
   <pre id="respuesta"></pre>
 
   <div id="chatBox"></div>
 
-  <script src="subir_imagen.js"></script>
-
-  <h2>Enviar PDF al backend</h2>
-
-  <input type="file" id="fileInputPdf" accept="pdf/*">
-  <button onclick="enviarPdf()">Enviar</button>
-
-  <script src="subir_pdf.js"></script>
 </body>
 </html>

@@ -23,6 +23,7 @@ def preguntar_enfermedad(imagen):#la imágen viene en formato Base64 -> String d
         respuesta = requests.post(url, headers=headers, json=payload) #se hace la request
 
         if respuesta.status_code==201: #si la respuesta es exitosa se muestra/maneja, tal parece que el code:200 para estos tipos tambien es de error xd
+            print(respuesta.text)
             return respuesta.text 
         else:
             return f"error {respuesta.status_code}: {respuesta.text}"
