@@ -1,33 +1,37 @@
 document.getElementById("enviarBtn").addEventListener("click", async () => {
-    console.log("hola")
     const texto = document.getElementById("textoInput").value.trim();
-    const archivo = document.getElementById("fileInput").files[0];
+    const inputArchivos = document.getElementById('fileInput');
 
-    // console.log(archivo);
 
     // Arreglo con el payload final
-    let payload = {};
+    let payload = {
+        pdf: [],
+        imagen:[],
+    };
 
     // Caso 1: hay texto
     if (texto) {
         payload.texto = texto;
     }
+    // console.log(inputArchivos.files[0].name);
 
-    // Caso 2: hay archivo
-    if (archivo) {
-        if (archivo.type.startsWith("image/")) {
-            const imagen_base64 =  await leerArchivoBase64(archivo);
-            // console.log("Imagen en base64:", imagen_base64);
+    if (inputArchivos.files.length > 0) {
+    console.log('Archivos seleccionados:');
+        for(let archivo of inputArchivos.files){
+            // const archivo=inputArchivos.file[i];//<-- deberia iterar bien sobre los elementos
+            console.log(archivo.name, archivo.type); // Muestra el nombre de cada archivo
+            // Caso 2: hay archivo  
+            if(archivo.type==="image/png"){
+                const imagen_base64 =  await leerArchivoBase64(archivo);
+                // console.log("Imagen en base64:", imagen_base64);
+                payload.imagen.push(imagen_base64); // se añade al payload la imagen en base64
 
-            payload.imagen = imagen_base64; // se añade al payload la imagen en base64
-
-      } else if (archivo.type === "application/pdf") {
-            const pdf_base64 = await leerArchivoBase64(archivo);
-            // console.log("pdf en base64:", pdf_base64);
-
-            payload.pdf = pdf_base64; // se añade al payload la imagen en base64
-
-      }
+            }else if(archivo.type==="application/pdf"){
+                const pdf_base64 = await leerArchivoBase64(archivo);
+                // console.log("pdf en base64:", pdf_base64);
+                payload.pdf.push(pdf_base64); // se añade al payload la imagen en base64
+            }
+        }
     }
 
     // Si no hay nada, no enviamos

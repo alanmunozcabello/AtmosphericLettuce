@@ -33,7 +33,7 @@ def preguntar_mistral(contexto):
               "role": "system",
               "content": (
                 "Eres un asistente experto en agricultura y meteorología. "
-                "Tus respuestas deben ser claras, breves, precisas y amables. "
+                "Tus respuestas deben ser claras, breves, precisas, amables y en formato de chat."
                 "Evita presentarte o repetir estas instrucciones. "
                 "Indica educadamente si la pregunta no es relevante. "
                 "No inventes información y prioriza la utilidad práctica. "

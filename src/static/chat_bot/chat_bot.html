@@ -7,29 +7,16 @@
 <body>
   <h1>Chat Agro (demo)</h1>
 
-  <!-- Historial de mensajes -->
-  <div id="chat-history" aria-live="polite" style="max-width:700px;">
-    <!-- Los mensajes se insertan aquí -->
-  </div>
-
-  <h2>Enviar Texto al backend</h2>
-
-
-  <!-- Formulario simple -->
-  <!-- <form id="chat-form" style="margin-top:16px;">
-    <label for="chat-input">Escribe tu mensaje:</label><br/>
-    <textarea id="chat-input" rows="4" cols="60" placeholder="Escribe aquí..." required></textarea><br/>
-  </form> -->
-
+<!--Esto es todo lo que necesitamos para que funcione en si el sistema de preguntas y respuestas-->
   <input type="text" id="textoInput" placeholder="Escribe un mensaje...">
-  <input type="file" id="fileInput" accept="image/*,application/pdf">
+  <input type="file" id="fileInput" accept="image/*,application/pdf" multiple> <!--ahora se pueden subir multiples archivos con los formatos permitidos-->
   <button id="enviarBtn">Enviar</button>
 
-  <script src="chat_controller.js"></script>
+  <script src="chat_controller.js"></script><!--aquí se llama al controlador-->
+<!--hasta aquí es lo necesario ^^-->
+  <pre id="respuesta"></pre> <!--casilla que muestra el mensaje de ida-->
 
-  <pre id="respuesta"></pre>
-
-  <div id="chatBox"></div>
+  <div id="chatBox"></div> <!--casilla que muestra la respuesta-->
 
 </body>
 </html>

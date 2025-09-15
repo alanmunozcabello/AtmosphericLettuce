@@ -20,26 +20,27 @@ def procesar_consulta(payload):  # debería ser un diccionario
         contexto.append({"mensaje usuario": payload["texto"]})
 
     if payload.get("imagen"): #una ves esté listo volver a esto (implementar soporte para multiples imágenes)------------------------------
-        # for imagen in payload["imagen"]:
-        imagen=payload["imagen"] #extraer la imagen con fomrato string
-        contexto.append({"json":preguntar_enfermedad(imagen)})
+        for imagen in payload["imagen"]:
+            contexto.append({"json":preguntar_enfermedad(imagen)})
 
     if payload.get("pdf"): #una ves esté listo volver a esto (implementar soporte para multiples pdf (un for simple y cambiar linea 15 en el script de base64 -> [base64]))
-        pdf_64 = payload["pdf"]
-        pdf_decodificado = base64.b64decode(pdf_64) #decodificar el pdf en base64
+        
+        for pdf_64 in payload["pdf"]:
+            # pdf_64 = payload["pdf"]
+            pdf_decodificado = base64.b64decode(pdf_64) #decodificar el pdf en base64
 
-        with open("temp.pdf", "wb") as f: #pdf temporal
-            f.write(pdf_decodificado)
+            with open("temp.pdf", "wb") as f: #pdf temporal
+                f.write(pdf_decodificado)
 
-        doc = fitz.open("temp.pdf") #extraer contenido del pdf con fitz
-        texto = ""
-        for pagina in doc:
-            texto += pagina.get_text() + "\n"
-        doc.close()
-        os.remove("temp.pdf") #matar el pdf temporal
+            doc = fitz.open("temp.pdf") #extraer contenido del pdf con fitz
+            texto = ""
+            for pagina in doc:
+                texto += pagina.get_text() + "\n"
+            doc.close()
+            os.remove("temp.pdf") #matar el pdf temporal
 
-        contexto.append({"contenido pdf": texto})
+            contexto.append({"contenido pdf": texto})
 
-        print(contexto)
+    print(contexto)
 
     return preguntar_mistral(contexto)  # retornar la respuesta del chatbot al frontend
