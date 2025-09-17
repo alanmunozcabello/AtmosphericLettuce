@@ -3,6 +3,10 @@
         "id": "pipo123@mail.com",
         "nombre": "Pipo",
         "contrasena": "123",
+        "ubicacion": {
+            "latitud": 12.34,
+            "longitud": 56.78
+        },
         "cultivos": {
             "maiz": 10,
             "trigo": 5
@@ -12,6 +16,10 @@
         "id": "pepito321@mail.com",
         "nombre": "Pepito",
         "contrasena": "321",
+        "ubicacion": {
+            "latitud": 98.76,
+            "longitud": 54.32
+        },
         "cultivos": {
             "soja": 8,
             "girasol": 12
@@ -21,6 +29,10 @@
         "id": "alan1234@mail.com",
         "nombre": "alan",
         "contrasena": "1234",
+        "ubicacion": {
+            "latitud": 19.4326,
+            "longitud": -99.1332
+        },
         "cultivos": {
             "arroz": 15,
             "cebada": 7
@@ -30,6 +42,10 @@
         "id": "kitian379@mail.com",
         "nombre": "kitian",
         "contrasena": "379812",
+        "ubicacion": {
+            "latitud": 34.0522,
+            "longitud": -118.2437
+        },
         "cultivos": {
             "avena": 20,
             "centeno": 10
@@ -39,6 +55,10 @@
         "id": "niko023@mail.com",
         "nombre": "niko",
         "contrasena": "02381",
+        "ubicacion": {
+            "latitud": 51.5074,
+            "longitud": -0.1278
+        },
         "cultivos": {
             "lentejas": 6,
             "garbanzos": 9
@@ -48,6 +68,10 @@
         "id": "john456@mail.com",
         "nombre": "john",
         "contrasena": "123456",
+        "ubicacion": {
+            "latitud": 40.7128,
+            "longitud": -74.0060
+        },
         "cultivos": {
             "frijoles": 14,
             "maiz": 11
@@ -57,6 +81,10 @@
         "id": "plim910@mail.com",
         "nombre": "plimplomplim",
         "contrasena": "832910",
+        "ubicacion": {
+            "latitud": 48.8566,
+            "longitud": 2.3522
+        },
         "cultivos": {
             "trigo": 4,
             "soja": 16
