@@ -1,5 +1,5 @@
 import re
-from services.usuarios_service import service_leer_usuarios, service_guardar_nuevo_usuario, service_obtener_usuario, service_obtener_cultivos_usuario, service_agregar_o_modificar_cultivo, service_eliminar_cultivo #importar los servicios de usuarios
+from services.usuarios_service import service_leer_usuarios, service_guardar_nuevo_usuario, service_obtener_usuario, service_obtener_cultivos_usuario, service_agregar_o_modificar_cultivo, service_eliminar_cultivo, service_modificar_usuario #importar los servicios de usuarios
 
 def controller_obtener_todos_los_usuarios(): #retornar todos los usuarios
     return service_leer_usuarios()
@@ -24,4 +24,7 @@ def controller_eliminar_cultivo(correo, cultivo):
 
 #funcion no tan necesaria, el frontend puede saltarse esta y llamar directamente a service_obtener_usuario(correo)
 def controller_iniciar_secion(correo): #suponer que las validaciones y gestion de inicio de secion se hacen en el frontend
-    return service_obtener_usuario(correo)    
+    return service_obtener_usuario(correo)
+
+def controller_modificar_usuario(correo, usuarioMOD):
+    return service_modificar_usuario(correo, usuarioMOD)

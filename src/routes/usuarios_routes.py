@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from controllers.usuarios_controller import controller_obtener_todos_los_usuarios, controller_obtener_usuario, controller_registrar_usuario, controller_obtener_cultivos_usuario, controller_agregar_o_modificar_cultivo, controller_eliminar_cultivo, controller_iniciar_secion
+from controllers.usuarios_controller import controller_obtener_todos_los_usuarios, controller_obtener_usuario, controller_registrar_usuario, controller_obtener_cultivos_usuario, controller_agregar_o_modificar_cultivo, controller_eliminar_cultivo, controller_iniciar_secion, controller_modificar_usuario
 
 router=APIRouter()
 
@@ -39,3 +39,7 @@ def ruta_agregar_o_modificar_cultivo(correo, cultivo):
 @router.post("/usuarios/usuario/cultivos/eliminar")
 def ruta_eliminar_cultivo(correo, cultivo):
     return controller_eliminar_cultivo(correo, cultivo)
+
+@router.post("/usuarios/usuario/modificar")
+def ruta_modificar_usuario(correo, usuarioMOD):
+    return controller_modificar_usuario(correo, usuarioMOD)
