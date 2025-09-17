@@ -1,44 +1,65 @@
 [
     {
-        "id": 1,
-        "correo": "pipo123@mail.com",
+        "id": "pipo123@mail.com",
         "nombre": "Pipo",
-        "contrasena": "123"
+        "contrasena": "123",
+        "cultivos": {
+            "maiz": 10,
+            "trigo": 5
+        }
     },
     {
-        "id": 2,
-        "correo": "pepito321@mail.com",
+        "id": "pepito321@mail.com",
         "nombre": "Pepito",
-        "contrasena": "321"
+        "contrasena": "321",
+        "cultivos": {
+            "soja": 8,
+            "girasol": 12
+        }
     },
     {
-        "id": 3,
-        "correo": "alan1234@mail.com",
+        "id": "alan1234@mail.com",
         "nombre": "alan",
-        "contrasena": "1234"
+        "contrasena": "1234",
+        "cultivos": {
+            "arroz": 15,
+            "cebada": 7
+        }
     },
     {
-        "id": 4,
-        "correo": "kitian379@mail.com",
+        "id": "kitian379@mail.com",
         "nombre": "kitian",
-        "contrasena": "379812"
+        "contrasena": "379812",
+        "cultivos": {
+            "avena": 20,
+            "centeno": 10
+        }
     },
     {
-        "id": 5,
-        "correo": "niko023@mail.com",
+        "id": "niko023@mail.com",
         "nombre": "niko",
-        "contrasena": "02381"
+        "contrasena": "02381",
+        "cultivos": {
+            "lentejas": 6,
+            "garbanzos": 9
+        }
     },
     {
-        "id": 6,
-        "correo": "john456@mail.com",
+        "id": "john456@mail.com",
         "nombre": "john",
-        "contrasena": "123456"
+        "contrasena": "123456",
+        "cultivos": {
+            "frijoles": 14,
+            "maiz": 11
+        }
     },
     {
-        "id": 7,
-        "correo": "plim910@mail.com",
+        "id": "plim910@mail.com",
         "nombre": "plimplomplim",
-        "contrasena": "832910"
+        "contrasena": "832910",
+        "cultivos": {
+            "trigo": 4,
+            "soja": 16
+        }
     }
 ]
