@@ -63,7 +63,7 @@ def crear_pdf(clima,usuarios):
     cadena_aux = "Max: " + str(clima.get("dia4").get("max"))+"°C Min: " + str(clima.get("dia4").get("min"))+"°C" #variable con la temperatura maxima y minima 
     can.drawString(20, 510, cadena_aux)
     can.setFont("Helvetica", 18)
-    can.drawString(20, 495, clima.get("dia4").get("estado")) #variable con el estado del tiempo
+    can.drawString(20, 490, clima.get("dia4").get("estado")) #variable con el estado del tiempo
 
 
     #cuadros del tiempo 3
@@ -85,7 +85,7 @@ def crear_pdf(clima,usuarios):
     cadena_aux = "Max: " + str(clima.get("dia5").get("max"))+"°C Min: " + str(clima.get("dia5").get("min"))+"°C" #variable con la temperatura maxima y minima 
     can.drawString(215, 510, cadena_aux)
     can.setFont("Helvetica", 18)
-    can.drawString(215, 495, clima.get("dia5").get("estado")) #variable con el estado del tiempo
+    can.drawString(215, 490, clima.get("dia5").get("estado")) #variable con el estado del tiempo
 
 
     #cuadros del tiempo 5
@@ -107,7 +107,7 @@ def crear_pdf(clima,usuarios):
     cadena_aux = "Max: " + str(clima.get("dia6").get("max"))+"°C Min: " + str(clima.get("dia6").get("min"))+"°C" #variable con la temperatura maxima y minima 
     can.drawString(410, 510, cadena_aux)
     can.setFont("Helvetica", 18)
-    can.drawString(410, 495, clima.get("dia6").get("estado")) #variable con el estado del tiempo
+    can.drawString(410, 490, clima.get("dia6").get("estado")) #variable con el estado del tiempo
 
 
 
@@ -120,7 +120,7 @@ def crear_pdf(clima,usuarios):
         i+=30
 
     #Emfermedades ----------------------------------------------------------- pendiente 
-    can.drawString(215, 430, "Emfermedades") 
+    can.drawString(215, 430, "Enfermedades") 
     can.drawImage("C:/Users/Nicolas/Desktop/proyecto_nuevo/Imagenes/Lechuga.jpg", 215, 260, width=150, height=150) #variable con la imagen de la enfermedad 1
 
     #texto
