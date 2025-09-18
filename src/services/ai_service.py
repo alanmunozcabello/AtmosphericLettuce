@@ -58,7 +58,7 @@ def preguntar_mistral(contexto):
             return respuesta["choices"][0]["message"]["content"] #mostrar respuesta, esas cosas no se que son :p
         else: #si falló semuestra el error
             # print("error aquí") #debugging
-            return f"error {respuesta.status_code}: {respuesta.text}"
+            return {"error": respuesta.text} #si da error y no se entiende o no s epuede manipular cambiar .text -> .json()
     except Exception as e: #manejo de errores "potente"
         return "error", e
 

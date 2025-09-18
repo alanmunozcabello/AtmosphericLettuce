@@ -11,7 +11,7 @@ def controller_registrar_usuario(correo, nombre, contrasena): #guardar un nuevo 
     if(nombre.strip()!="" and contrasena.strip()!="" and re.match(r"[^@]+@[^@]+\.[^@]+", correo)):#si nombre, contraseña y correo son minimamente validos se llama al servicio
         return service_guardar_nuevo_usuario(correo, nombre, contrasena)                                               #estructura minima de correo con expresiones regulares -> lpp lo vió venir >:)
     else:
-        return {"mensaje":"nombre y contraseña no pueden estar en blanco"}#se llama al controlador para procese el guardado del nuevo usuario
+        return {"error":"nombre y contraseña no pueden estar en blanco"}#se llama al controlador para procese el guardado del nuevo usuario
     
 def controller_obtener_cultivos_usuario(correo):
     return service_obtener_cultivos_usuario(correo)

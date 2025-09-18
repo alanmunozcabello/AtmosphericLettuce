@@ -26,7 +26,7 @@ def preguntar_enfermedad(imagen):#la imágen viene en formato Base64 -> String d
             print(respuesta.text)
             return respuesta.text 
         else:
-            return f"error {respuesta.status_code}: {respuesta.text}"
+            return {"error": {respuesta.text}} #si da error y no se entiende o no s epuede manipular cambiar .text -> .json()
     except Exception as e: #manejo de errores "potente"
         return "error:", e
 

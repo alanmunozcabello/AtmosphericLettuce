@@ -13,11 +13,11 @@ def hacer_ping():
 
 @router.get("/usuarios") #get es para dar información
 def ruta_obtener_usuarios(): #enrutador para obtener los usuarios y mostrarlos
-    return {"usuarios":controller_obtener_todos_los_usuarios()} #----------------front
+    return controller_obtener_todos_los_usuarios() #----------------front
 
 @router.post("/usuarios/usuario") #get es para dar información
 def ruta_obtener_usuario(correo): #enrutador para obtener la informacion de un usuario
-    return {"usuario":controller_obtener_usuario(correo)} #----------------front
+    return controller_obtener_usuario(correo) #----------------front
 
 #funcion no tan necesaria, el frontend puede saltarse esta y llamar directamente a ruta_obtener_usuario(correo) -> ver como seria cuando se vaya a usar coso de java token coso
 @router.post("usuarios/iniciar_secion")

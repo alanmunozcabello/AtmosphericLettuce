@@ -6,7 +6,7 @@ from services.plant_service import preguntar_enfermedad
 from services.ai_service import preguntar_mistral
 
 #pseudo implementación de la gestión del chat. NO IMPLEMENTACIÓN COMPLETA!!!!!
-def pdf_to_txt(pdf): #ver como pasar pdf o dirección de almacenamiento, etc. de momento la entrada es para que no explote nada
+def pdf_to_txt(pdf): #función en deshuso, el pdf ya viene en base64 desde el frontend
     pdf = fitz.open("Proyecto_pdf.pdf")
     with open("transcripcion.txt", "w", encoding="utf-8") as transcripcion: 
         for pagina in pdf:
@@ -41,6 +41,6 @@ def procesar_consulta(payload):  # debería ser un diccionario
 
             contexto.append({"contenido pdf": texto})
 
-    print(contexto)
+    # print(contexto) #para debugear
 
     return preguntar_mistral(contexto)  # retornar la respuesta del chatbot al frontend

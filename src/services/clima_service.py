@@ -17,7 +17,7 @@ def clima_hora_service(lat, lon): #da clima hora a hora de 4 dias
             respuesta = respuesta.json() #la respuesta se transforma a un formato legible y manejable (json)
             return respuesta #despues la respuesta se procesará y filtrarán los datos que se requieren y los que no
         else:
-            return f"error {respuesta.status_code}: {respuesta.text}" #si no funcionó se muestra el error o se procesa
+            return {"error": respuesta.json} #si no funcionó se muestra el error o se procesa
     except Exception as e: #manejo de errores "potente"
         return "error:", e
 
@@ -30,7 +30,7 @@ def clima_hoy_service(lat, lon):
             respuesta = respuesta.json() 
             return respuesta 
         else:
-            return f"error {respuesta.status_code}: {respuesta.text}"
+            return {"error": respuesta.json()}
     except Exception as e: 
         return "error:", e
     
