@@ -13,3 +13,4 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 #iniciar servidor: python -m uvicorn app:app --reload
 #iniciar servidor LAN publico: python -m uvicorn app:app --host 0.0.0.0 --port 8000
+#para abrir el chatbot una vez el servidor esté andando: http://127.0.0.1:8000/static/chat_bot/chat_bot.html
