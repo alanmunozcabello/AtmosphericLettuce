@@ -10,7 +10,6 @@ load_dotenv()
 API_KEY=os.getenv("CROPHEALTH_API_KEY")
 
 def preguntar_enfermedad(imagen):#la imágen viene en formato Base64 -> String desde el frontend
-
     url = "https://crop.kindwise.com/api/v1/identification" #end point
 
     headers={'Api-Key': API_KEY, #API

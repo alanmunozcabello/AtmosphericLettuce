@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from controllers.usuarios_controller import controller_obtener_todos_los_usuarios, controller_obtener_usuario, controller_registrar_usuario, controller_obtener_cultivos_usuario, controller_agregar_o_modificar_cultivo, controller_eliminar_cultivo, controller_iniciar_secion, controller_modificar_usuario
+from controllers.usuarios_controller import controller_obtener_todos_los_usuarios, controller_obtener_usuario, controller_registrar_usuario, controller_obtener_cultivos_usuario, controller_agregar_o_modificar_cultivo, controller_eliminar_cultivo, controller_iniciar_secion, controller_modificar_usuario, controller_modificar_ubicacion_usuario
 
 router=APIRouter()
 
@@ -41,5 +41,9 @@ def ruta_eliminar_cultivo(correo, cultivo):
     return controller_eliminar_cultivo(correo, cultivo)
 
 @router.post("/usuarios/usuario/modificar")
-def ruta_modificar_usuario(correo, usuarioMOD):
+def ruta_modificar_usuario(correo, usuarioMOD): #usuarioMOD es el dict completo del usuario a modificar
     return controller_modificar_usuario(correo, usuarioMOD)
+
+@router.post("/usuarios/usuario/ubicacion/modificar")
+def ruta_modificar_ubicacion_usuario(correo, lat, lon): #lat y lon pueden ser pasadon como string sin problema
+    return controller_modificar_ubicacion_usuario(correo, lat, lon)

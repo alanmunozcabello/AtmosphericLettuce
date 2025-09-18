@@ -25,7 +25,6 @@ def service_leer_usuarios(): #leer el json y retonar todos los usuarios en un di
         return {"error": "Archivo JSON corrupto"}
 
 def service_guardar_nuevo_usuario(correo, nombre, contrasena): #escribe la lista de usuarios en el json
-
     usuarios=service_leer_usuarios() #validaciones para registrar un usuario
 
     try:
@@ -123,6 +122,22 @@ def service_modificar_usuario(correo, usuarioMOD): #suponiendo que del frontend 
         return {"mensaje":"usuario modificado exitosamente"}
     
     except FileNotFoundError: #tomar las excepciones que puedan saltar de service_leer_usuarios()
+        return {"error": "Archivo de usuarios no encontrado"}
+    except UnicodeDecodeError:
+        return {"error": "Archivo JSON corrupto"}
+    except Exception as e:
+        return{"error": e}
+    
+def service_modificar_ubicacion_usuario(correo, lat, lon):
+    try:
+        usuarioMOD=service_obtener_usuario(correo)
+
+        usuarioMOD["ubicacion"]["latitud"]=float(lat) #sin el cast se pasan como string
+        usuarioMOD["ubicacion"]["longitud"]=float(lon)
+
+        return service_modificar_usuario(correo, usuarioMOD) #basicamente se está reemplazando el usuario entero con launica modificación de la ubicación
+    
+    except FileNotFoundError: #tomar las excepciones que puedan saltar de service_modificar_usuario()
         return {"error": "Archivo de usuarios no encontrado"}
     except UnicodeDecodeError:
         return {"error": "Archivo JSON corrupto"}

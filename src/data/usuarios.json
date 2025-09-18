@@ -70,7 +70,7 @@
         "contrasena": "123456",
         "ubicacion": {
             "latitud": 40.7128,
-            "longitud": -74.0060
+            "longitud": -74.006
         },
         "cultivos": {
             "frijoles": 14,
