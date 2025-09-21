@@ -44,12 +44,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!vPass || vPass.length < 6) {
       pass.classList.add('invalid');
       ok = false;
+      alert('⚠️ La contraseña debe tener al menos 6 caracteres.');
     }
 
     // Validación de confirmación de contraseña: requerida y debe coincidir
     if (!vPass2 || vPass2 !== vPass) {
       pass2.classList.add('invalid');
       ok = false;
+      alert('⚠️ Las contraseñas no coinciden.');
     }
 
     if (!ok) return; // 🚫 Si hay errores, no seguimos

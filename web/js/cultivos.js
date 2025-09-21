@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!v) return; // Si el input está vacío, no hace nada
 
-    // Normalizar a minúsculas para comparar
+    // pone las letras en minúscula para comparar
     const norm = (s) => s.toLowerCase();
     const cultivos = leer();
 
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;  // salimos sin agregar
     }
 
-    // Capitalizar primera letra
+    // Capitalizar primera letra osea ponerla en mayúscula
     v = v.charAt(0).toUpperCase() + v.slice(1);
 
     cultivos.push(v);      // Agrega el cultivo al array
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const cultivos = leer();
       cultivos.splice(i, 1); // Elimina el cultivo del array
       guardar(cultivos);     // Guarda el array actualizado
-      render();              // Actualiza la lista en el DOM
+      render();              
     }
   });
 

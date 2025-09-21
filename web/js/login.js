@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   toggle?.addEventListener('click', () => {
     const isPwd = pass.type === 'password'; // Verifica si el tipo es password
     pass.type = isPwd ? 'text' : 'password'; // Cambia el tipo de input
-    toggle.textContent = isPwd ? '🙈' : '👁️'; // Cambia el icono
+    toggle.textContent = isPwd ? '🙈' : '👁️'; 
     pass.focus(); // Enfoca el campo de contraseña
   });
 
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.textContent = 'Ingresando...';
     btn.classList.add('loading');
 
-    // Simula proceso de login (puedes reemplazar por fetch si tienes backend)
+    // Simula proceso de login (aquí iría la llamada real al servidor en nuestro caso cuando conectemos con backend)
     setTimeout(() => {
       // Estado de carga OFF: restaura el botón
       btn.textContent = 'Iniciar Sesión';

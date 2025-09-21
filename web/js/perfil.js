@@ -4,11 +4,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Referencias a elementos de la vista (mostrar datos)
   const nombreV = document.querySelector('.nombre');
-  const desdeV = document.querySelector('.desde'); // Por si luego lo actualizas
+  const desdeV = document.querySelector('.desde'); 
   const filas = document.querySelectorAll('.tarjeta-perfil .fila');
-  const correoV = filas[0]?.querySelector('.valor'); // 1ª fila = Correo
-  const ubicV = filas[1]?.querySelector('.valor'); // 2ª fila = Ubicación
-  const idiomV = filas[2]?.querySelector('.valor'); // 3ª fila = Idioma
+  const correoV = filas[0]?.querySelector('.valor'); // 1° fila = Correo
+  const ubicV = filas[1]?.querySelector('.valor'); // 2°fila = Ubicación
+  const idiomV = filas[2]?.querySelector('.valor'); // 3° fila = Idioma
   const avatarV = document.querySelector('.avatar-fondo img');
 
   // Referencias al formulario de edición
