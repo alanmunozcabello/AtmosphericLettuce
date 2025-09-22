@@ -1,5 +1,5 @@
 from pruebas_pdf import crear_pdf
-from enviar_correos import enviar_correo
+from enviar_correos import main
 print("pruebas------------------------------------")
 
 
@@ -11,4 +11,4 @@ clima = {"dia1": {"dia": "Lunes", "temp": 20, "max": 20, "min": 10, "estado": "S
         "dia5": {"dia": "Viernes", "temp": 410, "max": 20, "min": 10, "estado": "Soleado"},
         "dia6": {"dia": "Sabado", "temp": 410, "max": 410, "min": 10, "estado": "Soleado"}}
 crear_pdf(clima, usuarios)
-enviar_correo('alanmcabelo@gmail.com')
+main('alanmcabelo@gmail.com')

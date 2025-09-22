@@ -7,7 +7,6 @@ from reportlab.lib import colors
 import io
 # pip install reportlab PyPDF2
 
-
 def crear_pdf(clima,usuarios):
     # Crear un PDF temporal con el texto que quieres escribir
     print(usuarios.get("nombre"))
