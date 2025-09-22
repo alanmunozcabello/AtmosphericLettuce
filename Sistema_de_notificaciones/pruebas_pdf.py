@@ -5,6 +5,7 @@ from reportlab.platypus import Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 import io
+# pip install reportlab PyPDF2
 
 
 def crear_pdf(clima,usuarios):
