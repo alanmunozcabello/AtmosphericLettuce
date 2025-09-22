@@ -10,6 +10,7 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+#pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
 
 # Define los alcances (scopes). Si los modificas, borra el archivo token.json.
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
