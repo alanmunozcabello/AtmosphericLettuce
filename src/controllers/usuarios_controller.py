@@ -23,7 +23,7 @@ def controller_eliminar_cultivo(correo, cultivo):
     return service_eliminar_cultivo(correo, cultivo)
 
 #funcion no tan necesaria, el frontend puede saltarse esta y llamar directamente a service_obtener_usuario(correo)
-def controller_iniciar_secion(correo): #suponer que las validaciones y gestion de inicio de secion se hacen en el frontend
+def controller_iniciar_sesion(correo): #suponer que las validaciones y gestion de inicio de sesion se hacen en el frontend
     return service_obtener_usuario(correo)
 
 def controller_modificar_usuario(correo, usuarioMOD):

@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from controllers.usuarios_controller import controller_obtener_todos_los_usuarios, controller_obtener_usuario, controller_registrar_usuario, controller_obtener_cultivos_usuario, controller_agregar_o_modificar_cultivo, controller_eliminar_cultivo, controller_iniciar_secion, controller_modificar_usuario, controller_modificar_ubicacion_usuario
+from controllers.usuarios_controller import controller_obtener_todos_los_usuarios, controller_obtener_usuario, controller_registrar_usuario, controller_obtener_cultivos_usuario, controller_agregar_o_modificar_cultivo, controller_eliminar_cultivo, controller_iniciar_sesion, controller_modificar_usuario, controller_modificar_ubicacion_usuario
 
 router=APIRouter()
 
@@ -21,9 +21,9 @@ def ruta_obtener_usuario(correo): #enrutador para obtener la informacion de un u
     return controller_obtener_usuario(correo) #----------------front
 
 #funcion no tan necesaria, el frontend puede saltarse esta y llamar directamente a ruta_obtener_usuario(correo) -> ver como seria cuando se vaya a usar coso de java token coso
-@router.get("usuarios/iniciar_secion/{correo}")
-def ruta_iniciar_secion(correo):
-    return controller_iniciar_secion(correo)
+@router.get("usuarios/iniciar_sesion/{correo}")
+def ruta_iniciar_sesion(correo):
+    return controller_iniciar_sesion(correo)
 
 @router.post("/usuarios/registrar") #post es para recibir información
 def ruta_registrar_usuario(correo, nombre, contrasena): #se llama al controlador para procese el guardado del nuevo usuario
