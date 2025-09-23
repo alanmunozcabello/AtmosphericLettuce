@@ -32,6 +32,15 @@
     - `Services/clima_service.py`  
     - `Services/planta_service.py`
 
-
-
+## 📌 Semana 5
+- Implementación de la interfaz navegable HTML y CSS (Home, Formularios, log, Perfeil)
+  - `Perfil: permite modificar imformacion registrada previamente`
+  - `Home: permite eliminar y agregar cultivos`
+  - `Formulario: permite interactuar y verificar los datos proporcionados por el usuarios`
+  - `log: Permite validar los datos del usuarios (correo valido)`
+- Implementación de validación
+  - `Campos obligatorios: log -> correo, nombre, contraseña, verificacion de datos en el perfil`
+- Implementación de errores y campos vacíos 
+  - `manejo de campos vacíos log, Perfil`
+  - `home permite no repetir los cultivos ya ingresados`
 

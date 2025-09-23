@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Estado de carga OFF: restaura el botón
       btn.textContent = 'Iniciar Sesión';
       btn.classList.remove('loading');
-
+      form.reset()
       // Redirección si todo está correcto
       window.location.href = 'home.html';
     }, 1200);
