@@ -3,20 +3,36 @@
 <head>
   <meta charset="utf-8" />
   <title>Chat Agro - Demo</title>
+  <link rel="stylesheet" href="chat_bot.css">
 </head>
 <body>
   <h1>Chat Agro (demo)</h1>
+  <!-- Botón flotante -->
+  <div class="chatbot" id="chatToggle">🥬</div>
+  
+  <!-- Ventana del chat flotante -->
+  <div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+      <span>Chat Agro</span>
+      <button id="closeChat" style=></button>
+    </div>
 
-<!--Esto es todo lo que necesitamos para que funcione en si el sistema de preguntas y respuestas-->
-  <input type="text" id="textoInput" placeholder="Escribe un mensaje...">
-  <input type="file" id="fileInput" accept="image/*,application/pdf" multiple> <!--ahora se pueden subir multiples archivos con los formatos permitidos-->
-  <button id="enviarBtn">Enviar</button>
+    <div class="chat-body" id="chatBox"></div>
 
-  <script src="chat_controller.js"></script><!--aquí se llama al controlador-->
-<!--hasta aquí es lo necesario ^^-->
-  <pre id="respuesta"></pre> <!--casilla que muestra el mensaje de ida-->
+    <div class="chat-input">
+      <input type="text" id="textoInput" placeholder="Escribe un mensaje...">
 
-  <div id="chatBox"></div> <!--casilla que muestra la respuesta-->
+      <!-- Botones de acción -->
+      <button id="fileBtn">📄</button>
+      <button id="enviarBtn">Enviar</button>
 
+      <!-- Inputs de archivo ocultos -->
+      <input type="file" id="fileInput" accept="image/*,application/pdf" multiple style="display:none"> <!--ahora se pueden subir multiples archivos con los formatos permitidos-->
+    </div>
+  </div>
+
+<script src="chat_controller.js"></script><!--aquí se llama al controlador-->
+  
+  </div>
 </body>
 </html>

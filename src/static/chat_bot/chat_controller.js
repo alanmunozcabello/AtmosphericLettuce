@@ -1,3 +1,26 @@
+document.addEventListener("DOMContentLoaded", () => {
+  const chatToggle = document.getElementById("chatToggle");
+  const chatWindow = document.getElementById("chatWindow");
+  const closeChat = document.getElementById("closeChat");
+  const fileBtn = document.getElementById("fileBtn");   // <-- aquí
+  const fileInput = document.getElementById("fileInput"); // <-- y aquí
+
+  // Abrir/cerrar con el botón flotante
+  chatToggle.addEventListener("click", () => {
+    chatWindow.style.display = chatWindow.style.display === "flex" ? "none" : "flex";
+  });
+
+  // Cerrar con el circulito rojo
+  closeChat.addEventListener("click", () => {
+    chatWindow.style.display = "none";
+  });
+
+  // cuando haces click en el botón, abre el input oculto
+  fileBtn.addEventListener("click", () => {
+    fileInput.click();
+  });
+});
+
 document.getElementById("enviarBtn").addEventListener("click", async () => {
     const texto = document.getElementById("textoInput").value.trim();
     const inputArchivos = document.getElementById('fileInput');
@@ -54,8 +77,8 @@ document.getElementById("enviarBtn").addEventListener("click", async () => {
 
     // mostrar respuesta
     document.getElementById("chatBox").innerHTML += `
-        <p><b>Tú:</b> Enviado: (${payload.texto})</p>
-        <p><b>Bot:</b> ${result.respuesta}</p>
+        <p><b>Tú:</b> ${payload.texto}</p>
+        <p><b>Lechuguin:</b> ${result.respuesta}</p>
     `;
 });
 

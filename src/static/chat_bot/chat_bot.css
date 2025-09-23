@@ -1,0 +1,88 @@
+/* --------- Botón flotante chat --------- */
+.chatbot{
+  position:fixed;
+  right:22px;
+  bottom:22px;
+  width:64px; height:64px;
+  border-radius:50%;
+ background:linear-gradient(135deg, #5db5ff, #55c2a5);
+  display:grid; place-items:center;
+  font-size:30px;
+  box-shadow:0 10px 28px rgba(0,0,0,.15);
+  border:1px solid #e9e9ee;
+  cursor:pointer;
+}
+
+/* -------- Ventana flotante del chat -------- */
+.chat-window {
+  position: fixed;
+  right: 22px;
+  bottom: 100px;
+  width: 30vw;
+  height: 400px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 10px 28px rgba(0,0,0,.2);
+  display: none; /* Oculta por defecto */
+  flex-direction: column;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+.chat-header {
+  background: linear-gradient(135deg, #5db5ff, #55c2a5);
+  color: white;
+  padding: 10px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-body {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  font-size: 14px;
+  background: #f5f5f5;
+}
+
+.chat-input {
+  display: flex;
+  padding: 8px;
+  border-top: 1px solid #ddd;
+  background: #fff;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.chat-input button {
+  margin-left: 5px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  background: #5db5ff;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+#closeChat {
+  width: 14px;   /* tamaño del circulito */
+  height: 14px;
+  border-radius: 50%;
+  background: red;
+  border: none;
+  cursor: pointer;
+  margin-left: 8px; /* separación con el texto "Chat Agro" */
+  padding: 0; /* quita espacio interno */
+}
+
+#closeChat:hover {
+  background: darkred;
+}
