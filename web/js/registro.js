@@ -35,8 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Validación de email: requerido y formato correcto
-    if (!vEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(vEmail)) {
-      email.classList.add('invalid');
+    if (!vEmail || !validarEmail.includes("@") || !vEmail.includes(".")) {
+      email.classList.add("invalid"); // Marca el campo como inválido
       ok = false;
     }
 

@@ -29,8 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const valPass = pass.value.trim();  // Valor de la contraseña sin espacios
 
     // Validación de email: requerido y formato correcto
-    if (!valEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valEmail)) {
-      email.classList.add('invalid'); // Marca el campo como inválido
+    if (!valEmail || !valEmail.includes("@") || !valEmail.includes(".")) {
+      email.classList.add("invalid"); // Marca el campo como inválido
       ok = false;
     }
 
@@ -38,6 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!valPass) {
       pass.classList.add('invalid'); // Marca el campo como inválido
       ok = false;
+    }
+
+     if (valPass.length < 6) {
+      pass.classList.add('invalid');
+      ok = false;
+      alert('La contraseña debe contener al menos 6 dígitos.');
+
     }
 
     if (!ok) return; // Si hay errores, no continúa

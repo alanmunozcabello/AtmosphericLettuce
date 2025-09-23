@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const filas = document.querySelectorAll('.tarjeta-perfil .fila');
   const correoV = filas[0]?.querySelector('.valor'); // 1° fila = Correo
   const ubicV = filas[1]?.querySelector('.valor'); // 2°fila = Ubicación
-  const idiomV = filas[2]?.querySelector('.valor'); // 3° fila = Idioma
+  const regionV = filas[2]?.querySelector('.valor'); // 3° fila = Idioma
   const avatarV = document.querySelector('.avatar-fondo img');
 
   // Referencias al formulario de edición
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const inpNombre = document.getElementById('inp-nombre');
   const inpCorreo = document.getElementById('inp-correo');
   const inpUbic = document.getElementById('inp-ubicacion');
-  const inpIdioma = document.getElementById('inp-idioma');
+  const inpRegion = document.getElementById('inp-region');
   const inpAvatar = document.getElementById('inp-avatar');
 
   // Botones de la interfaz
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
       nombre: nombreV?.textContent?.trim() || 'Usuario',
       correo: correoV?.textContent?.trim() || '',
       ubic: ubicV?.textContent?.trim() || '',
-      idioma: idiomV?.textContent?.trim() || 'Español',
+      region: regionV?.textContent?.trim() || 'Maule',
       avatar: null // dataURL si el usuario sube uno
     };
 
@@ -43,14 +43,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (nombreV) nombreV.textContent = data.nombre;
     if (correoV) correoV.textContent = data.correo;
     if (ubicV) ubicV.textContent = data.ubic;
-    if (idiomV) idiomV.textContent = data.idioma;
+    if (regionV) regionV.textContent = data.region;
     if (avatarV && data.avatar) avatarV.src = data.avatar;
 
     // Rellena el formulario de edición con los datos
     inpNombre.value = data.nombre;
     inpCorreo.value = data.correo;
     inpUbic.value = data.ubic;
-    inpIdioma.value = data.idioma;
+    inpRegion.value = data.region;
   }
 
   // Cambia entre modo edición y modo vista
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Validar correo (requerido y formato)
     const correo = inpCorreo.value.trim();
-    if (!correo || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+      if (!correo || !correo.includes("@") || !correo.includes(".")) {
       inpCorreo.classList.add("invalid");
       valido = false;
     }
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
         nombre,
         correo,
         ubic: inpUbic.value.trim(),
-        idioma: inpIdioma.value.trim() || "Español",
+        region: inpRegion.value.trim() || "Español",
         avatar: avatarV?.src?.startsWith("data:") ? avatarV.src : (leer()?.avatar || null),
       };
 
