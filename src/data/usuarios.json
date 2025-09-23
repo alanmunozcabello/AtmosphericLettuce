@@ -89,5 +89,25 @@
             "trigo": 4,
             "soja": 16
         }
+    },
+    {
+        "id": "caliaga2005@gmail.com",
+        "nombre": "Cristiano Alonsinhio",
+        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$MsltzNCBPnAOu3WZHhLLtQ$v/m6kX1aYwgU0xy7HK84ufjCH3zIDw1J0jabcGwpu/k"
+    },
+    {
+        "id": "alanomunoz@gmail.com",
+        "nombre": "Alanito Fulanito",
+        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$b+FI9OjONofAY9FkoTIAIQ$k3O4hJGYksWj+BwruS+MDCORseXsG94eOjm7nQ1hIyA"
+    },
+    {
+        "id": "Cristian12345678@gmail.com",
+        "nombre": "Cristian Aliaga",
+        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$zW/j2Hc6eD4fBhl9hM1C/w$t6NA2IvP/isL+C8UNseNcV73T8p+er/eFzaRxrmiJEY"
+    },
+    {
+        "id": "horacio31M@outlook.com",
+        "nombre": "Horacio News",
+        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$3xZzlJ68XgR+MH/Zp0O5YQ$RYrGbEYKt1v1GcK8dkRe2RQ/iCkDvg9NnA8mExtQr68"
     }
 ]

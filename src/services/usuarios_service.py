@@ -1,4 +1,5 @@
 import json
+from services.security import hash_password_simple
 
 #ruta de los usuarios
 RUTA_USUARIOS="data/usuarios.json"
@@ -25,13 +26,13 @@ def service_leer_usuarios(): #leer el json y retonar todos los usuarios en un di
         return {"error": "Archivo JSON corrupto"}
 
 def service_guardar_nuevo_usuario(correo, nombre, contrasena): #escribe la lista de usuarios en el json
-    usuarios=service_leer_usuarios() #validaciones para registrar un usuario
-
+    usuarios=service_leer_usuarios() #se leen todos los usuarios
+    contrasena_hasheada = hash_password_simple(contrasena)
     try:
 
-        if any(usuario["nombre"]==nombre or usuario["id"]==correo for usuario in usuarios):
+        if any(usuario["nombre"]==nombre or usuario["id"]==correo for usuario in usuarios): #validaciones para registrar un usuario
             return {"error":"nombre de usuario o correo ya utilizado"}
-        nuevo_usuario={"id":correo ,"nombre":nombre, "contrasena":contrasena} #si el usuario o contraseña no existen se crea un nuevo usuario con los parametros de llegada
+        nuevo_usuario={"id":correo ,"nombre":nombre, "contrasena":contrasena_hasheada} #si el usuario o contraseña no existen se crea un nuevo usuario con los parametros de llegada
         usuarios.append(nuevo_usuario) #ahora el id es el correo -> mucho mejor y se puede implementar eliminación de usuarios (no necesarios pero se podría ahora)
 
         return guardar_usuarios(usuarios)
@@ -102,7 +103,8 @@ def service_eliminar_cultivo(correo, cultivo): #busca un cultivo por el nombre y
 def service_modificar_usuario(correo, usuarioMOD): #suponiendo que del frontend viene la infromación completa del usuario ya verificada y lista en formato dict, osea json
     try:
         usuarios=service_leer_usuarios() #arreglo de diccionarios con todos los usuarios
-
+        contrasena_hasheada = hash_password_simple(usuarioMOD["contrasena"])
+        usuarioMOD["contrasena"] = contrasena_hasheada
         #del arreglo usuarios hay que reemplazar al usuario con el id=correo por el usuarioMOD
         longitud=len(usuarios)
 
