@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     inp.addEventListener('input', () => inp.classList.remove('invalid'));
   });
 
+
   // Evento al enviar el formulario de registro
   form.addEventListener('submit', async (e) => {
     e.preventDefault(); // Evita el envío tradicional del formulario
@@ -35,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Validación de email: requerido y formato correcto
-    if (!vEmail || !validarEmail.includes("@") || !vEmail.includes(".")) {
+   if (!vEmail || !validarEmail.includes("@") || !vEmail.includes(".")) {
       email.classList.add("invalid"); // Marca el campo como inválido
       ok = false;
     }
@@ -44,14 +45,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!vPass || vPass.length < 6) {
       pass.classList.add('invalid');
       ok = false;
-      alert('⚠️ La contraseña debe tener al menos 6 caracteres.');
+      alert('La contraseña debe contener al menos 6 dígitos.');
     }
 
     // Validación de confirmación de contraseña: requerida y debe coincidir
     if (!vPass2 || vPass2 !== vPass) {
       pass2.classList.add('invalid');
       ok = false;
-      alert('⚠️ Las contraseñas no coinciden.');
+      alert('Las contraseñas no coinciden.');
     }
 
     if (!ok) return; // 🚫 Si hay errores, no seguimos

@@ -28,15 +28,12 @@
     <div class="input" style="position:relative;">
       <input id="password" type="password" name="contrasena" placeholder="Contraseña" required>
       <span class="error-msg">⚠️ La contraseña es obligatoria</span>
-      <!-- (Opcional) Toggle ver contraseña -->
-      <button type="button" id="toggle-pass" aria-label="Mostrar/Ocultar" 
-              style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:0; cursor:pointer;">
-        👁️
-      </button>
+    
     </div>
   </div>
 
   <div class="input-group">
+    <!-- ahora es submit; JS valida y redirige -->
     <button type="submit" class="btn" id="btn-login">Iniciar Sesión</button>
   </div>
 
@@ -47,6 +44,7 @@
   <button type="button" class="btn-secundario" onclick="window.location.href='registro.html'">Crear cuenta</button>
 </form>
 
+<!-- Conecta el JS justo antes de cerrar body -->
 <script src="js/login.js" defer></script>
     </div>
   </div>

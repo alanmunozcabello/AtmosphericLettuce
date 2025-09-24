@@ -9,32 +9,55 @@ import os
 load_dotenv()
 API_KEY=os.getenv("CROPHEALTH_API_KEY")
 
-def preguntar_enfermedad():#POSIBLEMENTE sea mejor pasar la imágen desde el frontend lista como String!!!!!!!!!!! esto elimina la necesidad de guardar la imágen y acceder a ella como archivo
-    with open("src/services/botrytis.png", "rb") as imagen: #lechuga.png es la imágen de prueba
-        imagen_base64=base64.b64encode(imagen.read()).decode("utf-8") #se abre la imágen en binario y se transforma a string (base64 codificada en utf-8)
+def filtrar_informacion(respuesta):
+    es_planta=(respuesta["result"]["is_plant"]["binary"]) #si lo de la imagen es una planta, si no la imagen no se ve claramente
 
-    imagen_base64=f"data:image/jpeg;base64,{imagen_base64}" #prefijo necesario para que no explote (requerimiento de crop.health)
+    planta=respuesta["result"]["crop"]["suggestions"][0]["name"] #el primer elemento es el con más posibilidades
+    planta_cientifico=respuesta["result"]["crop"]["suggestions"][0]["scientific_name"]
+    planta_probabilidad=respuesta["result"]["crop"]["suggestions"][0]["probability"]
 
+    enfermedad=respuesta["result"]["disease"]["suggestions"][0]["name"]
+    enfermedad_probabilidad=respuesta["result"]["disease"]["suggestions"][0]["probability"] #el primer elemento es el con más posibilidades
+    enfermedad_cientifico=respuesta["result"]["disease"]["suggestions"][0]["scientific_name"]
+
+    respuesta_filtrada={
+        "es_planta_probabilidad":es_planta,
+        "nombre_planta":planta,
+        "nombre_cientifico_planta":planta_cientifico,
+        "planta_probabilidad":planta_probabilidad,
+        "nombre_enfermedad":enfermedad,
+        "nombre_cientifico_enfermedad":enfermedad_cientifico,
+        "enfermedad_probabilidad":enfermedad_probabilidad
+    }
+
+    return respuesta_filtrada
+
+def preguntar_enfermedad(imagen):#la imágen viene en formato Base64 -> String desde el frontend
     url = "https://crop.kindwise.com/api/v1/identification" #end point
 
     headers={'Api-Key': API_KEY, #API
             'Content-Type': 'aplication/json'} #requerido por crop.health
     payload = {
-        "images": [imagen_base64],  #lista de imágenes en Base64 (debe ser una lista aunque sea una sola imágen)
+        "images": [imagen],  #lista de imágenes en Base64 (debe ser una lista aunque sea una sola imágen)
     }
 
     try:
         respuesta = requests.post(url, headers=headers, json=payload) #se hace la request
 
-        if respuesta.status_code==200: #si la respuesta es exitosa se muestra/maneja
-            return respuesta.text 
+        if respuesta.status_code==201: #si la respuesta es exitosa se muestra/maneja, tal parece que el code:200 para estos tipos tambien es de error xd
+            
+            #filtrar informacion
+            respuesta_filtrada=filtrar_informacion(respuesta.json())
+
+            return respuesta_filtrada
         else:
-            return f"error {respuesta.status_code}: {respuesta.text}"
+            return {"error": {respuesta.text}} #si da error y no se entiende o no s epuede manipular cambiar .text -> .json()
     except Exception as e: #manejo de errores "potente"
-        return "error:", e
+        print(str(e))
+        return "error:", str(e)
 
 
 # llamada de prueba unicamente, luego se llamará desde las capas
 # sin el __name__ == "__main__" no funcionaba
-if __name__=="__main__":
-    print(preguntar_enfermedad()) #PASS
+# if __name__=="__main__":
+#     print(preguntar_enfermedad()) #PASS

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Atmospheric Lettuce</title>
   <link rel="stylesheet" href="css/homes.css">
+  <link rel="stylesheet" href="css/chat_bot.css">
 </head>
 <body>
   <!-- Barra superior -->
@@ -25,6 +26,7 @@
   <!-- Contenido principal -->
   <div class="contenido">
     <!-- Clima -->
+  
    <div class="tarjeta clima-card" onclick="location.href='dias.html'">
     <div class="dia">Hoy</div>
     <div class="temperatura">22°C</div>
@@ -64,7 +66,35 @@
   </div>
 
   <!-- Botón flotante -->
-  <div class="chatbot">🥬</div>
+   <!-- Botón flotante -->
+  <div class="chatbot" id="chatToggle">🥬</div>
+  
+  <!-- Ventana del chat flotante -->
+  <div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+      <span>Chat Agro</span>
+      <button id="closeChat" style=></button>
+    </div>
+
+    <div class="chat-body" id="chatBox"></div>
+    
+    <!-- Aqí se añaden los archivos seleccionados (feedback para el usuario) -->
+    <div id="fileFeedback" style="display:flex; flex-wrap:wrap; gap:4px; padding:4px;"></div>
+
+    <div class="chat-input">
+      <input type="text" id="textoInput" placeholder="Escribe un mensaje...">
+
+      <!-- Botones de acción -->
+      <button id="fileBtn">📄</button>
+      <button id="enviarBtn">Enviar</button>
+
+      <!-- Inputs de archivo ocultos -->
+      <input type="file" id="fileInput" accept="image/*,application/pdf" multiple style="display:none"> <!--ahora se pueden subir multiples archivos con los formatos permitidos-->
+    </div>
+  </div>
+
+
   <script src="js/cultivos.js" defer></script>
+  <script src="js/chat_controller.js" defer></script>
 </body>
 </html>
