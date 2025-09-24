@@ -21,6 +21,67 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+let archivosSeleccionados = []; // lista global de los archivos seleccionados
+
+fileInput.addEventListener("change", () => {
+    const feedback = document.getElementById("fileFeedback");
+
+    // Agregar los nuevos al arreglo
+    archivosSeleccionados.push(...fileInput.files);
+
+    // Limpiar el input real (para que puedas volver a elegir más tarde)
+    fileInput.value = "";
+
+    // Refrescar vista
+    feedback.innerHTML = "";
+    archivosSeleccionados.forEach((file, idx) => {
+        const tag = document.createElement("div");
+        tag.className = "file-tag";
+        tag.innerHTML = `${file.name} <span data-idx="${idx}">✖</span>`;
+        feedback.appendChild(tag);
+        
+        // evento para eliminar
+        tag.querySelector("span").addEventListener("click", () => {
+            archivosSeleccionados.splice(idx, 1);
+            tag.remove();
+        });
+    });
+});
+
+// Eliminar archivo seleccionado con la X
+document.getElementById("fileFeedback").addEventListener("click", (e) => {
+  if (e.target.tagName === "SPAN") {
+    const idx = e.target.dataset.idx;
+    const dt = new DataTransfer();
+    Array.from(fileInput.files).forEach((f, i) => {
+      if (i != idx) dt.items.add(f);
+    });
+    fileInput.files = dt.files;
+
+    // refrescar feedback
+    const event = new Event("change");
+    fileInput.dispatchEvent(event);
+  }
+});
+
+const enviarBtn = document.getElementById("enviarBtn");
+
+// Funciones para mostrar/ocultar loader en el botón
+function showLoader() { 
+    // HTML From Uiverse.io by Shoh2008 (ENCAPSULADO EN EL JS PARA TENERLO DENTRO DEL BOTON Y NO COMO DIV APARTE)
+    enviarBtn.innerHTML = `
+      <div class="lds-ellipsis">
+        <div></div><div></div><div></div><div></div>
+      </div>
+    `;
+    enviarBtn.disabled = true;
+}
+
+function hideLoader() {
+    enviarBtn.innerHTML = "Enviar";
+    enviarBtn.disabled = false;
+}
+
 document.getElementById("enviarBtn").addEventListener("click", async () => {
     const texto = document.getElementById("textoInput").value.trim();
     const inputArchivos = document.getElementById('fileInput');
@@ -31,6 +92,8 @@ document.getElementById("enviarBtn").addEventListener("click", async () => {
         pdf: [],
         imagen:[],
     };
+
+    showLoader(); //comenzar animacion de carga
 
     // Caso 1: hay texto
     if (texto) {
@@ -58,8 +121,9 @@ document.getElementById("enviarBtn").addEventListener("click", async () => {
     }
 
     // Si no hay nada, no enviamos
-    if (Object.keys(payload).length === 0) {
+    if (!payload.texto && payload.pdf.length===0 && payload.imagen.length===0) {
         alert("Escribe algo o sube un archivo");
+        hideLoader(); // terminar animacion de carga
         return;
     }
 
@@ -74,6 +138,8 @@ document.getElementById("enviarBtn").addEventListener("click", async () => {
 
     const result = await respuesta.json();
     console.log(result.respuesta);
+
+    hideLoader(); // terminar animacion de carga
 
     // mostrar respuesta
     document.getElementById("chatBox").innerHTML += `

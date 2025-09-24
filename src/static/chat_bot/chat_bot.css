@@ -86,3 +86,100 @@
 #closeChat:hover {
   background: darkred;
 }
+
+.file-tag {
+  background: #e0f0ff;
+  border: 1px solid #b3d7ff;
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.file-tag span {
+  cursor: pointer;
+  color: red;
+  font-weight: bold;
+}
+
+/* -------- Responsividad -------- */
+@media (max-width: 1024px) {
+  .chat-window {
+    width: 40vw;   /* más ancho en pantallas medianas */
+    height: 380px;
+  }
+}
+
+@media (max-width: 768px) {
+  .chat-window {
+    width: 60vw;   /* ocupa más espacio en tablets */
+    height: 360px;
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-window {
+    width: 90vw;   /* casi todo el ancho en móviles */
+    height: 60vh;  /* altura proporcional a la pantalla */
+    right: 5%;     /* centrado con márgenes */
+    bottom: 80px;  
+  }
+
+  .chat-input input {
+    font-size: 14px;
+    padding: 5px;
+  }
+
+  .chat-input button {
+    font-size: 14px;
+    padding: 5px 8px;
+  }
+
+  .chat-header {
+    font-size: 14px;
+    padding: 8px;
+  }
+}
+
+/* From Uiverse.io by Shoh2008 (MODIFICADO PARA QUE QUEDE BIEN DENTRO DEL BOTÓN) */
+.lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 50px;
+  height: 16px;
+  vertical-align: middle;
+}
+
+.lds-ellipsis div {
+  position: absolute;
+  top: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+
+.lds-ellipsis div:nth-child(1) { left: 6px; animation: lds-ellipsis1 0.6s infinite; }
+.lds-ellipsis div:nth-child(2) { left: 6px; animation: lds-ellipsis2 0.6s infinite; }
+.lds-ellipsis div:nth-child(3) { left: 24px; animation: lds-ellipsis2 0.6s infinite; }
+.lds-ellipsis div:nth-child(4) { left: 42px; animation: lds-ellipsis3 0.6s infinite; }
+
+@keyframes lds-ellipsis1 { 0% {transform: scale(0);} 100% {transform: scale(1);} }
+@keyframes lds-ellipsis3 { 0% {transform: scale(1);} 100% {transform: scale(0);} }
+@keyframes lds-ellipsis2 { 0% {transform: translate(0,0);} 100% {transform: translate(18px,0);} }
+
+#sendBtn {
+  background: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+#sendBtn:disabled {
+  background: #888;
+  cursor: not-allowed;
+}
