@@ -1,5 +1,5 @@
 import json
-from services.security import hash_password_simple
+from services.security import hash_password_simple, verify_password
 
 #ruta de los usuarios
 RUTA_USUARIOS="data/usuarios.json"
@@ -139,6 +139,23 @@ def service_modificar_ubicacion_usuario(correo, lat, lon):
 
         return service_modificar_usuario(correo, usuarioMOD) #basicamente se está reemplazando el usuario entero con launica modificación de la ubicación
     
+    except FileNotFoundError: #tomar las excepciones que puedan saltar de service_modificar_usuario()
+        return {"error": "Archivo de usuarios no encontrado"}
+    except UnicodeDecodeError:
+        return {"error": "Archivo JSON corrupto"}
+    except Exception as e:
+        return{"error": e}
+    
+def service_iniciar_sesion(correo_entrada, contrasena_entrada):
+    try:
+        usuario = service_obtener_usuario(correo_entrada)
+        contrasena = usuario["contrasena"]
+        bandera = verify_password(contrasena, contrasena_entrada)
+        if(bandera):
+            return usuario
+        else:
+            return {"error": "Contraseña incorrecta"}
+        
     except FileNotFoundError: #tomar las excepciones que puedan saltar de service_modificar_usuario()
         return {"error": "Archivo de usuarios no encontrado"}
     except UnicodeDecodeError:

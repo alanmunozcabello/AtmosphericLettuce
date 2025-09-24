@@ -21,9 +21,9 @@ def ruta_obtener_usuario(correo): #enrutador para obtener la informacion de un u
     return controller_obtener_usuario(correo) #----------------front
 
 #funcion no tan necesaria, el frontend puede saltarse esta y llamar directamente a ruta_obtener_usuario(correo) -> ver como seria cuando se vaya a usar coso de java token coso
-@router.get("usuarios/iniciar_sesion/{correo}")
-def ruta_iniciar_sesion(correo):
-    return controller_iniciar_sesion(correo)
+@router.get("/usuarios/iniciar_sesion/{correo}/{contrasena}")
+def ruta_iniciar_sesion(correo, contrasena):
+    return controller_iniciar_sesion(correo, contrasena)
 
 @router.post("/usuarios/registrar") #post es para recibir información
 def ruta_registrar_usuario(correo, nombre, contrasena): #se llama al controlador para procese el guardado del nuevo usuario

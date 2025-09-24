@@ -13,8 +13,10 @@ def verify_password(hash, password):
     try:
         if ph.verify(hash, password):
             print("Contraseña correcta")
+            return True
     except VerifyMismatchError:
         print("Contraseña incorrecta")
+        return False
     # Opcional: si cambias parámetros, puedes actualizar el hash:
     if ph.check_needs_rehash(hash):
         new_hash = ph.hash(password)
