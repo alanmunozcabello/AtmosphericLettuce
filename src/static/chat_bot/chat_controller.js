@@ -84,8 +84,7 @@ function hideLoader() {
 
 document.getElementById("enviarBtn").addEventListener("click", async () => {
     const texto = document.getElementById("textoInput").value.trim();
-    const inputArchivos = document.getElementById('fileInput');
-
+    // const inputArchivos = document.getElementById('fileInput');
 
     // Arreglo con el payload final
     let payload = {
@@ -101,9 +100,9 @@ document.getElementById("enviarBtn").addEventListener("click", async () => {
     }
     // console.log(inputArchivos.files[0].name);
 
-    if (inputArchivos.files.length > 0) {
-    console.log('Archivos seleccionados:');
-        for(let archivo of inputArchivos.files){
+    if (archivosSeleccionados.length > 0) {
+        console.log('Archivos seleccionados:');
+        for(let archivo of archivosSeleccionados){
             // const archivo=inputArchivos.file[i];//<-- deberia iterar bien sobre los elementos
             console.log(archivo.name, archivo.type); // Muestra el nombre de cada archivo
             // Caso 2: hay archivo  
