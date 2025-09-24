@@ -4,6 +4,14 @@ from services.security import hash_password_simple, verify_password
 #ruta de los usuarios
 RUTA_USUARIOS="data/usuarios.json"
 
+bandera_db_cargada=False
+
+def service_cargar_db():
+    global bandera_db_cargada
+    if(bandera_db_cargada==False):
+        #cargar la db
+        bandera_db_cargada=True
+
 def guardar_usuarios(usuarios):
     try:
 
