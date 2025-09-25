@@ -1,86 +1,113 @@
-// Espera a que el DOM esté completamente cargado antes de ejecutar el script
 document.addEventListener('DOMContentLoaded', () => {
-  const LS_KEY = 'cultivos'; // Clave para localStorage
-
-  // Obtiene los elementos del formulario, input y lista desde el HTML
-  const form = document.getElementById('form-cultivo');
-  const input = document.getElementById('input-cultivo');
-  const lista = document.getElementById('lista-cultivos');
-
-  // Verificación de que los elementos existen en el HTML
-  if (!form || !input || !lista) {
-    console.error('⚠️ Faltan elementos en el HTML: asegúrate de haber pegado la tarjeta con los IDs form-cultivo, input-cultivo y lista-cultivos.');
+  //  Correo desde la URL (home.html?correo=...).
+  const params = new URLSearchParams(window.location.search);
+  const CORREO = params.get('correo');
+  if (!CORREO) {
+    alert('⚠️ No se recibió el correo del usuario. Volviendo al login.');
+    location.href = 'login.html';
     return;
   }
 
-  // Función para leer los cultivos desde localStorage
-  const leer = () => JSON.parse(localStorage.getItem(LS_KEY) || '[]');
-  // Función para guardar los cultivos en localStorage
-  const guardar = (arr) => localStorage.setItem(LS_KEY, JSON.stringify(arr));
+  // DOM
+  const API_URL = 'http://127.0.0.1:8000/usuarios';
+  const form = document.getElementById('form-cultivo');
+  const input = document.getElementById('input-cultivo');
+  const lista = document.getElementById('lista-cultivos');
+  const submitBtn = form?.querySelector('button[type="submit"]');
 
-  // Renderiza la lista de cultivos en el DOM
-  function render() {
-    lista.innerHTML = ''; // Limpia la lista antes de renderizar
-    let cultivos = leer();
-
-    // Si no hay cultivos, inicializa el array y lo guarda
-    if (cultivos.length === 0) {
-      cultivos = [];
-      guardar(cultivos);
-    }
-
-    // Por cada cultivo, crea un elemento <li> y lo agrega a la lista
-    cultivos.forEach((nombre, i) => {
-      const li = document.createElement('li');
-      li.className = 'item-cultivo';
-      li.innerHTML = `<span class="tick">✔</span>
-        <span>${nombre}</span>
-        <button class="btn-eliminar" data-i="${i}" aria-label="Eliminar ${nombre}">✕</button>
-      `;
-      lista.appendChild(li);
-    });
+  if (!form || !input || !lista) {
+    console.error('⚠️ Faltan elementos: form-cultivo / input-cultivo / lista-cultivos');
+    return;
   }
 
-  // Evento al enviar el formulario para agregar un cultivo
-  form.addEventListener('submit', (e) => {
-    e.preventDefault(); // Evita el envío tradicional del formulario
-    let v = input.value.trim(); // Obtiene el valor y elimina espacios
+  // Helper fetch con logs
+  async function safeFetch(url, options) {
+    const res = await fetch(url, options);
+    const text = await res.text().catch(() => '');
+    if (!res.ok) {
+      console.error('❌', res.status, res.statusText, text);
+      throw new Error(`HTTP ${res.status}: ${text || res.statusText}`);
+    }
+    try { return JSON.parse(text); } catch { return null; }
+  }
 
-    if (!v) return; // Si el input está vacío, no hace nada
+  // rutas exactas
+  async function leer() {
+    const url = `${API_URL}/${encodeURIComponent(CORREO)}/cultivos`;
+    return await safeFetch(url, { method: 'GET' }); // { "tomate": 1, ... }
+  }
+  async function agregarOModificar(nombre, hectareasNum) {
+    const url = `${API_URL}/${encodeURIComponent(CORREO)}/${encodeURIComponent(nombre)}/${hectareasNum}/agregar_modificar`;
+    return await safeFetch(url, { method: 'PATCH' });
+  }
+  async function eliminar(nombre) {
+    const url = `${API_URL}/${encodeURIComponent(CORREO)}/${encodeURIComponent(nombre)}/eliminar`;
+    await safeFetch(url, { method: 'DELETE' });
+  }
 
-    // Normalizar a minúsculas para comparar
-    const norm = (s) => s.toLowerCase();
-    const cultivos = leer();
+  // 5) Render
+  async function render() {
+    lista.innerHTML = '<li>Cargando… ⏳</li>';
+    try {
+      const cultivos = await leer();
+      const entries = Object.entries(cultivos || {});
+      lista.innerHTML = '';
+      if (entries.length === 0) {
+        lista.innerHTML = '<li>No tienes cultivos registrados 🌱</li>';
+        return;
+      }
+      for (const [nombre, hectareas] of entries) {
+        const li = document.createElement('li');
+        li.className = 'item-cultivo';
+        li.innerHTML = `
+          <span class="tick">✔</span>
+          <span><strong>${nombre}</strong> — ${hectareas} ha</span>
+          <button class="btn-eliminar" data-nombre="${nombre}" aria-label="Eliminar ${nombre}">✕</button>
+        `;
+        lista.appendChild(li);
+      }
+    } catch (e) {
+      console.error(e);
+      lista.innerHTML = '<li>Error al cargar cultivos ❌</li>';
+    }
+  }
 
-    // Verificar si ya existe (sin importar mayúsculas/minúsculas)
-    if (cultivos.map(norm).includes(norm(v))) {
-      alert(`⚠️ El cultivo "${v}" ya existe en la lista.`);
+  // 6) Agregar (1 ha(hectarea) por defecto)
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault(); 
+    const nombre = input.value.trim();
+    if (!nombre) return;
+
+    const prev = submitBtn?.textContent;
+    if (submitBtn) { submitBtn.textContent = 'Guardando…'; submitBtn.disabled = true; }
+
+    try {
+      await agregarOModificar(nombre, 1); // 1 ha por defecto mas adelante cambiar 
+      await render();
       input.value = '';
       input.focus();
-      return;  // salimos sin agregar
-    }
-
-    // Capitalizar primera letra
-    v = v.charAt(0).toUpperCase() + v.slice(1);
-
-    cultivos.push(v);      // Agrega el cultivo al array
-    guardar(cultivos);     // Guarda el array actualizado en localStorage
-    render();              // Actualiza la lista en el DOM
-
-    input.value = '';      // Limpia el input
-    input.focus();         // Enfoca el input
-  });
-
-  // Evento para eliminar un cultivo al hacer clic en el botón de eliminar
-  lista.addEventListener('click', (e) => {
-    if (e.target.matches('.btn-eliminar')) {
-      const i = Number(e.target.dataset.i); // Obtiene el índice del cultivo
-      const cultivos = leer();
-      cultivos.splice(i, 1); // Elimina el cultivo del array
-      guardar(cultivos);     // Guarda el array actualizado
-      render();              // Actualiza la lista en el DOM
+    } catch (err) {
+      console.error(err);
+      alert('⚠️ No se pudo agregar/modificar el cultivo. Revisa la consola.');
+    } finally {
+      if (submitBtn) { submitBtn.textContent = prev; submitBtn.disabled = false; }
     }
   });
 
-  render(); // Renderiza la lista al cargar la página
+  //  Eliminar
+  lista.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.btn-eliminar');
+    if (!btn) return;
+    const nombre = btn.dataset.nombre;
+    try {
+      await eliminar(nombre);
+      await render();
+    } catch (err) {
+      console.error(err);
+      alert('⚠️ No se pudo eliminar el cultivo. Revisa la consola.');
+    }
+  });
+
+  //  Carga inicial
+  render();
 });

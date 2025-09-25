@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btn = document.getElementById('btn-login');
   const toggle = document.getElementById('toggle-pass');
 
-  // Toggle mostrar / ocultar contraseña (si tienes un botón con id="toggle-pass")
+ 
   if (toggle) {
     toggle.addEventListener('click', (e) => {
       e.preventDefault();
@@ -53,9 +53,9 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.disabled = true;
 
     try {
-      // Construir URL correctamente (ajusta host/puerto/prefix si hace falta)
+      //  Construir URL correctamente (sin el typo `;-+`)
       const emailEncoded = encodeURIComponent(validarEmail);
-      const USER_URL = `http://127.0.0.1:8000/usuarios/${emailEncoded}`;-+
+      const USER_URL = `http://127.0.0.1:8000/usuarios/${emailEncoded}`;
       
       console.log('Fetching ->', USER_URL);
 
@@ -85,30 +85,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Manejo según status y contenido
       if (resp.ok) {
-        // Si el backend devuelve un objeto con detail/error aun cuando status 200, tratarlo como error lógico
         if (body && (body.detail || body.error)) {
           console.error('Backend devolvió detalle de error dentro de 200:', body);
           alert(body.detail || body.error || 'Error del servidor');
         } else {
-          // Usuario encontrado -> guardar datos seguros y redirigir
           console.log('Usuario recibido:', body);
 
-          // No guardar contraseñas en localStorage. Guardar sólo datos no sensibles.
-          const usuarioSeguro = { ...body };
-          delete usuarioSeguro.password;
-          delete usuarioSeguro.contrasena;
-          delete usuarioSeguro.clave;
-          delete usuarioSeguro.pass;
-
-          localStorage.setItem('usuario', JSON.stringify(usuarioSeguro));
+          
 
           // Restaurar botón antes de redirigir
           btn.textContent = originalText;
           btn.classList.remove('loading');
           btn.disabled = false;
 
-          // Redirigir a home
-          window.location.href = 'home.html';
+          // Redirigir a home con correo 
+          window.location.href = `home.html?correo=${encodeURIComponent(validarEmail)}`;
           return;
         }
       } else if (resp.status === 404) {

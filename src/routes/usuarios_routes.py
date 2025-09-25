@@ -22,9 +22,9 @@ def ruta_obtener_usuario(correo): #enrutador para obtener la informacion de un u
     return controller_obtener_usuario(correo) #----------------front
 
 #funcion no tan necesaria, el frontend puede saltarse esta y llamar directamente a ruta_obtener_usuario(correo) -> ver como seria cuando se vaya a usar coso de java token coso
-@router.get("usuarios/iniciar_sesion/{correo}")
-def ruta_iniciar_sesion(correo):
-    return controller_iniciar_sesion(correo)
+@router.get("/usuarios/iniciar_sesion/{correo}/{contrasena}")
+def ruta_iniciar_sesion(correo, contrasena):
+    return controller_iniciar_sesion(correo, contrasena)
 
 class UsuarioRegistro(BaseModel):
     correo: str
@@ -35,22 +35,27 @@ class UsuarioRegistro(BaseModel):
 def ruta_registrar_usuario(usuario: UsuarioRegistro):
     return controller_registrar_usuario(usuario.correo, usuario.nombre, usuario.contrasena)
 
+# @router.post("/usuarios/registrar") #post es para recibir información
+# def ruta_registrar_usuario(correo, nombre, contrasena): #se llama al controlador para procese el guardado del nuevo usuario
+#     return controller_registrar_usuario(correo, nombre, contrasena) #----------------front
+
 @router.get("/usuarios/{correo}/cultivos")
-def ruta_obtener_cultivos_usuario(correo):
+def ruta_obtener_cultivos_usuario(correo: str):
     return controller_obtener_cultivos_usuario(correo)
 
-@router.patch("/usuarios/{correo}/cultivo/agregar_modificar") #patch para modificar
-def ruta_agregar_o_modificar_cultivo(correo, cultivo):
-    return controller_agregar_o_modificar_cultivo(correo, cultivo)
+@router.patch("/usuarios/{correo}/{cultivo}/{hectareas}/agregar_modificar")
+def ruta_agregar_o_modificar_cultivo(correo: str, cultivo: str, hectareas: float):
+    return controller_agregar_o_modificar_cultivo(correo, cultivo, hectareas)
 
-@router.delete("/usuarios/{correo}/cultivos/eliminar") #delete para borrar
-def ruta_eliminar_cultivo(correo, cultivo):
+@router.delete("/usuarios/{correo}/{cultivo}/eliminar")
+def ruta_eliminar_cultivo(correo: str, cultivo: str):
     return controller_eliminar_cultivo(correo, cultivo)
 
-@router.put("/usuarios/{correo}/modificar")
+
+@router.put("/usuarios/{correo}/modificar") #HAY QUE CAMBIAR TODITO EL COSIACO
 def ruta_modificar_usuario(correo, usuarioMOD): #usuarioMOD es el dict completo del usuario a modificar
     return controller_modificar_usuario(correo, usuarioMOD)
 
-@router.patch("/usuarios/{correo}/ubicacion/modificar")
+@router.patch("/usuarios/{correo}/ubicacion/{lat}/{lon}/modificar")
 def ruta_modificar_ubicacion_usuario(correo, lat, lon): #lat y lon pueden ser pasadon como string sin problema
     return controller_modificar_ubicacion_usuario(correo, lat, lon)
