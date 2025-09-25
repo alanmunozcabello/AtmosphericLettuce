@@ -1,6 +1,5 @@
-[
-    {
-        "id": "pipo123@mail.com",
+{
+    "pipo123@mail.com": {
         "nombre": "Pipo",
         "contrasena": "123",
         "ubicacion": {
@@ -12,8 +11,7 @@
             "trigo": 5
         }
     },
-    {
-        "id": "pepito321@mail.com",
+    "pepito321@mail.com": {
         "nombre": "Pepito",
         "contrasena": "321",
         "ubicacion": {
@@ -25,8 +23,7 @@
             "girasol": 12
         }
     },
-    {
-        "id": "alan1234@mail.com",
+    "alan1234@mail.com": {
         "nombre": "alan",
         "contrasena": "1234",
         "ubicacion": {
@@ -38,8 +35,7 @@
             "cebada": 7
         }
     },
-    {
-        "id": "kitian379@mail.com",
+    "kitian379@mail.com": {
         "nombre": "kitian",
         "contrasena": "379812",
         "ubicacion": {
@@ -51,8 +47,7 @@
             "centeno": 10
         }
     },
-    {
-        "id": "niko023@mail.com",
+    "niko023@mail.com": {
         "nombre": "niko",
         "contrasena": "02381",
         "ubicacion": {
@@ -64,8 +59,7 @@
             "garbanzos": 9
         }
     },
-    {
-        "id": "john456@mail.com",
+    "john456@mail.com": {
         "nombre": "john",
         "contrasena": "123456",
         "ubicacion": {
@@ -77,37 +71,36 @@
             "maiz": 11
         }
     },
-    {
-        "id": "plim910@mail.com",
+    "plim910@mail.com": {
         "nombre": "plimplomplim",
         "contrasena": "832910",
         "ubicacion": {
-            "latitud": 48.8566,
-            "longitud": 2.3522
+            "latitud": 10.0,
+            "longitud": 10.0
         },
         "cultivos": {
             "trigo": 4,
             "soja": 16
         }
     },
-    {
-        "id": "caliaga2005@gmail.com",
+    "caliaga2005@gmail.com": {
         "nombre": "Cristiano Alonsinhio",
         "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$MsltzNCBPnAOu3WZHhLLtQ$v/m6kX1aYwgU0xy7HK84ufjCH3zIDw1J0jabcGwpu/k"
     },
-    {
-        "id": "alanomunoz@gmail.com",
+    "alanomunoz@gmail.com": {
         "nombre": "Alanito Fulanito",
         "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$b+FI9OjONofAY9FkoTIAIQ$k3O4hJGYksWj+BwruS+MDCORseXsG94eOjm7nQ1hIyA"
     },
-    {
-        "id": "Cristian12345678@gmail.com",
+    "Cristian12345678@gmail.com": {
         "nombre": "Cristian Aliaga",
         "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$zW/j2Hc6eD4fBhl9hM1C/w$t6NA2IvP/isL+C8UNseNcV73T8p+er/eFzaRxrmiJEY"
     },
-    {
-        "id": "horacio31M@outlook.com",
+    "horacio31M@outlook.com": {
         "nombre": "Horacio News",
         "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$3xZzlJ68XgR+MH/Zp0O5YQ$RYrGbEYKt1v1GcK8dkRe2RQ/iCkDvg9NnA8mExtQr68"
+    },
+    "a@a.a": {
+        "nombre": "a",
+        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$iUTA1JFxedbkq+881z+swQ$E1h8EgAnxUyCxbjRnbxFyE/jBfzj+zvXFaFVMfUlQjI"
     }
-]
+}

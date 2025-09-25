@@ -1,11 +1,11 @@
 import re
-from services.usuarios_service import service_leer_usuarios, service_guardar_nuevo_usuario, service_obtener_usuario, service_obtener_cultivos_usuario, service_agregar_o_modificar_cultivo, service_eliminar_cultivo, service_modificar_usuario, service_modificar_ubicacion_usuario, service_iniciar_sesion #importar los servicios de usuarios
+from services.usuarios_service import service_leer_usuarios, service_guardar_nuevo_usuario, service_obtener_usuario_frontend, service_obtener_cultivos_usuario, service_agregar_o_modificar_cultivo, service_eliminar_cultivo, service_modificar_usuario, service_modificar_ubicacion_usuario, service_iniciar_sesion #importar los servicios de usuarios
 
 def controller_obtener_todos_los_usuarios(): #retornar todos los usuarios
     return service_leer_usuarios()
 
 def controller_obtener_usuario(correo):
-    return service_obtener_usuario(correo)
+    return service_obtener_usuario_frontend(correo)
 
 def controller_registrar_usuario(correo, nombre, contrasena): #guardar un nuevo usario -> llama al servicio
     if(nombre.strip()!="" and contrasena.strip()!="" and re.match(r"[^@]+@[^@]+\.[^@]+", correo)):#si nombre, contraseña y correo son minimamente validos se llama al servicio

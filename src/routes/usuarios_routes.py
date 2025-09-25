@@ -33,18 +33,18 @@ def ruta_registrar_usuario(correo, nombre, contrasena): #se llama al controlador
 def ruta_obtener_cultivos_usuario(correo):
     return controller_obtener_cultivos_usuario(correo)
 
-@router.patch("/usuarios/{correo}/cultivo/agregar_modificar") #patch para modificar
-def ruta_agregar_o_modificar_cultivo(correo, cultivo):
-    return controller_agregar_o_modificar_cultivo(correo, cultivo)
+@router.patch("/usuarios/{correo}/{cultivo}/{hectareas}/agregar_modificar") #patch para modificar
+def ruta_agregar_o_modificar_cultivo(correo, cultivo, hectareas):
+    return controller_agregar_o_modificar_cultivo(correo, cultivo, hectareas)
 
-@router.delete("/usuarios/{correo}/cultivos/eliminar") #delete para borrar
+@router.delete("/usuarios/{correo}/{cultivo}/eliminar") #delete para borrar
 def ruta_eliminar_cultivo(correo, cultivo):
     return controller_eliminar_cultivo(correo, cultivo)
 
-@router.put("/usuarios/{correo}/modificar")
+@router.put("/usuarios/{correo}/modificar") #HAY QUE CAMBIAR TODITO EL COSIACO
 def ruta_modificar_usuario(correo, usuarioMOD): #usuarioMOD es el dict completo del usuario a modificar
     return controller_modificar_usuario(correo, usuarioMOD)
 
-@router.patch("/usuarios/{correo}/ubicacion/modificar")
+@router.patch("/usuarios/{correo}/ubicacion/{lat}/{lon}/modificar")
 def ruta_modificar_ubicacion_usuario(correo, lat, lon): #lat y lon pueden ser pasadon como string sin problema
     return controller_modificar_ubicacion_usuario(correo, lat, lon)
