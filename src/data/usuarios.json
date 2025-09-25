@@ -106,5 +106,25 @@
     "alan@munoz.cl": {
         "nombre": "Alan",
         "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$lhPu14wB/1iImO+SBhr4cA$mYo5u+XdNBaz31ppgxctm+zOOG0DgrL2A0pREPQoFBg"
+    },
+    "pepitomargnolio@gmail.com": {
+        "nombre": "Felipe Magno",
+        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$rxKAXgH3582tfeykY1re1w$8vpkmyjbuOHGF4N2ZiGiObCgoqxuNjx5fv9XTiGytoI",
+        "ubicacion": {
+            "latitud": 10.89,
+            "longitud": 5.0
+        },
+        "cultivos": {
+            "Maiz": 20
+        }
+    },
+    "aa@a.a": {
+        "nombre": "aa",
+        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$jfSremk46ykNU73gDB9qGw$i4cK5sIqvTEB+jHvWiqx90B59RGPt410yi9YEpM2U0o",
+        "ubicacion": {
+            "latitud": null,
+            "longitud": null
+        },
+        "cultivos": {}
     }
 }
