@@ -110,7 +110,12 @@ def service_obtener_usuario_frontend(correo): #retorna toda la informacion de un
         return {"error": e}
     
 def service_obtener_cultivos_usuario(correo): #se obtienen todos los cultivos de un usuario, puede que posteriormente venga del frontend-----
-    try:
+    try: #cargar base de datos
+        if(bandera_db_cargada is False): #si la db no está cargada
+            respuesta=service_cargar_db()
+            if(respuesta is not True): #manejar respuesta de la funcion
+                return respuesta #si hubo un error al cargar la db se retorna el error
+            
         #cambiar a la hora de sql
         usuario=usuarios[correo] #sacar el usuario de la db -> mucho más rapido de esta nuevo forma!
         return usuario["cultivos"]
