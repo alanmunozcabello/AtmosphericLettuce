@@ -102,5 +102,9 @@
     "a@a.a": {
         "nombre": "a",
         "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$iUTA1JFxedbkq+881z+swQ$E1h8EgAnxUyCxbjRnbxFyE/jBfzj+zvXFaFVMfUlQjI"
+    },
+    "alan@munoz.cl": {
+        "nombre": "Alan",
+        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$lhPu14wB/1iImO+SBhr4cA$mYo5u+XdNBaz31ppgxctm+zOOG0DgrL2A0pREPQoFBg"
     }
 }

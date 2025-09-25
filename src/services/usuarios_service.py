@@ -238,9 +238,11 @@ def service_iniciar_sesion(correo_entrada, contrasena_entrada):
         usuario = usuarios[correo_entrada]
         contrasena = usuario["contrasena"]
         bandera = verify_password(contrasena, contrasena_entrada)
+        print(bandera)
         if(bandera):
             return usuario
         else:
+            print("contraseña incorrecta")
             return {"error": "Contraseña incorrecta"}
         
     except FileNotFoundError: #tomar las excepciones que puedan saltar de service_modificar_usuario()

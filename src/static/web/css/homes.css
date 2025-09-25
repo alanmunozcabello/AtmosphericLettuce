@@ -1,0 +1,353 @@
+/* --------- Reset & base --------- */
+*{ box-sizing:border-box; }
+body{
+  margin:0;
+  font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color:#1f2937;
+  background:#fff;
+}
+
+/* --------- Barra superior --------- */
+.barra-superior{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  padding:10px 20px;
+  border-bottom:1px solid #ececef;
+  background:#fff;
+  position:sticky;
+  top:0;
+  z-index:5;
+
+  height: 100px;
+}
+
+
+.logo img{
+  height:250px;            
+  width:auto;
+  display:block;
+}
+
+.buscador{
+  flex:1;                 
+  display:flex;
+  justify-content:center;
+}
+.buscador input{
+  width:100%;
+  max-width:520px;
+  padding:10px 12px;
+  border:1px solid #e3e5ea;
+  border-radius:10px;
+  font-size:14px;
+  outline:none;
+                
+
+}
+
+.buscador input:focus{
+  border-color: #28a745;               
+}
+
+.acciones{
+  margin-left:auto;
+  display:flex;
+  gap:10px;
+}
+.icono{
+  width:36px; height:36px;
+  display:grid; place-items:center;
+  border:1px solid #e3e5ea;
+  border-radius:50%;
+  cursor:pointer;
+  user-select:none;
+}
+
+/* --------- Layout principal --------- */
+.contenido{
+  max-width:1400px;
+  margin:18px auto;
+  padding:0 20px;
+  display:grid;
+  gap:16px;
+  grid-template-columns: 1.35fr 1fr;
+  grid-template-areas:
+    "clima detalles"
+    "cultivos consejos";
+}
+
+/* Tarjeta base */
+.tarjeta{
+  background:#fff;
+  border:1px solid #ececef;
+  border-radius:14px;
+  padding:16px;
+  box-shadow:0 6px 18px rgba(0,0,0,.06);
+}
+
+/* --------- Clima --------- */
+.clima{
+  grid-area:clima;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:linear-gradient(135deg, #5db5ff, #55c2a5);
+  color:#fff;
+  border:none;
+
+
+}
+.temperatura{
+  font-size:56px;
+  font-weight:700;
+  line-height:1;
+}
+.descripcion{
+  margin-top:6px;
+  opacity:.95;
+}
+.icono-clima{
+  font-size:52px;
+}
+
+
+
+.clima-card{
+  background:linear-gradient(135deg, #5db5ff, #55c2a5);
+  color:#fff;
+  border:none;
+  box-shadow:0 8px 24px rgba(0,0,0,.12);
+  border-radius:16px;
+  padding:16px 18px;
+  min-height:150px;                     /* altura consistente */
+
+  display:grid;
+  grid-template-areas:
+    "dia icono"
+    "temp icono"
+    "minmax icono"
+    "desc icono";
+  grid-template-columns:1fr auto;
+  align-items:center;
+  column-gap:12px;
+}
+
+.clima-card .dia{
+  grid-area:dia;
+  font-size:16px;
+  font-weight:600;
+  margin-bottom:4px;
+}
+
+.clima-card .temperatura{
+  grid-area:temp;
+  font-size:clamp(28px, 4.2vw, 38px);   /* responsivo */
+  font-weight:800;
+  line-height:1;
+  margin-top:2px;
+}
+
+.clima-card .minmax{
+  grid-area:minmax;
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  font-size:14px;
+  opacity:.95;
+  margin-top:6px;
+}
+.clima-card .minmax .max{ font-weight:600; }
+.clima-card .minmax .min{ font-weight:400; }
+
+.clima-card .descripcion{
+  grid-area:desc;
+  font-size:14px;
+  opacity:.95;
+  margin-top:6px;
+}
+
+.clima-card .icono-clima{
+  grid-area:icono;
+  font-size:40px;
+  justify-self:end;                     /* queda a la derecha */
+  align-self:center;
+}
+
+.clima-card:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 28px rgba(0,0,0,.16);
+  transition:.2s;
+}
+
+/* --------- Detalles / Cultivos / Consejos --------- */
+.detalles{ grid-area:detalles; }
+.cultivos{ grid-area:cultivos; }
+.consejos{ grid-area:consejos; }
+
+.titulo{
+  font-size:20px;
+  font-weight:700;
+  margin-bottom:10px;
+}
+
+.info-detalles{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 0;
+  border-top:1px solid #f2f2f4;
+  font-size:15px;
+}
+.info-detalles:first-of-type{ border-top:0; }
+
+.detail{                /* valor a la derecha (65%, 10 km/h, etc.) */
+  margin-left:auto;
+  font-weight:600;
+}
+
+
+
+/* -------- Ventana flotante del chat -------- */
+.chat-window {
+  position: fixed;
+  right: 22px;
+  bottom: 100px;
+  width: 30vw;
+  height: 400px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 10px 28px rgba(0,0,0,.2);
+  display: none; /* Oculta por defecto */
+  flex-direction: column;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+.chat-header {
+  background: linear-gradient(135deg, #5db5ff, #55c2a5);
+  color: white;
+  padding: 10px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-body {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  font-size: 14px;
+  background: #f5f5f5;
+}
+
+.chat-input {
+  display: flex;
+  padding: 8px;
+  border-top: 1px solid #ddd;
+  background: #fff;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.chat-input button {
+  margin-left: 5px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  background: #5db5ff;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+#closeChat {
+  width: 14px;   /* tamaño del circulito */
+  height: 14px;
+  border-radius: 50%;
+  background: red;
+  border: none;
+  cursor: pointer;
+  margin-left: 8px; /* separación con el texto "Chat Agro" */
+  padding: 0; /* quita espacio interno */
+}
+
+#closeChat:hover {
+  background: darkred;
+}
+
+
+.form-cultivo{
+  display:flex;
+  gap:10px;
+  margin-bottom:8px;
+}
+.form-cultivo input{
+  flex:1;
+  padding:10px 12px;
+  border:1px solid #e3e5ea;
+  border-radius:10px;
+  font-size:14px;
+  outline:none;
+}
+.form-cultivo input:focus{ border-color:#28a745; }
+.form-cultivo button{
+  padding:10px 14px;
+  border:1px solid #e3e5ea;
+  border-radius:10px;
+  background:linear-gradient(135deg, #5db5ff, #55c2a5);
+  color: #fff; /* <-- Cambia el color del texto aquí */
+  cursor:pointer;
+}
+.form-cultivo button:hover{
+  transform:translateY(-1px);
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+  transition:.15s;
+}
+
+.lista-cultivos{
+  list-style:none;
+  margin:0;
+  padding:0;
+}
+.item-cultivo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 0;
+  font-size:15px;
+  border-top:1px 
+  
+}
+.item-cultivo:first-child{ border-top:0; }
+.item-cultivo .btn-eliminar{
+  margin-left:auto;
+  border:1px solid #e3e5ea;
+  background:#fff;
+  border-radius:8px;
+  padding:4px 8px;
+  cursor:pointer;
+}
+.item-cultivo .btn-eliminar:hover{
+  background:linear-gradient(135deg, #5db5ff, #55c2a5);
+}
+
+
+/* --------- Responsive --------- */
+@media (max-width: 900px){
+  .contenido{
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "clima"
+      "detalles"
+      "cultivos"
+      "consejos";
+  }
+  .buscador{ justify-content:flex-start; }
+}

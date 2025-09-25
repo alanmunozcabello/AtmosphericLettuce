@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Atmospheric Lettuce</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="izquierda">
+      <img src="img/logo_en_blanco.png" alt="Logo de Atmospheric Lettuce" class="logo">
+    </div>
+
+    <div class="derecha">
+      <form class="form" id="register-form" action="#" method="post" novalidate>
+        <div class="titulo">Crear cuenta</div>
+
+        <div class="input-group">
+          <div class="input">
+            <input id="nombre" type="text" name="nombre" placeholder="Nombre" required>
+            <span class="error-msg">⚠️ El nombre es obligatorio</span>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input">
+            <input id="email" type="email" name="usuario" placeholder="Correo electrónico" required>
+            <span class="error-msg">⚠️ Ingresa un correo válido</span>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input">
+            <input id="password" type="password" name="password" placeholder="Contraseña" required>
+            <span class="error-msg">⚠️ La contraseña es obligatoria</span>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input">
+            <input id="confirm-password" type="password" name="confirm-password" placeholder="Confirmar Contraseña" required>
+            <span class="error-msg">⚠️ Las contraseñas no coinciden</span>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <button type="submit" class="btn" id="btn-register">Registrarme</button>
+        </div>
+        
+        <div class="registro">
+          ¿Ya tienes una cuenta?
+          <a href="index.html">Iniciar Sesión</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/registro.js" defer></script>
+</body>
+</html>
