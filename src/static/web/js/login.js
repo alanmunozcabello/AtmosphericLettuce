@@ -55,7 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       // Construir URL correctamente (ajusta host/puerto/prefix si hace falta)
       const emailEncoded = encodeURIComponent(validarEmail);
-      const USER_URL = `http://127.0.0.1:8000/usuarios/${emailEncoded}`;
+      const USER_URL = `http://127.0.0.1:8000/usuarios/${emailEncoded}`;-+
+      
       console.log('Fetching ->', USER_URL);
 
       const resp = await fetch(USER_URL, {

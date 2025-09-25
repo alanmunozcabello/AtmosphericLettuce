@@ -109,5 +109,15 @@
         "id": "horacio31M@outlook.com",
         "nombre": "Horacio News",
         "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$3xZzlJ68XgR+MH/Zp0O5YQ$RYrGbEYKt1v1GcK8dkRe2RQ/iCkDvg9NnA8mExtQr68"
+    },
+    {
+        "id": "nicolasurbina77@gmail.com",
+        "nombre": "Skill",
+        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$mfJFNm7VW1L/1EonmEuqxA$Jplsz/iiSsxLPrOXcSfsTnEKxFme/jaSTbHYlxrS4O8"
+    },
+    {
+        "id": "israel@gmail.com",
+        "nombre": "israel",
+        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$H+Z+6y67Tk8rY13n0ujyog$/Inn5ljDbmX9R57qYJ/i054qssp6sCi/Pcq3ul0+LqU"
     }
 ]

@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from controllers.usuarios_controller import controller_obtener_todos_los_usuarios, controller_obtener_usuario, controller_registrar_usuario, controller_obtener_cultivos_usuario, controller_agregar_o_modificar_cultivo, controller_eliminar_cultivo, controller_iniciar_sesion, controller_modificar_usuario, controller_modificar_ubicacion_usuario
+from pydantic import BaseModel
 
 router=APIRouter()
 
@@ -25,9 +26,14 @@ def ruta_obtener_usuario(correo): #enrutador para obtener la informacion de un u
 def ruta_iniciar_sesion(correo):
     return controller_iniciar_sesion(correo)
 
-@router.post("/usuarios/registrar") #post es para recibir información
-def ruta_registrar_usuario(correo, nombre, contrasena): #se llama al controlador para procese el guardado del nuevo usuario
-    return controller_registrar_usuario(correo, nombre, contrasena) #----------------front
+class UsuarioRegistro(BaseModel):
+    correo: str
+    nombre: str
+    contrasena: str
+
+@router.post("/usuarios/registrar")
+def ruta_registrar_usuario(usuario: UsuarioRegistro):
+    return controller_registrar_usuario(usuario.correo, usuario.nombre, usuario.contrasena)
 
 @router.get("/usuarios/{correo}/cultivos")
 def ruta_obtener_cultivos_usuario(correo):
