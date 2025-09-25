@@ -1,0 +1,101 @@
+/* En tu archivo estilos.css */
+
+/* Estilos para el contenedor del encabezado */
+.encabezado {
+    display: flex;
+    align-items: center; /* Mantiene todo centrado verticalmente */
+    padding: 10px;
+    background-color: #FFFFFF;
+    height: 100px; 
+}
+.logo {
+    height: 350px;
+    width: auto;
+    margin-right: 50px;
+    margin-left: 100px;
+}
+.info-usuario {
+    font-family: "Helvetica Neue", Arial, sans-serif;
+    flex-grow: 1; /* Toma todo el espacio disponible */
+    text-align: center; /* Centra el texto */
+    
+}
+.icono {
+    height: 200px;
+    width: auto;
+    margin-left: 100px;
+    margin-right: 150px;
+}
+.cuadrado-redondeado {
+    width: 390px;
+    height: 200px;
+    background:linear-gradient(135deg, #5db5ff, #55c2a5);
+    border-radius: 25px; /* <-- Ajusta este valor para más o menos redondeo */
+}
+.primera_fila {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    width: 100%;
+    height: auto;
+    justify-content: flex-start;
+    gap: 30px;
+    margin-left: 120px;
+    margin-right: 100px;
+    margin-top: 100px;
+    max-width: 100%;
+}
+.segunda_fila {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    width: 100%;
+    height: auto;
+    justify-content: flex-start;
+    gap: 30px;
+    margin-left: 120px;
+    margin-right: 100px;
+    margin-top: 20px;   
+}
+.tercera_fila {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    width: 100%;
+    height: auto;
+    justify-content: flex-start;
+    gap: 30px;
+    margin-left: 120px;
+    margin-right: 100px;
+    margin-top: 20px;   
+}
+.cultivos-redondeado {
+    width: 390px;
+    height: 500px;
+    background:linear-gradient(135deg, #5db5ff, #55c2a5);
+    border-radius: 25px; /* <-- Ajusta este valor para más o menos redondeo */
+}
+.enfermedades-redondeado {
+    width: 810px;
+    height: 500px;
+    background:linear-gradient(135deg, #5db5ff, #55c2a5);
+    border-radius: 25px; /* <-- Ajusta este valor para más o menos redondeo */
+}
+.cuarta_fila {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    width: 100%;
+    height: auto;
+    justify-content: flex-start;
+    gap: 30px;
+    margin-left: 120px;
+    margin-right: 100px;
+    margin-top: 20px;   
+}
+.consejos_redondeado {
+    width: 1230px;
+    height: 400px;
+    background:linear-gradient(135deg, #5db5ff, #55c2a5);
+    border-radius: 25px; /* <-- Ajusta este valor para más o menos redondeo */
+}

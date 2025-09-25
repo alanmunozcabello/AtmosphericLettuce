@@ -15,8 +15,9 @@ from googleapiclient.errors import HttpError
 # Define los alcances (scopes). Si los modificas, borra el archivo token.json.
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
+
 def main(destinatario):
-    """Función principal para autenticar y enviar el correo."""
+    """Función principal para autenticar y enviar el correo con cuerpo HTML."""
     creds = None
     # El archivo token.json almacena los tokens de acceso y actualización del usuario.
     # Se crea automáticamente la primera vez que se completa la autorización.
@@ -42,30 +43,33 @@ def main(destinatario):
         # --- Crea el mensaje del correo ---
         message = MIMEMultipart()
         message['to'] = destinatario
+        # IMPORTANTE: Reemplaza con tu dirección de correo electrónico
         message['from'] = 'tu_correo@gmail.com'
-        message['subject'] = 'Asunto del correo con PDF'
+        message['subject'] = 'Asunto del correo con cuerpo HTML'
 
-        # Cuerpo del correo
-        cuerpo_del_mensaje = 'Hola,\n\nTe envío el documento solicitado.\n\nSaludos.'
-        message.attach(MIMEText(cuerpo_del_mensaje, 'plain'))
-
-        # --- Adjunta el archivo PDF ---
-        nombre_archivo = 'pdf_modificado.pdf' # Asegúrate que este archivo exista en la carpeta
-        
+        # --- Carga la plantilla HTML y los estilos CSS desde archivos externos ---
         try:
-            with open(nombre_archivo, 'rb') as attachment:
-                part = MIMEBase('application', 'octet-stream')
-                part.set_payload(attachment.read())
+            # Define las rutas a tus archivos
+            ruta_html = os.path.join('Plantilla_HTML', 'index.html')
+            ruta_css = os.path.join('Plantilla_HTML', 'estilos.css')
             
-            encoders.encode_base64(part)
-            part.add_header(
-                'Content-Disposition',
-                f'attachment; filename= {nombre_archivo}',
-            )
-            message.attach(part)
-        except FileNotFoundError:
-            print(f"Error: El archivo '{nombre_archivo}' no fue encontrado.")
-            return
+            # Lee el contenido de los archivos
+            with open(ruta_html, 'r', encoding='utf-8') as f:
+                html_template = f.read()
+            with open(ruta_css, 'r', encoding='utf-8') as f:
+                css_styles = f.read()
+            
+            # Inyecta el CSS dentro de una etiqueta <style> en el <head> del HTML
+            # Esto asegura la máxima compatibilidad con los clientes de correo
+            cuerpo_html_final = html_template.replace('</head>', f'<style>{css_styles}</style></head>')
+
+        except FileNotFoundError as e:
+            print(f"Error: No se pudo encontrar la plantilla HTML o el archivo CSS.")
+            print(f"Detalle del error: {e}")
+            return # Detiene la ejecución si no se encuentran los archivos
+
+        # Adjunta el cuerpo HTML final. El segundo parámetro 'html' es crucial.
+        message.attach(MIMEText(cuerpo_html_final, 'html'))
 
         # --- Codifica y envía el correo ---
         encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
@@ -77,8 +81,6 @@ def main(destinatario):
 
     except HttpError as error:
         print(f'Ocurrió un error: {error}')
-
-
-def metodo(destinatario):
-    if __name__ == '__main__':
-        main(destinatario)
+    except FileNotFoundError:
+        print("\nERROR: No se encontró el archivo 'credentials.json'.")
+        print("Asegúrate de tenerlo en la misma carpeta que este script.")

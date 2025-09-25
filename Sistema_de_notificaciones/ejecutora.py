@@ -1,4 +1,4 @@
-from Sistema_de_notificaciones.Modificadora_pdf import crear_pdf
+from modificadora_pdf import crear_pdf
 from enviar_correos import main
 print("pruebas------------------------------------")
 
