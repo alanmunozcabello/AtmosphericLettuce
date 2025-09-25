@@ -240,17 +240,32 @@ def service_iniciar_sesion(correo_entrada, contrasena_entrada):
                 return respuesta #si hubo un error al cargar la db se retorna el error
 
         #cambiar a la hora de sql
-        usuario = usuarios[correo_entrada]
-        contrasena = usuario["contrasena"]
-        bandera = verify_password(contrasena, contrasena_entrada)
-        print(bandera)
-        if(bandera):
-            return usuario
-        else:
-            print("contraseña incorrecta")
+        datos_usuario = usuarios.get(correo_entrada)
+        if not datos_usuario:  #no encontró el usuario
+            return {"error": "Usuario no encontrado"}
+
+        hash_guardado_o_claro = datos_usuario.get("contrasena")
+
+        # Bandera de verificación de contraseña
+        contraseña_valida = False
+        if hash_guardado_o_claro:
+            # Ve si el hash coincide con la contraseña
+            if verify_password(hash_guardado_o_claro, contrasena_entrada):
+                contraseña_valida = True
+
+        if not contraseña_valida:
             return {"error": "Contraseña incorrecta"}
+
+        # Sanitizar: no devolver la contraseña, ni el hash al frontend
+        usuario_sin_credenciales = {clave: valor for clave, valor in datos_usuario.items() if clave != "contrasena"}
+        usuario_sin_credenciales["id"] = correo_entrada  # útil para el frontend
+
+        return {
+            "mensaje": "Login correcto",
+            "usuario": usuario_sin_credenciales
+        }
         
-    except FileNotFoundError: #tomar las excepciones que puedan saltar de service_modificar_usuario()
+    except FileNotFoundError: #tomar las excepciones que puedan saltar de service_modificar_usuario
         return {"error": "Archivo de usuarios no encontrado"}
     except UnicodeDecodeError:
         return {"error": "Archivo JSON corrupto"}
