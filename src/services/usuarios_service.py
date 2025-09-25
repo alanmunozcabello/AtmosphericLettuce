@@ -53,7 +53,7 @@ def service_leer_usuarios(): #leer el json y retonar todos los usuarios en un di
     except UnicodeDecodeError: #en caso de que haya un error de escritura en el json
         return {"error": "Archivo JSON corrupto"}
 
-def service_guardar_nuevo_usuario(correo, nombre, contrasena): #guardar/registrar un nuevo usuario
+def service_registrar_nuevo_usuario(correo, nombre, contrasena): #guardar/registrar un nuevo usuario
     try: #cargar base de datos
         if(bandera_db_cargada is False): #si la db no está cargada
             respuesta=service_cargar_db()
@@ -72,7 +72,7 @@ def service_guardar_nuevo_usuario(correo, nombre, contrasena): #guardar/registra
             return {"error":"nombre de usuario o correo ya utilizado"}
         
         #cambiar a la hora de sql
-        nuevo_usuario={"nombre":nombre, "contrasena":contrasena_hasheada} #si el usuario o contraseña no existen se crea un nuevo usuario con los parametros de llegada
+        nuevo_usuario={"nombre":nombre, "contrasena":contrasena_hasheada, "ubicacion":{"latitud":None, "longitud":None}, "cultivos":{}} #si el usuario o contraseña no existen se crea un nuevo usuario con los parametros de llegada
         usuarios[correo]=nuevo_usuario #ahora el id es el correo -> mucho mejor y se puede implementar eliminación de usuarios (no necesarios pero se podría ahora)
 
         if(guardar_usuarios() is True): #de haberse guardado correctamente
