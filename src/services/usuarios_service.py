@@ -260,7 +260,7 @@ def service_iniciar_sesion(correo_entrada, contrasena_entrada):
         usuario_sin_credenciales = {clave: valor for clave, valor in datos_usuario.items() if clave != "contrasena"}
         usuario_sin_credenciales["id"] = correo_entrada  # útil para el frontend
 
-        return usuario_sin_credenciales
+        return {"id":correo_entrada, **usuario_sin_credenciales}
         
     except FileNotFoundError: #tomar las excepciones que puedan saltar de service_modificar_usuario
         return {"error": "Archivo de usuarios no encontrado"}
