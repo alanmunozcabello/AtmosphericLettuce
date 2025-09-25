@@ -84,7 +84,6 @@ def main(destinatario):
     """Función principal para autenticar y enviar el correo con cuerpo HTML."""
     creds = None
     # El archivo token.json almacena los tokens de acceso y actualización del usuario.
-    # Se crea automáticamente la primera vez que se completa la autorización.
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
     
@@ -111,26 +110,17 @@ def main(destinatario):
         message['from'] = 'tu_correo@gmail.com'
         message['subject'] = 'Asunto del correo con cuerpo HTML'
 
-        # --- Carga la plantilla HTML y los estilos CSS desde archivos externos ---
+        # --- Carga SOLO el archivo index.html ---
         try:
-            # Define las rutas a tus archivos
             ruta_html = os.path.join('Plantilla_HTML', 'index.html')
-            ruta_css = os.path.join('Plantilla_HTML', 'estilos.css')
-            
-            # Lee el contenido de los archivos
+
             with open(ruta_html, 'r', encoding='utf-8') as f:
-                html_template = f.read()
-            with open(ruta_css, 'r', encoding='utf-8') as f:
-                css_styles = f.read()
-            
-            # Inyecta el CSS dentro de una etiqueta <style> en el <head> del HTML
-            # Esto asegura la máxima compatibilidad con los clientes de correo
-            cuerpo_html_final = html_template.replace('</head>', f'<style>{css_styles}</style></head>')
+                cuerpo_html_final = f.read()
 
         except FileNotFoundError as e:
-            print(f"Error: No se pudo encontrar la plantilla HTML o el archivo CSS.")
+            print(f"Error: No se pudo encontrar la plantilla HTML.")
             print(f"Detalle del error: {e}")
-            return # Detiene la ejecución si no se encuentran los archivos
+            return  # Detiene la ejecución si no se encuentra el archivo
 
         # Adjunta el cuerpo HTML final. El segundo parámetro 'html' es crucial.
         message.attach(MIMEText(cuerpo_html_final, 'html'))
@@ -139,12 +129,12 @@ def main(destinatario):
         encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
         create_message = {'raw': encoded_message}
 
-        # Envía el mensaje
         send_message = (service.users().messages().send(userId="me", body=create_message).execute())
-        print(f'Correo enviado. Message ID: {send_message["id"]}')
+        print(f'Correo enviado. Message ID: {send_message['id']}')
 
     except HttpError as error:
         print(f'Ocurrió un error: {error}')
     except FileNotFoundError:
         print("\nERROR: No se encontró el archivo 'credentials.json'.")
         print("Asegúrate de tenerlo en la misma carpeta que este script.")
+
