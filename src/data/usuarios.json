@@ -152,6 +152,10 @@
             "latitud": null,
             "longitud": null
         },
-        "cultivos": {}
+        "cultivos": {
+            "lechuga": 1,
+            "tomate": 1,
+            "papa": 1
+        }
     }
 }

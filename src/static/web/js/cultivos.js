@@ -1,12 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
   //  Correo desde la URL (home.html?correo=...).
-  const params = new URLSearchParams(window.location.search);
-  const CORREO = params.get('correo');
-  if (!CORREO) {
-    alert('⚠️ No se recibió el correo del usuario. Volviendo al login.');
-    location.href = 'login.html';
-    return;
-  }
+  const CORREO = window.CORREO_ACTUAL || new URLSearchParams(location.search).get('correo');
+  if (!CORREO) { console.warn('Sin correo; omito llamadas a la API.'); return; }
+
 
   // DOM
   const API_URL = 'http://127.0.0.1:8000/usuarios';
@@ -74,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 6) Agregar (1 ha(hectarea) por defecto)
   form.addEventListener('submit', async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     const nombre = input.value.trim();
     if (!nombre) return;
 

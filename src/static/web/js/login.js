@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btn = document.getElementById('btn-login');
   const toggle = document.getElementById('toggle-pass');
 
- 
+
   if (toggle) {
     toggle.addEventListener('click', (e) => {
       e.preventDefault();
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
       //  Construir URL correctamente (sin el typo `;-+`)
       const emailEncoded = encodeURIComponent(validarEmail);
       const USER_URL = `http://127.0.0.1:8000/usuarios/${emailEncoded}`;
-      
+
       console.log('Fetching ->', USER_URL);
 
       const resp = await fetch(USER_URL, {
@@ -91,7 +91,15 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           console.log('Usuario recibido:', body);
 
-          
+          try {
+            const wn = JSON.parse(window.name || '{}');
+            wn.correo = validarEmail;
+            window.name = JSON.stringify(wn);
+          } catch {
+            window.name = JSON.stringify({ correo: validarEmail });
+          }
+
+
 
           // Restaurar botón antes de redirigir
           btn.textContent = originalText;
@@ -99,6 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
           btn.disabled = false;
 
           // Redirigir a home con correo 
+
           window.location.href = `home.html?correo=${encodeURIComponent(validarEmail)}`;
           return;
         }
