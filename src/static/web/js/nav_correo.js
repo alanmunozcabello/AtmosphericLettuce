@@ -1,64 +1,34 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // --- Resolver correo desde URL, window.name o (último recurso) del DOM del perfil ---
-  function resolveCorreo() {
-    // 1) URL ?correo=
-    let c = new URLSearchParams(location.search).get('correo');
-    if (c) return c;
-
-    // 2) window.name (persistente por pestaña)
-    try { c = JSON.parse(window.name || '{}')?.correo || null; } catch { c = null; }
-    if (c) return c;
-
-    // 3) Del DOM del perfil (si estás ahí y lo muestras en pantalla)
-    const el = document.querySelector('.tarjeta-perfil .fila .valor');
-    if (el) {
-      const t = el.textContent.trim();
-      if (t.includes('@')) return t;
+    // Obtener correo de localStorage o URL params
+    const correoUsuario = new URLSearchParams(location.search).get('correo') 
+                         || localStorage.getItem('correoUsuario');
+    
+    if (!correoUsuario) {
+        console.warn("⚠️ Usuario no identificado");
+        window.location.href = "index.html";
+        return;
     }
-    return null;
-  }
 
-  function saveCorreo(c) {
-    if (!c) return;
-    try {
-      const o = JSON.parse(window.name || '{}') || {};
-      o.correo = c;
-      window.name = JSON.stringify(o);
-    } catch {
-      window.name = JSON.stringify({ correo: c });
+    // Guardar/actualizar en localStorage
+    localStorage.setItem('correoUsuario', correoUsuario);
+
+    // Mostrar correo en la UI
+    const correoElement = document.getElementById('correo-usuario');
+    if (correoElement) {
+        correoElement.textContent = correoUsuario;
     }
-  }
 
-  function go(href, c) {
-    if (!href) return;
-    if (!c) { window.location.href = 'login.html'; return; }
-    const u = new URL(href, location.origin);
-    u.searchParams.set('correo', c);
-    window.location.href = u.pathname + u.search + u.hash;
-  }
-
-  const correo = resolveCorreo();
-  if (correo) saveCorreo(correo); // si lo trajiste por URL/DOM, déjalo guardado en la pestaña
-
-  // --- Logo → Home con correo ---
-  const btnLogo = document.getElementById('btn-logo') || document.querySelector('.logo a');
-  if (btnLogo) {
-    btnLogo.addEventListener('click', (e) => {
-      e.preventDefault();
-      const c = resolveCorreo() || correo;
-      saveCorreo(c);
-      go('home.html', c);
-    });
-  }
-
-  // --- Usuario → Perfil con correo ---
-  const btnUsuario = document.getElementById('btn-usuario');
-  if (btnUsuario) {
-    btnUsuario.addEventListener('click', (e) => {
-      e.preventDefault();
-      const c = resolveCorreo() || correo;
-      saveCorreo(c);
-      go('perfil.html', c);
-    });
-  }
+    // Manejar clic en logo
+    const logo = document.querySelector('.logo img');
+    if (logo) {
+        logo.addEventListener('click', () => {
+            window.location.href = 'home.html';
+        });
+    }
 });
+
+// Función global para cerrar sesión
+function logout() {
+    localStorage.removeItem('correoUsuario');
+    window.location.href = 'index.html';
+}

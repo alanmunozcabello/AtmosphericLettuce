@@ -1,4 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const CORREO = new URLSearchParams(location.search).get('correo') 
+               || localStorage.getItem('correoUsuario');
+
+  if (!CORREO) {
+    console.warn("⚠️ Usuario no identificado");
+    // opcional → redirigir al login:
+    window.location.href = "login.html";
+  }
+
+  // aseguramos que siempre esté en localStorage
+  localStorage.setItem('correoUsuario', CORREO);
+  
   const form = document.getElementById('login-form');
   const email = document.getElementById('email');
   const pass = document.getElementById('password');
@@ -99,7 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
             window.name = JSON.stringify({ correo: validarEmail });
           }
 
-
+          //guardar en local storage para persistencia
+          localStorage.setItem('correoUsuario', validarEmail);
 
           // Restaurar botón antes de redirigir
           btn.textContent = originalText;

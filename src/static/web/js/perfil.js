@@ -1,7 +1,18 @@
 // Espera a que el DOM esté completamente cargado antes de ejecutar el script
 document.addEventListener('DOMContentLoaded', () => {
-  const CORREO = window.CORREO_ACTUAL || new URLSearchParams(location.search).get('correo');
-  if (!CORREO) { console.warn('Sin correo; omito llamadas a la API.'); return; }
+    const CORREO = new URLSearchParams(location.search).get('correo') 
+               || localStorage.getItem('correoUsuario');
+
+  if (!CORREO) {
+    console.warn("⚠️ Usuario no identificado");
+    // opcional → redirigir al login:
+    window.location.href = "login.html";
+  }
+
+  // aseguramos que siempre esté en localStorage
+  localStorage.setItem('correoUsuario', CORREO);
+  // const CORREO = window.CORREO_ACTUAL || new URLSearchParams(location.search).get('correo');
+  // if (!CORREO) { console.warn('Sin correo; omito llamadas a la API.'); return; }
   const LS_KEY = 'perfilAL'; // Clave para localStorage del perfil
 
   // Referencias a elementos de la vista (mostrar datos)

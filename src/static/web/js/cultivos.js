@@ -1,8 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
   //  Correo desde la URL (home.html?correo=...).
-  const CORREO = window.CORREO_ACTUAL || new URLSearchParams(location.search).get('correo');
-  if (!CORREO) { console.warn('Sin correo; omito llamadas a la API.'); return; }
+  const CORREO = new URLSearchParams(location.search).get('correo') 
+               || localStorage.getItem('correoUsuario');
 
+  if (!CORREO) {
+    console.warn("⚠️ Usuario no identificado");
+    // opcional → redirigir al login:
+    window.location.href = "login.html";
+  }
+
+  // aseguramos que siempre esté en localStorage
+  localStorage.setItem('correoUsuario', CORREO);
 
   // DOM
   const API_URL = 'http://127.0.0.1:8000/usuarios';
