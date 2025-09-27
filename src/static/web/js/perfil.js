@@ -1,30 +1,51 @@
-// Espera a que el DOM esté completamente cargado antes de ejecutar el script
+// perfil.js (con persistencia en backend de nombre/correo)
 document.addEventListener('DOMContentLoaded', () => {
-    const CORREO = new URLSearchParams(location.search).get('correo') 
-               || localStorage.getItem('correoUsuario');
+  const API_BASE = 'http://localhost:8000'; // ajusta host/puerto
+  const LS_KEY = 'perfilAL';
+
+  // --- utilidades ---
+  const replaceCorreoInURL = (nuevoCorreo) => {
+    try {
+      const url = new URL(location.href);
+      url.searchParams.set('correo', nuevoCorreo);
+      history.replaceState(null, '', url.toString());
+    } catch { /* noop */ }
+  };
+
+  // Sustituye tu putUsuario por esta versión que envía usuarioMOD como query param
+  const putUsuario = async (correoActual, body) => {
+    const url = new URL(`${API_BASE}/usuarios/${encodeURIComponent(correoActual)}/modificar`);
+    url.searchParams.set('usuarioMOD', JSON.stringify(body)); // <-- clave: va en la query
+
+    const res = await fetch(url.toString(), { method: 'PUT' }); // sin body
+    let text = '';
+    try { text = await res.text(); } catch { }
+    if (!res.ok) throw new Error(`PUT fallo: ${res.status} ${res.statusText} ${text}`);
+    try { return JSON.parse(text || '{}'); } catch { return {}; }
+  };
+
+
+  // --- resolver correo actual ---
+  const CORREO =
+    new URLSearchParams(location.search).get('correo') ||
+    localStorage.getItem('correoUsuario') ||
+    '';
 
   if (!CORREO) {
-    console.warn("⚠️ Usuario no identificado");
-    // opcional → redirigir al login:
-    window.location.href = "login.html";
+    console.warn('⚠️ Usuario no identificado');
+    window.location.href = 'index.html';
+    return;
   }
-
-  // aseguramos que siempre esté en localStorage
   localStorage.setItem('correoUsuario', CORREO);
-  // const CORREO = window.CORREO_ACTUAL || new URLSearchParams(location.search).get('correo');
-  // if (!CORREO) { console.warn('Sin correo; omito llamadas a la API.'); return; }
-  const LS_KEY = 'perfilAL'; // Clave para localStorage del perfil
 
-  // Referencias a elementos de la vista (mostrar datos)
+  // --- refs vista/form ---
   const nombreV = document.querySelector('.nombre');
-  const desdeV = document.querySelector('.desde');
   const filas = document.querySelectorAll('.tarjeta-perfil .fila');
-  const correoV = filas[0]?.querySelector('.valor'); // 1ª fila = Correo
-  const ubicV = filas[1]?.querySelector('.valor'); // 2ª fila = Ubicación
-  const regionV = filas[2]?.querySelector('.valor'); // 3ª fila = Idioma
+  const correoV = filas[0]?.querySelector('.valor');
+  const ubicV = filas[1]?.querySelector('.valor');
+  const regionV = filas[2]?.querySelector('.valor');
   const avatarV = document.querySelector('.avatar-fondo img');
 
-  // Referencias al formulario de edición
   const form = document.getElementById('form-perfil');
   const inpNombre = document.getElementById('inp-nombre');
   const inpCorreo = document.getElementById('inp-correo');
@@ -32,123 +53,169 @@ document.addEventListener('DOMContentLoaded', () => {
   const inpRegion = document.getElementById('inp-region');
   const inpAvatar = document.getElementById('inp-avatar');
 
-  // Botones de la interfaz
   const btnEditar = document.getElementById('btn-editar');
   const btnGuardar = document.getElementById('btn-guardar');
   const btnCancelar = document.getElementById('btn-cancelar');
 
-  // Función para leer el perfil desde localStorage
-  const leer = () => JSON.parse(localStorage.getItem(LS_KEY) || 'null');
-  // Función para guardar el perfil en localStorage
-  const guardar = (obj) => localStorage.setItem(LS_KEY, JSON.stringify(obj));
+  // --- LS helpers ---
+  const leerLS = () => {
+    try { return JSON.parse(localStorage.getItem(LS_KEY) || 'null'); }
+    catch { return null; }
+  };
+  const guardarLS = (obj) => localStorage.setItem(LS_KEY, JSON.stringify(obj));
 
-  // Carga inicial de datos (si no hay datos, usa los del HTML)
-  function cargar() {
-    const data = leer() || {
-      nombre: nombreV?.textContent?.trim() || 'Usuario',
-      correo: correoV?.textContent?.trim() || '',
-      ubic: ubicV?.textContent?.trim() || '',
-      region: regionV?.textContent?.trim() || 'Maule',
-      avatar: null // dataURL si el usuario sube uno
-    };
-
-    // Rellena la vista con los datos
-    if (nombreV) nombreV.textContent = data.nombre;
-    if (correoV) correoV.textContent = data.correo;
-    if (ubicV) ubicV.textContent = data.ubic;
-    if (regionV) regionV.textContent = data.region;
+  // --- pintar ---
+  function pintar(data) {
+    if (nombreV) nombreV.textContent = data.nombre ?? 'Usuario';
+    if (correoV) correoV.textContent = data.correo ?? '';
+    if (ubicV) ubicV.textContent = data.ubic ?? '';
+    if (regionV) regionV.textContent = data.region ?? 'Maule';
     if (avatarV && data.avatar) avatarV.src = data.avatar;
 
-    // Rellena el formulario de edición con los datos
-    inpNombre.value = data.nombre;
-    inpCorreo.value = data.correo;
-    inpUbic.value = data.ubic;
-    inpRegion.value = data.region;
+    if (inpNombre) inpNombre.value = data.nombre ?? 'Usuario';
+    if (inpCorreo) inpCorreo.value = data.correo ?? CORREO;
+    if (inpUbic) inpUbic.value = data.ubic ?? '';
+    if (inpRegion) inpRegion.value = data.region ?? 'Maule';
   }
 
-  // Cambia entre modo edición y modo vista
-  function modoEdicion(on) {
-    form.style.display = on ? 'block' : 'none';
-    btnGuardar.style.display = on ? 'inline-block' : 'none';
-    btnCancelar.style.display = on ? 'inline-block' : 'none';
-    btnEditar.style.display = on ? 'none' : 'inline-block';
+  function cargarInicial() {
+    const cached = leerLS();
+    const base = cached || {
+      nombre: (nombreV?.textContent || 'Usuario').trim(),
+      correo: (correoV?.textContent?.trim()) || CORREO,
+      ubic: (ubicV?.textContent || '').trim(),
+      region: (regionV?.textContent || 'Maule').trim(),
+      avatar: null,
+    };
+    guardarLS(base);
+    pintar(base);
   }
 
-  // Evento para activar modo edición
-  btnEditar.addEventListener('click', () => {
-    cargar();     // Sincroniza datos por si cambiaron
-    modoEdicion(true);
-    inpNombre.focus();
-  });
+  async function syncConBackend() {
+    try {
+      const res = await fetch(`${API_BASE}/usuarios/${encodeURIComponent(CORREO)}`);
+      if (!res.ok) return;
 
-  // Evento para cancelar edición y volver a la vista normal
-  btnCancelar.addEventListener('click', () => {
-    modoEdicion(false);
-  });
+      const usuario = await res.json();
+      const previo = leerLS() || {};
 
-  // Evento para guardar los cambios del perfil
-  btnGuardar.addEventListener('click', (e) => {
-    e.preventDefault();
+      // Si el backend manda un "nombre" que es un email, lo tratamos como no-nombre
+      const nombreSrv = (usuario?.nombre ?? '').trim();
+      const esEmail = nombreSrv.includes('@');
+      const displayName = esEmail
+        ? (previo.nombre && !previo.nombre.includes('@') ? previo.nombre : (CORREO.split('@')[0] || 'Usuario'))
+        : (nombreSrv || previo.nombre || 'Usuario');
 
-    let valido = true;
-
-    // Quita estado de error previo
-    inpNombre.classList.remove("invalid");
-    inpCorreo.classList.remove("invalid");
-
-    // Validar nombre (requerido)
-    const nombre = inpNombre.value.trim();
-    if (!nombre) {
-      inpNombre.classList.add("invalid");
-      valido = false;
-    }
-
-    // Validar correo (requerido y formato)
-    const correo = inpCorreo.value.trim();
-    if (!correo || !correo.includes("@") || !correo.includes(".")) {
-      inpCorreo.classList.add("invalid");
-      valido = false;
-    }
-
-    if (!valido) {
-      return; // No sigue hasta que corrijan errores
-    }
-
-    // Estado de carga ON
-    btnGuardar.textContent = "Guardando...";
-    btnGuardar.classList.add("loading");
-
-    // Simulación de guardado (1.5 segundos)
-    setTimeout(() => {
-      // Construye el objeto con los datos del formulario
-      const data = {
-        nombre,
-        correo,
-        ubic: inpUbic.value.trim(),
-        region: inpRegion.value.trim() || "Español",
-        avatar: avatarV?.src?.startsWith("data:") ? avatarV.src : (leer()?.avatar || null),
+      const fusionado = {
+        ...previo,
+        nombre: displayName,
+        correo: usuario?.correo ?? CORREO,
+        // Mantener ubic/region desde LS
+        ubic: previo.ubic ?? '',
+        region: previo.region ?? 'Maule',
+        avatar: previo.avatar ?? null,
       };
 
-      guardar(data);      // Guarda en localStorage
-      cargar();           // Actualiza la vista
-      modoEdicion(false); // Sale del modo edición
+      guardarLS(fusionado);
+      pintar(fusionado);
+    } catch (e) {
+      console.warn('No se pudo sincronizar perfil:', e);
+    }
+  }
 
-      // Estado de carga OFF
-      btnGuardar.textContent = "Guardar";
-      btnGuardar.classList.remove("loading");
-    }, 1500);
+  function modoEdicion(on) {
+    if (form) form.style.display = on ? 'block' : 'none';
+    if (btnGuardar) btnGuardar.style.display = on ? 'inline-block' : 'none';
+    if (btnCancelar) btnCancelar.style.display = on ? 'inline-block' : 'none';
+    if (btnEditar) btnEditar.style.display = on ? 'none' : 'inline-block';
+  }
+
+  btnEditar?.addEventListener('click', () => {
+    const data = leerLS() || {};
+    pintar(data);
+    modoEdicion(true);
+    inpNombre?.focus();
   });
 
-  // Evento para subir y previsualizar el avatar (imagen de perfil)
+  btnCancelar?.addEventListener('click', () => {
+    modoEdicion(false);
+    const data = leerLS() || {};
+    pintar(data);
+  });
+
+  // --- GUARDAR: también persiste en backend nombre/correo ---
+  btnGuardar?.addEventListener('click', async (e) => {
+    e.preventDefault();
+    if (!inpNombre || !inpCorreo) return;
+
+    // limpiar estados
+    inpNombre.classList.remove('invalid');
+    inpCorreo.classList.remove('invalid');
+
+    const nombreNuevo = inpNombre.value.trim();
+    const correoNuevo = (inpCorreo.value.trim() || CORREO).trim();
+
+    let valido = true;
+    if (!nombreNuevo) { inpNombre.classList.add('invalid'); valido = false; }
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correoNuevo);
+    if (!correoNuevo || !emailOk) { inpCorreo.classList.add('invalid'); valido = false; }
+    if (!valido) return;
+
+    // loading ON
+    btnGuardar.textContent = 'Guardando...';
+    btnGuardar.classList.add('loading');
+    btnGuardar.disabled = true;
+
+    const previo = leerLS() || {};
+    const body = {
+      // Enviamos solo campos que quieres actualizar en el JSON:
+      nombre: nombreNuevo,
+      correo: correoNuevo, // si cambia, backend debe mover/renombrar clave
+      // (no tocamos ubic/region en backend, per tu requerimiento)
+    };
+
+    try {
+      // PUT al backend con el correo ACTUAL (antes del cambio)
+      await putUsuario(previo.correo || CORREO, body);
+
+      // Éxito: actualizar estado local/URL y repintar
+      const fusionado = {
+        ...previo,
+        nombre: nombreNuevo,
+        correo: correoNuevo,
+        // mantener ubic/region desde LS y avatar dataURL si existía
+        ubic: (inpUbic?.value.trim() ?? previo.ubic) || '',
+        region: (inpRegion?.value.trim() ?? previo.region) || 'Maule',
+        avatar: (avatarV?.src?.startsWith('data:') ? avatarV.src : (previo.avatar || null)) || null,
+      };
+
+      guardarLS(fusionado);
+      localStorage.setItem('correoUsuario', correoNuevo);
+      replaceCorreoInURL(correoNuevo);
+      pintar(fusionado);
+      modoEdicion(false);
+    } catch (err) {
+      console.error('❌ No se pudo guardar en backend:', err);
+      alert('No se pudo actualizar tus datos en el servidor. Intenta nuevamente.');
+    } finally {
+      // loading OFF
+      btnGuardar.textContent = 'Guardar';
+      btnGuardar.classList.remove('loading');
+      btnGuardar.disabled = false;
+    }
+  });
+
+  // avatar preview
   inpAvatar?.addEventListener('change', () => {
     const file = inpAvatar.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => {
-      avatarV.src = reader.result; // dataURL
-    };
+    reader.onload = () => { if (avatarV) avatarV.src = reader.result; };
     reader.readAsDataURL(file);
   });
 
-  cargar(); // Carga los datos al iniciar la página
+  // init
+  cargarInicial();
+  modoEdicion(false);
+  syncConBackend();
 });

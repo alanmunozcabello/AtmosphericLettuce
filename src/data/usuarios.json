@@ -155,7 +155,17 @@
         "cultivos": {
             "lechuga": 1,
             "tomate": 1,
-            "papa": 1
+            "papa": 1,
+            "messi": 1
         }
+    },
+    "agustina@gmail.com": {
+        "nombre": "agustina",
+        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$1N98bQUqaICrBvaGrNRjUg$FwUr5QhbpBmMY1BT+NGsYZnCOIo89aBCpz984wOhMbI",
+        "ubicacion": {
+            "latitud": null,
+            "longitud": null
+        },
+        "cultivos": {}
     }
 }
