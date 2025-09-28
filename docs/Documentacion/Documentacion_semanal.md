@@ -49,22 +49,22 @@
   -`Se creo en la rama main un sistema de notificaciones que enviara archivos pdf con un infrome detallado de la informacion que este disponible para el usuario y otro donde se enviara cada cierto tiempo un html al correo del usuario con el clima de la semana y otros datos relevantes que le puedan servir al usuario`
 
 - Implementaciones Backend   
-  -`El nuevo formato permite un acceso más rápido a la información, ya que para obtener un usuario no es necesario recorrer todo el arreglo; ahora la búsqueda se realiza directamente por la clave correspondiente al correo o ID del usuario, optimizando la velocidad de los procesos.`
-  -`Al tratarse de una base de datos en formato JSON, esta se carga en tiempo de ejecución. Aunque esto no es adecuado para bases de datos con miles de usuarios, resulta suficiente para nuestro caso.`
-  -`La implementación se ha diseñado de manera que, al migrar a SQLite, solo será necesario modificar unas pocas funciones en el backend, mientras que el resto del código permanecerá prácticamente igual. Las partes donde se realiza un cambio directo en el JSON cargado deberán reemplazarse por llamadas a funciones con instrucciones SQL.`
-  -`Se han añadido nuevos comentarios que describen la nueva implementación, así como comentarios adicionales que indican cómo se realizaría la migración a SQLite.`
-  -`Se implmentaron nuevos campos de informacion en los usuarios ciudad y ubicacion y metodos con los que se puede modificar estos parametros`
-  -` Se modificaron los métodos HTTP de las rutas (.post .get .delete .patch .put) para que la informacion se manejara mejor y mas segura `
-  -`Implementación de la burbuja emergente del chatbot al hacer clic en el ícono del mismo (la lechuga). Esta constituye la implementación inicial, aún sin feedback, y con los estilos visuales en proceso de desarrollo.` 
-  `Cambios estéticos en el chatbot, incluyendo mejoras en el feedback hacia el usuario al momento de seleccionar archivos.` 
-  `Mejoras en la selección de archivos: anteriormente, al seleccionar archivos nuevos, se eliminaban los ya seleccionados; ahora, los archivos se añaden a la lista existente, y los no deseados pueden eliminarse mediante un botón “X”.` 
-  `La burbuja del chat ahora es completamente responsiva, adaptándose a distintos tamaños de pantalla.`
+  - `El nuevo formato permite un acceso más rápido a la información, ya que para obtener un usuario no es necesario recorrer todo el arreglo; ahora la búsqueda se realiza directamente por la clave correspondiente al correo o ID del usuario, optimizando la velocidad de los procesos.`
+  - `Al tratarse de una base de datos en formato JSON, esta se carga en tiempo de ejecución. Aunque esto no es adecuado para bases de datos con miles de usuarios, resulta suficiente para nuestro caso.`
+  - `La implementación se ha diseñado de manera que, al migrar a SQLite, solo será necesario modificar unas pocas funciones en el backend, mientras que el resto del código permanecerá prácticamente igual. Las partes donde se realiza un cambio directo en el JSON cargado deberán reemplazarse por llamadas a funciones con instrucciones SQL.`
+  - `Se han añadido nuevos comentarios que describen la nueva implementación, así como comentarios adicionales que indican cómo se realizaría la migración a SQLite.`
+  - Se implmentaron nuevos campos de informacion en los usuarios ciudad y ubicacion y metodos con los que se puede modificar estos parametros`
+  - ` Se modificaron los métodos HTTP de las rutas (.post .get .delete .patch .put) para que la informacion se manejara mejor y mas segura `
+  - `Implementación de la burbuja emergente del chatbot al hacer clic en el ícono del mismo (la lechuga). Esta constituye la implementación inicial, aún sin feedback, y con los estilos visuales en proceso de desarrollo.` 
+  - `Cambios estéticos en el chatbot, incluyendo mejoras en el feedback hacia el usuario al momento de seleccionar archivos.` 
+  - `Mejoras en la selección de archivos: anteriormente, al seleccionar archivos nuevos, se eliminaban los ya seleccionados; ahora, los archivos se añaden a la lista existente, y los no deseados pueden eliminarse mediante un botón “X”.` 
+  - `La burbuja del chat ahora es completamente responsiva, adaptándose a distintos tamaños de pantalla.`
 
 - Implementacion rama Frontend   
     **Integración entre el backend y el frontend**
-  -`Los usuarios que se registren ahora se guardan en el archivo JSON a través de la ruta registrar usuario.`
-  `El login se conectó a la ruta iniciar sesión, permitiendo que únicamente los usuarios registrados en nuestra base de datos puedan acceder a la página.`
-  `En la pantalla Home, dentro de la sección de cultivos, se implementó la funcionalidad de agregar y eliminar cultivos, los cuales se cargan también en la base de datos (JSON).`
-  `En la sección Perfil, se muestran los datos del usuario que haya iniciado sesión, incluyendo nombre, correo, ciudad y región.`
-  `Todos estos cambios se realizaron utilizando fetch, reemplazando el uso anterior de localStorage, lo que mejora la comunicación con la base de datos y la persistencia de la información.`
+  - `Los usuarios que se registren ahora se guardan en el archivo JSON a través de la ruta registrar usuario.`
+  - `El login se conectó a la ruta iniciar sesión, permitiendo que únicamente los usuarios registrados en nuestra base de datos puedan acceder a la página.`
+  - `En la pantalla Home, dentro de la sección de cultivos, se implementó la funcionalidad de agregar y eliminar cultivos, los cuales se cargan también en la base de datos (JSON).`
+  - `En la sección Perfil, se muestran los datos del usuario que haya iniciado sesión, incluyendo nombre, correo, ciudad y región.`
+  - `Todos estos cambios se realizaron utilizando fetch, reemplazando el uso anterior de localStorage, lo que mejora la comunicación con la base de datos y la persistencia de la información.`
   
