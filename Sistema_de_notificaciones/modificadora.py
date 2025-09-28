@@ -4,22 +4,43 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
-import io
-import os # <--- Módulo importado para manejar rutas
+import io #para que es esa libreria?
 
-# pip install reportlab PyPDF2
+from jinja2 import Environment, FileSystemLoader
 
-def crear_pdf(clima,usuarios):
-    # --- INICIO DE CAMBIOS ---
-    # Obtenemos la ruta del directorio donde se encuentra este script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
 
-    # Creamos las rutas completas para cada archivo
-    ruta_imagen_chestappen = os.path.join(script_dir, "Imagenes", "chestappen.jpg")
-    ruta_imagen_lechuga = os.path.join(script_dir, "Imagenes", "Lechuga.jpg")
-    ruta_planilla = os.path.join(script_dir, "Planilla.pdf")
-    ruta_pdf_modificado = os.path.join(script_dir, "pdf_modificado.pdf")
-    # --- FIN DE CAMBIOS ---
+#cambiar rutas----------------------
+def modificar_html(usuariop1,clima_):
+  #---------------------------------------------------
+  # Configurar Jinja2 para que busque la carpeta plantilla_html
+  env = Environment(loader=FileSystemLoader("Archivos_html"))
+
+  # Cargar la plantilla
+  template = env.get_template("index.html")
+
+  # Renderizar el HTML con datos
+  html_renderizado = template.render(
+      usuario=usuariop1,
+      usuario_correo="pipo123@mail.com",
+      clima=clima_
+  )
+
+  # Guardar el HTML resultante
+  with open("Archivos_HTML\salida.html", "w", encoding="utf-8") as f:
+      f.write(html_renderizado)
+
+  print("✅ HTML generado en salida.html")
+#---------------------------------------------------
+
+
+def modificar_pdf(clima,usuarios):
+   
+    #rutas completas para cada archivo
+    ruta_imagen_chestappen ="Imagenes\chestappen.jpg"
+    ruta_imagen_lechuga = "Imagenes\Lechuga.jpg"
+    ruta_planilla = "Archivos_pdf\Planilla.pdf"
+    ruta_pdf_modificado = "Archivos_pdf\pdf_modificado.pdf"
+    
 
     # Crear un PDF temporal con el texto que quieres escribir
     print(usuarios.get("nombre"))

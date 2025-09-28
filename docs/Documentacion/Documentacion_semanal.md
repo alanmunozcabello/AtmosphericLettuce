@@ -44,3 +44,6 @@
   - `manejo de campos vacíos log, Perfil`
   - `home permite no repetir los cultivos ya ingresados`
 
+## 📌 Semana 6
+
+

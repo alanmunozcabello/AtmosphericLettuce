@@ -25,18 +25,20 @@
                                                                                 <td align="left" width="100"
                                                                                         valign="middle">
                                                                                         <img src="../Imagenes/logo.png"
-                                                                                                alt="Logo" width="100"
+                                                                                                alt="Logo" width="150"
                                                                                                 style="display:block; border:0;">
                                                                                 </td>
                                                                                 <td align="center" valign="middle"
                                                                                         style="font-size:14px; color:#333;">
                                                                                         <h2
                                                                                                 style="margin:0; font-size:16px;">
-                                                                                                Nicolás Urbina Marmolejo
+                                                                                                {{ usuario.nombre }}
+                                                                                                <!--#get("nombre")-->
                                                                                         </h2>
                                                                                         <p
                                                                                                 style="margin:0; font-size:14px; color:#555;">
-                                                                                                NicolasUrbina77@gmail.com
+                                                                                                {{ usuario_correo }}
+                                                                                                <!-- #el correo que es el valor de donde sacas los dmas valores usuariop1=usuarios_nuevos.get("pipo123@mail.com") en este caso seria pipo123 -->
                                                                                         </p>
                                                                                 </td>
                                                                                 <td align="right" width="100"
@@ -57,7 +59,12 @@
                                                                         <tr>
                                                                                 <td width="160" height="100"
                                                                                         style="border-radius:15px; text-align:center; background:linear-gradient(135deg, #5db5ff, #55c2a5); padding:20px; color:#fff;">
-                                                                                        Bloque 1
+                                                                                        <strong>{{ clima.dia1.dia }}</strong><br>
+                                                                                        Temp: {{ clima.dia1.temp }}°C <br>
+                                                                                        Máx: {{ clima.dia1.max }}°C <br>
+                                                                                        Mín: {{ clima.dia1.min }}°C <br>
+                                                                                        Estado: {{ clima.dia1.estado }}
+                                                                                        <!-- clima dia1 dia1": {"dia": "Lunes", "temp": 20, "max": 20, "min": 10, "estado": "Soleado"} ojala escribas toda esta info dontro del recuadro y que se apegue a la isquieda-->
                                                                                 </td>
 
                                                                                 <!-- Espacio entre bloques -->
@@ -65,7 +72,12 @@
 
                                                                                 <td width="160" height="100"
                                                                                         style="border-radius:15px; text-align:center; background:linear-gradient(135deg, #5db5ff, #55c2a5); padding:20px; color:#fff;">
-                                                                                        Bloque 2
+                                                                                        <strong>{{ clima.dia2.dia }}</strong><br>
+                                                                                        Temp: {{ clima.dia2.temp }}°C <br>
+                                                                                        Máx: {{ clima.dia2.max }}°C <br>
+                                                                                        Mín: {{ clima.dia2.min }}°C <br>
+                                                                                        Estado: {{ clima.dia2.estado }}
+                                                                                        <!-- clima dia2 dia2"....-->
                                                                                 </td>
 
                                                                                 <!-- Espacio entre bloques -->
@@ -73,7 +85,12 @@
 
                                                                                 <td width="160" height="100"
                                                                                         style="border-radius:15px; text-align:center; background:linear-gradient(135deg, #5db5ff, #55c2a5); padding:20px; color:#fff;">
-                                                                                        Bloque 3
+                                                                                        <strong>{{ clima.dia3.dia }}</strong><br>
+                                                                                        Temp: {{ clima.dia3.temp }}°C <br>
+                                                                                        Máx: {{ clima.dia3.max }}°C <br>
+                                                                                        Mín: {{ clima.dia3.min }}°C <br>
+                                                                                        Estado: {{ clima.dia3.estado }}
+                                                                                        <!--clima dia3 dia3.. -->
                                                                                 </td>
                                                                         </tr>
 
@@ -88,7 +105,11 @@
                                                                         <tr>
                                                                                 <td width="160" height="100"
                                                                                         style="border-radius:15px; text-align:center; background:linear-gradient(135deg, #5db5ff, #55c2a5); padding:20px; color:#fff;">
-                                                                                        Bloque 4
+                                                                                        <strong>{{ clima.dia4.dia }}</strong><br>
+                                                                                        Temp: {{ clima.dia4.temp }}°C <br>
+                                                                                        Máx: {{ clima.dia4.max }}°C <br>
+                                                                                        Mín: {{ clima.dia4.min }}°C <br>
+                                                                                        Estado: {{ clima.dia4.estado }} <!-- clima dia4 dia4-->
                                                                                 </td>
 
                                                                                 <!-- Espacio entre bloques -->
@@ -96,7 +117,11 @@
 
                                                                                 <td width="160" height="100"
                                                                                         style="border-radius:15px; text-align:center; background:linear-gradient(135deg, #5db5ff, #55c2a5); padding:20px; color:#fff;">
-                                                                                        Bloque 5
+                                                                                        <strong>{{ clima.dia5.dia }}</strong><br>
+                                                                                        Temp: {{ clima.dia5.temp }}°C <br>
+                                                                                        Máx: {{ clima.dia5.max }}°C <br>
+                                                                                        Mín: {{ clima.dia5.min }}°C <br>
+                                                                                        Estado: {{ clima.dia5.estado }} <!-- clima dia5 dia5-->
                                                                                 </td>
 
                                                                                 <!-- Espacio entre bloques -->
@@ -104,7 +129,12 @@
 
                                                                                 <td width="160" height="100"
                                                                                         style="border-radius:15px; text-align:center; background:linear-gradient(135deg, #5db5ff, #55c2a5); padding:20px; color:#fff;">
-                                                                                        Bloque 6
+                                                                                        <strong>{{ clima.dia6.dia }}</strong><br>
+                                                                                        Temp: {{ clima.dia6.temp }}°C <br>
+                                                                                        Máx: {{ clima.dia6.max }}°C <br>
+                                                                                        Mín: {{ clima.dia6.min }}°C <br>
+                                                                                        Estado: {{ clima.dia6.estado }}
+                                                                                        <!-- clima dia6 dia6 -->
                                                                                 </td>
                                                                         </tr>
 
@@ -114,25 +144,32 @@
 
                                                 <!-- Tercera fila -->
                                                 <tr>
-  <td align="center" style="padding:20px;">
-    <table border="0" cellspacing="0" cellpadding="10">
-      <tr>
-        <td width="180" height="100"
-            style="border-radius:15px; text-align:center; background:linear-gradient(135deg, #5db5ff, #55c2a5); color:#fff; padding:20px;">
-          Cultivos
-        </td>
+                                                        <td align="center" style="padding:20px;">
+                                                                <table border="0" cellspacing="0" cellpadding="10">
+                                                                        <tr>
+                                                                                <td width="160" height="300"
+                                                                                        style="border-radius:15px; text-align:center; background:linear-gradient(135deg, #5db5ff, #55c2a5); color:#fff; padding:20px;">
+                                                                                        <h3>Cultivos</h3>
+                                                                                        <ul style="padding-left:15px; margin:0;">
+                                                                                                {% for cultivo, cantidad in usuario.cultivos.items() %}
+                                                                                                <li>{{ cultivo }}: {{ cantidad }}</li>
+                                                                                                {% endfor %}
+                                                                                        </ul>
+                                                                                        <!-- cultivos cultivos ojla los listes todos hacia abajo -->
+                                                                                </td>
 
-        <!-- Espacio entre bloques -->
-        <td width="20"></td>
+                                                                                <!-- Espacio entre bloques -->
+                                                                                <td width="20"></td>
 
-        <td width="380" height="100"
-            style="border-radius:15px; text-align:center; background:linear-gradient(135deg, #5db5ff, #55c2a5); color:#fff; padding:20px;">
-          Enfermedades
-        </td>
-      </tr>
-    </table>
-  </td>
-</tr>
+                                                                                <td width="400" height="300"
+                                                                                        style="border-radius:15px; text-align:center; background:linear-gradient(135deg, #5db5ff, #55c2a5); color:#fff; padding:20px;">
+                                                                                        Enfermedades
+                                                                                        <!-- dejalo como esta -->
+                                                                                </td>
+                                                                        </tr>
+                                                                </table>
+                                                        </td>
+                                                </tr>
 
 
                                                 <!-- Cuarta fila -->
@@ -140,10 +177,11 @@
                                                         <td align="center" style="padding:20px;">
                                                                 <table border="0" cellspacing="0" cellpadding="15">
                                                                         <tr>
-                                                                                <td bgcolor="#5db5ff" height="100"
-                                                                                        style="border-radius:15px; text-align:center; background:linear-gradient(135deg, #5db5ff, #55c2a5);"
-                                                                                        width="560">
+                                                                                <td bgcolor="#5db5ff" height="200"
+                                                                                        width="550"
+                                                                                        style="border-radius:15px;  text-align:center; background:linear-gradient(135deg, #5db5ff, #55c2a5); color:#fff; padding:20px;">
                                                                                         Consejos Generales
+                                                                                        <!-- dejalo como esta -->
                                                                                 </td>
                                                                         </tr>
                                                                 </table>
