@@ -53,12 +53,12 @@
   - `Al tratarse de una base de datos en formato JSON, esta se carga en tiempo de ejecución. Aunque esto no es adecuado para bases de datos con miles de usuarios, resulta suficiente para nuestro caso.`
   - `La implementación se ha diseñado de manera que, al migrar a SQLite, solo será necesario modificar unas pocas funciones en el backend, mientras que el resto del código permanecerá prácticamente igual. Las partes donde se realiza un cambio directo en el JSON cargado deberán reemplazarse por llamadas a funciones con instrucciones SQL.`
   - `Se han añadido nuevos comentarios que describen la nueva implementación, así como comentarios adicionales que indican cómo se realizaría la migración a SQLite.`
-  - Se implmentaron nuevos campos de informacion en los usuarios ciudad y ubicacion y metodos con los que se puede modificar estos parametros`
-  - ` Se modificaron los métodos HTTP de las rutas (.post .get .delete .patch .put) para que la informacion se manejara mejor y mas segura `
-  - `Implementación de la burbuja emergente del chatbot al hacer clic en el ícono del mismo (la lechuga). Esta constituye la implementación inicial, aún sin feedback, y con los estilos visuales en proceso de desarrollo.` 
+  - `Se implementaron nuevos campos de informacion en los usuarios ciudad y ubicacion y metodos con los que se puede modificar estos parametros`
+  - `Se modificaron los métodos HTTP de las rutas (.post .get .delete .patch .put) para que la informacion se manejara mejor y mas segura `
   - `Cambios estéticos en el chatbot, incluyendo mejoras en el feedback hacia el usuario al momento de seleccionar archivos.` 
   - `Mejoras en la selección de archivos: anteriormente, al seleccionar archivos nuevos, se eliminaban los ya seleccionados; ahora, los archivos se añaden a la lista existente, y los no deseados pueden eliminarse mediante un botón “X”.` 
   - `La burbuja del chat ahora es completamente responsiva, adaptándose a distintos tamaños de pantalla.`
+  - `
 
 - Implementacion rama Frontend   
     **Integración entre el backend y el frontend**
