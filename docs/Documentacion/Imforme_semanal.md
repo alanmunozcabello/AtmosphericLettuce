@@ -58,7 +58,7 @@
   - `Cambios estéticos en el chatbot, incluyendo mejoras en el feedback hacia el usuario al momento de seleccionar archivos.` 
   - `Mejoras en la selección de archivos: anteriormente, al seleccionar archivos nuevos, se eliminaban los ya seleccionados; ahora, los archivos se añaden a la lista existente, y los no deseados pueden eliminarse mediante un botón “X”.` 
   - `La burbuja del chat ahora es completamente responsiva, adaptándose a distintos tamaños de pantalla.`
-  - `
+  - `Se implemento el archvio security que contiene dos funciones una permite resivir una contraseña y devolverla hasheada con Argon2 y la otra permite verificar si la contraseña es igual a la hasheada que esta en la base de datos`
 
 - Implementacion rama Frontend   
     **Integración entre el backend y el frontend**
