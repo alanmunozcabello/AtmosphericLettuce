@@ -158,12 +158,12 @@
         "ubicacion": {
             "latitud": null,
             "longitud": null,
-            "ciudad": "Lontue",
-            "region": "Biobio"
+            "ciudad": "Castillo",
+            "region": "Muy Muy Lejano"
         },
         "cultivos": {
-            "ola": 1,
-            "aaa": 1
+            "Cerezas": 1,
+            "Maiz": 1
         }
     }
 }

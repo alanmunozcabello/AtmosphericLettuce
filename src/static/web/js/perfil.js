@@ -68,14 +68,14 @@ document.addEventListener('DOMContentLoaded', () => {
   function pintar(data) {
     if (nombreV) nombreV.textContent = data.nombre ?? 'Usuario';
     if (correoV) correoV.textContent = data.correo ?? '';
-    if (ubicV) ubicV.textContent = data.ubic ?? '';
-    if (regionV) regionV.textContent = data.region ?? 'Maule';
+    if (ubicV) ubicV.textContent = data.ubic ?? 'No especificada';
+    if (regionV) regionV.textContent = data.region ?? 'No especificada';
     if (avatarV && data.avatar) avatarV.src = data.avatar;
 
     if (inpNombre) inpNombre.value = data.nombre ?? 'Usuario';
     if (inpCorreo) inpCorreo.value = data.correo ?? CORREO;
     if (inpUbic) inpUbic.value = data.ubic ?? '';
-    if (inpRegion) inpRegion.value = data.region ?? 'Maule';
+    if (inpRegion) inpRegion.value = data.region ?? '';
   }
 
   function cargarInicial() {
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
       nombre: (nombreV?.textContent || 'Usuario').trim(),
       correo: (correoV?.textContent?.trim()) || CORREO,
       ubic: (ubicV?.textContent || '').trim(),
-      region: (regionV?.textContent || 'Maule').trim(),
+      region: (regionV?.textContent || '').trim(),
       avatar: null,
     };
     guardarLS(base);
@@ -110,9 +110,9 @@ document.addEventListener('DOMContentLoaded', () => {
         ...previo,
         nombre: displayName,
         correo: usuario?.correo ?? CORREO,
-        // Mantener ubic/region desde LS
-        ubic: previo.ubic ?? '',
-        region: previo.region ?? 'Maule',
+        // Obtener ciudad y región del backend
+        ubic: usuario?.ubicacion?.ciudad ?? previo.ubic ?? '',
+        region: usuario?.ubicacion?.region ?? previo.region ?? '',
         avatar: previo.avatar ?? null,
       };
 
@@ -147,53 +147,64 @@ document.addEventListener('DOMContentLoaded', () => {
   btnGuardar?.addEventListener('click', async (e) => {
     e.preventDefault();
     if (!inpNombre || !inpCorreo) return;
-
+  
     // limpiar estados
     inpNombre.classList.remove('invalid');
     inpCorreo.classList.remove('invalid');
-
+  
     const nombreNuevo = inpNombre.value.trim();
     const correoNuevo = (inpCorreo.value.trim() || CORREO).trim();
-
+    const ciudadNueva = inpUbic.value.trim();
+    const regionNueva = inpRegion.value.trim();
+  
     let valido = true;
     if (!nombreNuevo) { inpNombre.classList.add('invalid'); valido = false; }
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correoNuevo);
     if (!correoNuevo || !emailOk) { inpCorreo.classList.add('invalid'); valido = false; }
     if (!valido) return;
-
+  
     // loading ON
     btnGuardar.textContent = 'Guardando...';
     btnGuardar.classList.add('loading');
     btnGuardar.disabled = true;
-
+  
     const previo = leerLS() || {};
     const body = {
-      // Enviamos solo campos que quieres actualizar en el JSON:
       nombre: nombreNuevo,
-      correo: correoNuevo, // si cambia, backend debe mover/renombrar clave
-      // (no tocamos ubic/region en backend, per tu requerimiento)
+      correo: correoNuevo,
     };
-
+  
     try {
-      // PUT al backend con el correo ACTUAL (antes del cambio)
+      // 1. PUT para actualizar nombre/correo
       await putUsuario(previo.correo || CORREO, body);
-
-      // Éxito: actualizar estado local/URL y repintar
+    
+      // 2. PATCH para actualizar ciudad y región si ambos tienen valor
+      if (ciudadNueva && regionNueva) {
+        const url = `${API_BASE}/usuarios/${encodeURIComponent(correoNuevo)}/ubicacion/region/${encodeURIComponent(regionNueva)}/${encodeURIComponent(ciudadNueva)}/modificar`;
+        const respPatch = await fetch(url, { method: 'PATCH' });
+        if (!respPatch.ok) {
+          const txtPatch = await respPatch.text();
+          throw new Error(`Error actualizando ciudad/región: ${respPatch.status} ${txtPatch}`);
+        }
+      }
+    
+      // 3. Actualizar estado local y repintar
       const fusionado = {
         ...previo,
         nombre: nombreNuevo,
         correo: correoNuevo,
-        // mantener ubic/region desde LS y avatar dataURL si existía
-        ubic: (inpUbic?.value.trim() ?? previo.ubic) || '',
-        region: (inpRegion?.value.trim() ?? previo.region) || 'Maule',
+        ubic: ciudadNueva || previo.ubic || '',
+        region: regionNueva || previo.region || '',
         avatar: (avatarV?.src?.startsWith('data:') ? avatarV.src : (previo.avatar || null)) || null,
       };
-
+    
       guardarLS(fusionado);
       localStorage.setItem('correoUsuario', correoNuevo);
       replaceCorreoInURL(correoNuevo);
       pintar(fusionado);
       modoEdicion(false);
+    
+      console.log('✅ Perfil actualizado correctamente');
     } catch (err) {
       console.error('❌ No se pudo guardar en backend:', err);
       alert('No se pudo actualizar tus datos en el servidor. Intenta nuevamente.');
