@@ -46,7 +46,7 @@
 
 ## 📌 Semana 6
 - Imprementacion del sistema de notificaciones
-  -`Se creo en la rama main un sistema de notificaciones que enviara archivos pdf con un infrome detallado de la informacion que este disponible para el usuario y otro donde se enviara cada cierto tiempo un html al correo del usuario con el clima de la semana y otros datos relevantes que le puedan servir al usuario`
+  - `Se creo en la rama main un sistema de notificaciones que enviara archivos pdf con un infrome detallado de la informacion que este disponible para el usuario y otro donde se enviara cada cierto tiempo un html al correo del usuario con el clima de la semana y otros datos relevantes que le puedan servir al usuario`
 
 - Implementaciones Backend   
   - `El nuevo formato permite un acceso más rápido a la información, ya que para obtener un usuario no es necesario recorrer todo el arreglo; ahora la búsqueda se realiza directamente por la clave correspondiente al correo o ID del usuario, optimizando la velocidad de los procesos.`
