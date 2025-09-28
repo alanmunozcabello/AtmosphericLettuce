@@ -107,8 +107,8 @@ body{
 .logo {
     display: block;       
     margin: 20px auto;    
-    width: 500px; 
-    max-width: 100%;        
+    width: 500px;    
+    max-width: 100%;     
     height: auto;         
 }
 
@@ -146,6 +146,8 @@ body{
   animation: spin 0.8s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+
 
 
 

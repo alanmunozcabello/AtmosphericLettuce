@@ -1,29 +1,46 @@
 import fitz
-from plant_service import preguntar_enfermedad
-from ai_service import preguntar_mistral
+import json
+import base64
+import os
+from services.plant_service import preguntar_enfermedad
+from services.ai_services import preguntar_mistral
+
 #pseudo implementación de la gestión del chat. NO IMPLEMENTACIÓN COMPLETA!!!!!
-def pdf_to_txt(entrada_de_relleno): #ver como pasar pdf o dirección de almacenamiento, etc. de momento la entrada es para que no explote nada
-    doc = fitz.open("Proyecto_pdf.pdf")
+def pdf_to_txt(pdf): #función en deshuso, el pdf ya viene en base64 desde el frontend
+    pdf = fitz.open("Proyecto_pdf.pdf")
     with open("transcripcion.txt", "w", encoding="utf-8") as transcripcion: 
-        for pagina in doc:
+        for pagina in pdf:
             transcripcion.write(pagina.get_text()+'\n')
-            return " " #retorna algo sin sentido de mientras
-    doc.close()
+        return transcripcion #retorna algo sin sentido de mientras
+    pdf.close()
 
-def procesar_mensaje(mensaje): #deberia de ser un diccionario
-    contexto=[] #esto arreglo de diccionarios se le pasará a ai_service
+def procesar_consulta(payload):  # debería ser un diccionario
+    contexto = []  # este arreglo de diccionarios se le pasará a ai_service
+    if payload.get("texto"): #si el payload tiene la clave "texto" se añade al contexto
+        contexto.append({"mensaje usuario": payload["texto"]})
 
-    if "imagenes" in mensaje: #por cada imagen en el mensaje llama a preguntar_enfermedad() y se guarda la respuesta
-        for imagen in mensaje["imagenes"]:
-            resultado_imagen=preguntar_enfermedad(imagen)#revisar funcion en plant_service!!!!!----------------------------------------------
-            contexto.append(f"resultado imagen {imagen}: {resultado_imagen}")
+    if payload.get("imagen"): #una ves esté listo volver a esto (implementar soporte para multiples imágenes)------------------------------
+        for imagen in payload["imagen"]:
+            contexto.append({"json":preguntar_enfermedad(imagen)})
 
-    if "pdfs" in mensaje: #por cada pdf en el mensaje se transforma a texto llamando a pdf_to_txt() y se guarda la respuesta
-        for pdf in mensaje["pdfs"]:
-            texto_pdf=pdf_to_txt(pdf)
-            contexto.append(f"resultado pdf {pdf}: {texto_pdf}")
-    
-    if "texto" in mensaje: #se añade el texto del usuario al contexto
-        contexto.append(f"mensaje usuario: {mensaje["texto"]}")
+    if payload.get("pdf"): #una ves esté listo volver a esto (implementar soporte para multiples pdf (un for simple y cambiar linea 15 en el script de base64 -> [base64]))
+        
+        for pdf_64 in payload["pdf"]:
+            # pdf_64 = payload["pdf"]
+            pdf_decodificado = base64.b64decode(pdf_64) #decodificar el pdf en base64
 
-    return preguntar_mistral(contexto) #retornar la respuesta del chatbot al frontend
+            with open("temp.pdf", "wb") as f: #pdf temporal
+                f.write(pdf_decodificado)
+
+            doc = fitz.open("temp.pdf") #extraer contenido del pdf con fitz
+            texto = ""
+            for pagina in doc:
+                texto += pagina.get_text() + "\n"
+            doc.close()
+            os.remove("temp.pdf") #matar el pdf temporal
+
+            contexto.append({"contenido pdf": texto})
+
+    # print(contexto) #para debugear
+
+    return preguntar_mistral(contexto)  # retornar la respuesta del chatbot al frontend
