@@ -6,7 +6,7 @@ bandera_db_cargada=False
 
 usuarios={}
 
-def service_cargar_db():
+def service_cargar_db(): #si la db no está cargada se carga
     global bandera_db_cargada
     global usuarios
     if(bandera_db_cargada is False):
@@ -14,7 +14,8 @@ def service_cargar_db():
             usuarios=cargar_db()
 
             bandera_db_cargada=True
-            return True #si se cargó correctamente
+            #si no retorna nada es porque funcionó, de lo contrario reotrna una exepción
+            # return True #si se cargó correctamente
         except FileNotFoundError: #en caso de que el archivo no se encuentre
             return {"error": "Archivo de usuarios no encontrado"}
         except UnicodeDecodeError: #en caso de que haya un error de escritura en el json
@@ -41,11 +42,7 @@ def service_leer_usuarios(): #leer el json y retonar todos los usuarios en un di
     try: #cargar base de datos
         # with open(RUTA_USUARIOS, "r", encoding="utf-8") as archivo_usuarios: #r de read y archivoUsuarios es el nombre del archivo abierto
         #     usuarios=json.load(archivo_usuarios)
-        if(bandera_db_cargada is False): #si la db no está cargada
-            respuesta=service_cargar_db()
-            if(respuesta is not True): #manejar respuesta de la funcion
-                return respuesta #si hubo un error al cargar la db se retorna el error
-            
+        service_cargar_db()
         return usuarios #si se cargó correctamente la db se retorna el diccionario de usuarios
 
     except FileNotFoundError: #en caso de que el archivo no se encuentre
@@ -55,11 +52,7 @@ def service_leer_usuarios(): #leer el json y retonar todos los usuarios en un di
 
 def service_registrar_nuevo_usuario(correo, nombre, contrasena): #guardar/registrar un nuevo usuario
     try: #cargar base de datos
-        if(bandera_db_cargada is False): #si la db no está cargada
-            respuesta=service_cargar_db()
-            if(respuesta is not True): #manejar respuesta de la funcion
-                return respuesta #si hubo un error al cargar la db se retorna el error
-            
+        service_cargar_db()
     except FileNotFoundError: #en caso de que el archivo no se encuentre
         return {"error": "Archivo de usuarios no encontrado"}
     except UnicodeDecodeError: #en caso de que haya un error de escritura en el json
@@ -72,7 +65,13 @@ def service_registrar_nuevo_usuario(correo, nombre, contrasena): #guardar/regist
             return {"error":"nombre de usuario o correo ya utilizado"}
         
         #cambiar a la hora de sql
-        nuevo_usuario={"nombre":nombre, "contrasena":contrasena_hasheada, "ubicacion":{"latitud":None, "longitud":None}, "cultivos":{}} #si el usuario o contraseña no existen se crea un nuevo usuario con los parametros de llegada
+        nuevo_usuario={"nombre":nombre, #si el usuario o contraseña no existen se crea un nuevo usuario con los parametros de llegada y el resto se "inicializan" en nulo
+                       "contrasena":contrasena_hasheada, 
+                       "ubicacion":{"latitud":None, 
+                                    "longitud":None,
+                                    "ciudad":None,
+                                    "region":None}, 
+                       "cultivos":{}}
         usuarios[correo]=nuevo_usuario #ahora el id es el correo -> mucho mejor y se puede implementar eliminación de usuarios (no necesarios pero se podría ahora)
 
         if(guardar_usuarios() is True): #de haberse guardado correctamente
@@ -89,11 +88,8 @@ def service_registrar_nuevo_usuario(correo, nombre, contrasena): #guardar/regist
     
 def service_obtener_usuario_frontend(correo): #retorna toda la informacion de un usuario en concreto
     try: #cargar base de datos
-        if(bandera_db_cargada is False): #si la db no está cargada
-            respuesta=service_cargar_db()
-            if(respuesta is not True): #manejar respuesta de la funcion | tal aprece que es "is not None"
-                return respuesta #si hubo un error al cargar la db se retorna el error
-        
+        service_cargar_db()
+
         #cambiar a la hora de sql
         usuario=usuarios[correo] #sacar el usuario de la db
 
@@ -111,11 +107,8 @@ def service_obtener_usuario_frontend(correo): #retorna toda la informacion de un
     
 def service_obtener_cultivos_usuario(correo): #se obtienen todos los cultivos de un usuario, puede que posteriormente venga del frontend-----
     try: #cargar base de datos
-        if(bandera_db_cargada is False): #si la db no está cargada
-            respuesta=service_cargar_db()
-            if(respuesta is not True): #manejar respuesta de la funcion
-                return respuesta #si hubo un error al cargar la db se retorna el error
-            
+        service_cargar_db()
+
         #cambiar a la hora de sql
         usuario=usuarios[correo] #sacar el usuario de la db -> mucho más rapido de esta nuevo forma!
         return usuario["cultivos"]
@@ -130,11 +123,8 @@ def service_obtener_cultivos_usuario(correo): #se obtienen todos los cultivos de
 #puede que despues esta funcion desaparezca y quede solo la de service_modificar_usuario()
 def service_agregar_o_modificar_cultivo(correo, cultivo, herctareas): #se agrega el cultivo si no está, y si está se modifica -> tal vez ver si es mejor separar las funciones y permitir tener cultivos repetidos (puede que el usuario tenga 2 campos de maiz con distintas hectareas en cada campo)
     try: #cargar base de datos
-        if(bandera_db_cargada is False): #si la db no está cargada
-            respuesta=service_cargar_db()
-            if(respuesta is not True): #manejar respuesta de la funcion | tal aprece que es "is not None"
-                return respuesta #si hubo un error al cargar la db se retorna el error
-
+        service_cargar_db()
+        
         #cambiar a la hora de sql
         usuarios[correo]["cultivos"][cultivo]=int(herctareas) #-> crea cultivo : hectareas, si ya está en el diccionario lo modifica
         
@@ -152,10 +142,7 @@ def service_agregar_o_modificar_cultivo(correo, cultivo, herctareas): #se agrega
 
 def service_eliminar_cultivo(correo, cultivo): #busca un cultivo por el nombre y lo elimina -> tal vez sea util
     try: #cargar base de datos
-        if(bandera_db_cargada is False): #si la db no está cargada
-            respuesta=service_cargar_db()
-            if(respuesta is not True): #manejar respuesta de la funcion | tal aprece que es "is not None"
-                return respuesta #si hubo un error al cargar la db se retorna el error
+        service_cargar_db()
 
         #cambiar a la hora de sql
         usuarios[correo]["cultivos"].pop(cultivo)
@@ -175,11 +162,7 @@ def service_eliminar_cultivo(correo, cultivo): #busca un cultivo por el nombre y
 
 def service_modificar_usuario(correo, usuarioMOD): #MODIFICAAAAAAAAAAAAAAAAAAAAAAAAAR ESTÁ TODITO MALOOOOO, TAREA EN TRELLO COMO TO-DO
     try: #cargar base de datos
-        if(bandera_db_cargada is False): #si la db no está cargada
-            respuesta=service_cargar_db()
-            if(respuesta is not True): #manejar respuesta de la funcion | tal parece que es "is not None"
-                return respuesta #si hubo un error al cargar la db se retorna el error
-
+        service_cargar_db()
 
         contrasena_hasheada = hash_password_simple(usuarioMOD["contrasena"])
         usuarioMOD["contrasena"] = contrasena_hasheada
@@ -211,10 +194,7 @@ def service_modificar_usuario(correo, usuarioMOD): #MODIFICAAAAAAAAAAAAAAAAAAAAA
     
 def service_modificar_ubicacion_usuario(correo, lat, lon):
     try: #cargar base de datos
-        if(bandera_db_cargada is False): #si la db no está cargada
-            respuesta=service_cargar_db()
-            if(respuesta is not True): #manejar respuesta de la funcion | tal aprece que es "is not None"
-                return respuesta #si hubo un error al cargar la db se retorna el error
+        service_cargar_db()
 
         #cambiar a la hora de sql
         usuarios[correo]["ubicacion"]["latitud"]=float(lat)
@@ -234,10 +214,7 @@ def service_modificar_ubicacion_usuario(correo, lat, lon):
     
 def service_iniciar_sesion(correo_entrada, contrasena_entrada):
     try:#cargar base de datos
-        if(bandera_db_cargada is False): #si la db no está cargada
-            respuesta=service_cargar_db()
-            if(respuesta is not True): #manejar respuesta de la funcion | tal aprece que es "is not None"
-                return respuesta #si hubo un error al cargar la db se retorna el error
+        service_cargar_db()
 
         #cambiar a la hora de sql
         datos_usuario = usuarios.get(correo_entrada)
@@ -263,6 +240,25 @@ def service_iniciar_sesion(correo_entrada, contrasena_entrada):
         return {"id":correo_entrada, **usuario_sin_credenciales}
         
     except FileNotFoundError: #tomar las excepciones que puedan saltar de service_modificar_usuario
+        return {"error": "Archivo de usuarios no encontrado"}
+    except UnicodeDecodeError:
+        return {"error": "Archivo JSON corrupto"}
+    except Exception as e:
+        return{"error": e}
+
+def service_modificar_region_ciudad_usuario(correo, region, ciudad):
+    try: #cargar base de datos
+        service_cargar_db()
+    
+        #cambiar a la hora de sql
+        usuarios[correo]["ubicacion"]["ciudad"]=ciudad
+        usuarios[correo]["ubicacion"]["region"]=region
+        if(guardar_usuarios() is True):
+            return {"mensaje":"ubicación modificada correctamente"}
+        
+        return guardar_usuarios() #-> retorna error
+    
+    except FileNotFoundError: #tomar las excepciones que puedan saltar de service_modificar_usuario()
         return {"error": "Archivo de usuarios no encontrado"}
     except UnicodeDecodeError:
         return {"error": "Archivo JSON corrupto"}

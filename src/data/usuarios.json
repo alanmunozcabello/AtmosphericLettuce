@@ -126,5 +126,19 @@
             "longitud": null
         },
         "cultivos": {}
+    },
+    "felipinho@pipo.br": {
+        "nombre": "Pepinho",
+        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$U9Y814PJnC3ESnBeT3xAiA$/zOwYHhYUTXNKI9FTRtfazJRl4ujryO2/vjpsryAeQE",
+        "ubicacion": {
+            "latitud": 25.0,
+            "longitud": 50.0,
+            "ciudad": "Curicó",
+            "region": "Maule"
+        },
+        "cultivos": {
+            "Piña": 3,
+            "Guindas": 15
+        }
     }
 }
