@@ -1,4 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const CORREO = new URLSearchParams(location.search).get('correo') 
+               || localStorage.getItem('correoUsuario');
+
+  if (!CORREO) {
+    console.warn("⚠️ Usuario no identificado");
+    // opcional → redirigir al login:
+    window.location.href = "login.html";
+  }
+
+  // aseguramos que siempre esté en localStorage
+  localStorage.setItem('correoUsuario', CORREO);
+  
   const form   = document.getElementById('register-form');
   const nombre = document.getElementById('nombre');
   const email  = document.getElementById('email');

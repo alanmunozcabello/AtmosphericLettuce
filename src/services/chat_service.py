@@ -3,7 +3,7 @@ import json
 import base64
 import os
 from services.plant_service import preguntar_enfermedad
-from services.ai_service import preguntar_mistral
+from services.ai_services import preguntar_mistral
 
 #pseudo implementación de la gestión del chat. NO IMPLEMENTACIÓN COMPLETA!!!!!
 def pdf_to_txt(pdf): #función en deshuso, el pdf ya viene en base64 desde el frontend
