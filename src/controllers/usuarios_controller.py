@@ -1,5 +1,5 @@
 import re
-from services.usuarios_service import service_leer_usuarios, service_registrar_nuevo_usuario, service_obtener_usuario_frontend, service_obtener_cultivos_usuario, service_agregar_o_modificar_cultivo, service_eliminar_cultivo, service_modificar_usuario, service_modificar_ubicacion_usuario, service_iniciar_sesion #importar los servicios de usuarios
+from services.usuarios_service import service_leer_usuarios, service_registrar_nuevo_usuario, service_obtener_usuario_frontend, service_obtener_cultivos_usuario, service_agregar_o_modificar_cultivo, service_eliminar_cultivo, service_modificar_usuario, service_modificar_ubicacion_usuario, service_iniciar_sesion, service_modificar_region_ciudad_usuario #importar los servicios de usuarios
 
 def controller_obtener_todos_los_usuarios(): #retornar todos los usuarios
     return service_leer_usuarios()
@@ -32,3 +32,6 @@ def controller_modificar_usuario(correo, usuarioMOD):
 
 def controller_modificar_ubicacion_usuario(correo, lat, lon):
     return service_modificar_ubicacion_usuario(correo, lat, lon)
+
+def controller_modificar_region_ciudad_usuario(correo, region, ciudad):
+    return service_modificar_region_ciudad_usuario(correo, region, ciudad)

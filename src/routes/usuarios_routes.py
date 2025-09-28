@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from controllers.usuarios_controller import controller_obtener_todos_los_usuarios, controller_obtener_usuario, controller_registrar_usuario, controller_obtener_cultivos_usuario, controller_agregar_o_modificar_cultivo, controller_eliminar_cultivo, controller_iniciar_sesion, controller_modificar_usuario, controller_modificar_ubicacion_usuario
+from controllers.usuarios_controller import controller_obtener_todos_los_usuarios, controller_obtener_usuario, controller_registrar_usuario, controller_obtener_cultivos_usuario, controller_agregar_o_modificar_cultivo, controller_eliminar_cultivo, controller_iniciar_sesion, controller_modificar_usuario, controller_modificar_ubicacion_usuario, controller_modificar_region_ciudad_usuario
 from pydantic import BaseModel
 
 router=APIRouter()
@@ -40,17 +40,16 @@ def ruta_registrar_usuario(usuario: UsuarioRegistro):
 #     return controller_registrar_usuario(correo, nombre, contrasena) #----------------front
 
 @router.get("/usuarios/{correo}/cultivos")
-def ruta_obtener_cultivos_usuario(correo: str):
+def ruta_obtener_cultivos_usuario(correo):
     return controller_obtener_cultivos_usuario(correo)
 
-@router.patch("/usuarios/{correo}/{cultivo}/{hectareas}/agregar_modificar")
-def ruta_agregar_o_modificar_cultivo(correo: str, cultivo: str, hectareas: float):
+@router.patch("/usuarios/{correo}/{cultivo}/{hectareas}/agregar_modificar") #patch para modificar
+def ruta_agregar_o_modificar_cultivo(correo, cultivo, hectareas):
     return controller_agregar_o_modificar_cultivo(correo, cultivo, hectareas)
 
-@router.delete("/usuarios/{correo}/{cultivo}/eliminar")
-def ruta_eliminar_cultivo(correo: str, cultivo: str):
+@router.delete("/usuarios/{correo}/{cultivo}/eliminar") #delete para borrar
+def ruta_eliminar_cultivo(correo, cultivo):
     return controller_eliminar_cultivo(correo, cultivo)
-
 
 @router.put("/usuarios/{correo}/modificar") #HAY QUE CAMBIAR TODITO EL COSIACO
 def ruta_modificar_usuario(correo, usuarioMOD): #usuarioMOD es el dict completo del usuario a modificar
@@ -59,3 +58,7 @@ def ruta_modificar_usuario(correo, usuarioMOD): #usuarioMOD es el dict completo 
 @router.patch("/usuarios/{correo}/ubicacion/{lat}/{lon}/modificar")
 def ruta_modificar_ubicacion_usuario(correo, lat, lon): #lat y lon pueden ser pasadon como string sin problema
     return controller_modificar_ubicacion_usuario(correo, lat, lon)
+
+@router.patch("/usuarios/{correo}/ubicacion/region/{region}/{ciudad}/modificar")
+def ruta_modificar_region_ciudad_usuario(correo, region, ciudad):
+    return controller_modificar_region_ciudad_usuario(correo, region, ciudad)

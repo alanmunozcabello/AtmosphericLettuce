@@ -127,45 +127,43 @@
         },
         "cultivos": {}
     },
-    "rasky@gmail.com": {
-        "nombre": "rasky",
-        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$46A0MnuLTF8l+8um8iHXYw$reqk7KTnha08GvZqLqDzkxpDeyd3FfWz9vZnkNy9rZE",
+    "felipinho@pipo.br": {
+        "nombre": "Pepinho",
+        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$U9Y814PJnC3ESnBeT3xAiA$/zOwYHhYUTXNKI9FTRtfazJRl4ujryO2/vjpsryAeQE",
         "ubicacion": {
-            "latitud": null,
-            "longitud": null
-        },
-        "cultivos": {}
-    },
-    "patorojas@gmail.com": {
-        "nombre": "patricio",
-        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$NK+pbIwvCQDYKtW1oNbHCw$YpREo3b32C9AWOo976Cs7Y5JaeEipbYMO5uoVbZYh18",
-        "ubicacion": {
-            "latitud": null,
-            "longitud": null
-        },
-        "cultivos": {}
-    },
-    "carlos@gmail.com": {
-        "nombre": "carlos@gmail.com",
-        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$iaIWzLtls6rPwv9kKtdSsg$hInEe+4Fqx408bwzj+s/7m/jnbf2a7Ume08BvH/0bQA",
-        "ubicacion": {
-            "latitud": null,
-            "longitud": null
+            "latitud": 25.0,
+            "longitud": 50.0,
+            "ciudad": "Curicó",
+            "region": "Maule"
         },
         "cultivos": {
-            "lechuga": 1,
-            "tomate": 1,
-            "papa": 1,
-            "messi": 1
+            "Piña": 3,
+            "Guindas": 15
         }
     },
-    "agustina@gmail.com": {
-        "nombre": "agustina",
-        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$1N98bQUqaICrBvaGrNRjUg$FwUr5QhbpBmMY1BT+NGsYZnCOIo89aBCpz984wOhMbI",
+    "matilda@gmail.com": {
+        "nombre": "matilda",
+        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$AZXGYSsM+I/oFQXPFDIO8Q$hvB9mOzM9ry5MA+UrYxFcJ5ayKqOrYgDCad6AohrKUE",
         "ubicacion": {
             "latitud": null,
-            "longitud": null
+            "longitud": null,
+            "ciudad": null,
+            "region": null
         },
         "cultivos": {}
+    },
+    "rasky@gmail.com": {
+        "nombre": "raskyxd",
+        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$WaaOnt7Iq60k9miEGn/7Og$3jSnJvwCxL3FZPZgT0BjCQsKHxlucIl0HVdbtRzAp5E",
+        "ubicacion": {
+            "latitud": null,
+            "longitud": null,
+            "ciudad": "Lontue",
+            "region": "Biobio"
+        },
+        "cultivos": {
+            "ola": 1,
+            "aaa": 1
+        }
     }
 }
