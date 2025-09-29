@@ -33,7 +33,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const vPass   = pass.value.trim();
     const vPass2  = pass2.value.trim();
 
-    if (!vNombre) { nombre.classList.add('invalid'); ok = false; }
+    if (!vNombre || !/^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s]+$/.test(vNombre)) { 
+      nombre.classList.add('invalid'); 
+      ok = false; 
+    }
     if (!vEmail || !vEmail.includes("@") || !vEmail.includes(".")) { email.classList.add("invalid"); ok = false; }
     if (!vPass || vPass.length < 6) { pass.classList.add('invalid'); ok = false;  }// se quito la alerta de que la contraseña debe tener al menos 6 dígitos
     if (!vPass2 || vPass2 !== vPass) { pass2.classList.add('invalid'); ok = false; }// se quito la alerta de que las contraseñas no coinciden
