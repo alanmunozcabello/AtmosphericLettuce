@@ -36,7 +36,7 @@ pip install fastapi "uvicorn[standard]" python-dotenv requests argon2-cffi PyMuP
 
 ## Variables de entorno (.env)
 
-Crea un archivo llamado `.env` dentro de `src/` con el siguiente contenido y reemplaza los valores:
+Crea un archivo llamado `.env` en la carpeta raiz del proyecto con el siguiente contenido y reemplaza los valores:
 
 ```
 # Clave de OpenWeather (pronóstico del tiempo)
@@ -50,7 +50,7 @@ CROPHEALTH_API_KEY=tu_api_key_de_crop_kindwise
 ```
 
 Notas:
-- Si ejecutas el servidor desde `src/`, `.env` debe estar en `src/`.
+- Si ejecutas el servidor desde `src/`, `.env` debe estar en la carpeta raiz del proyecto.
 - Si cambias el directorio de trabajo, asegúrate de que `.env` esté donde se lance el proceso (o ajusta el código para cargar una ruta específica).
 
 ## Estructura de `src/`
@@ -80,13 +80,13 @@ El servidor está pensado para ejecutarse desde la carpeta `src/` (por la ruta d
 ```powershell
 # Estando en la raíz del repo
 Set-Location src
-uvicorn app:app --reload
+python -m uvicorn app:app --reload
 ```
 
 Opcional (exponer en la red local / cambiar host/puerto):
 
 ```powershell
-uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+python -m uvicorn app:app --host 0.0.0.0 --port 8000
 ```
 
 - Documentación interactiva (Swagger): http://127.0.0.1:8000/docs
