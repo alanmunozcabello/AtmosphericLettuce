@@ -69,9 +69,10 @@
             "region": "Coquimbo"
         },
         "cultivos": {
-            "Duraznos": 7,
+            "Duraznos": 1,
             "Limones": 5,
-            "Chirimoyas": 3
+            "Chirimoyas": 3,
+            "Manzanas": 1
         }
     }
 }

@@ -1,19 +1,20 @@
 
 document.addEventListener('DOMContentLoaded', () => {
-  const CORREO = new URLSearchParams(location.search).get('correo') 
-              || localStorage.getItem('correoUsuario');
+  const CORREO = new URLSearchParams(location.search).get('correo')
+    || localStorage.getItem('correoUsuario');
 
   if (!CORREO) {
     console.warn("⚠️ Usuario no identificado");
     window.location.href = "login.html";
   }
 
+
   localStorage.setItem('correoUsuario', CORREO);
 
-  const form   = document.getElementById('login-form');
-  const email  = document.getElementById('email');
-  const pass   = document.getElementById('password');
-  const btn    = document.getElementById('btn-login');
+  const form = document.getElementById('login-form');
+  const email = document.getElementById('email');
+  const pass = document.getElementById('password');
+  const btn = document.getElementById('btn-login');
   const toggle = document.getElementById('toggle-pass');
 
   if (toggle) {
@@ -29,6 +30,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  const clearInvalid = (el) => el.classList.remove('invalid');
+  email.addEventListener('input', () => clearInvalid(email));
+  pass.addEventListener('input', () => clearInvalid(pass));
+
+
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -36,12 +43,12 @@ document.addEventListener('DOMContentLoaded', () => {
     pass.classList.remove('invalid');
 
     const vEmail = email.value.trim();
-    const vPass  = pass.value.trim();
+    const vPass = pass.value.trim();
 
     let ok = true;
     if (!vEmail || !vEmail.includes('@') || !vEmail.includes('.')) { email.classList.add('invalid'); ok = false; }
     if (!vPass) { pass.classList.add('invalid'); ok = false; }
-    if (vPass.length < 6) { pass.classList.add('invalid'); ok = false; alert('La contraseña debe contener al menos 6 dígitos.'); }
+    if (vPass.length < 6) { pass.classList.add('invalid'); ok = false;  }
     if (!ok) return;
 
     const originalText = btn.textContent;
@@ -51,14 +58,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const emailEnc = encodeURIComponent(vEmail);
-      const passEnc  = encodeURIComponent(vPass);
+      const passEnc = encodeURIComponent(vPass);
       const LOGIN_URL = `http://127.0.0.1:8000/usuarios/iniciar_sesion/${emailEnc}/${passEnc}`;
 
       const resp = await fetch(LOGIN_URL, { method: 'GET', headers: { 'Accept': 'application/json' } });
 
       // Leer siempre como texto y luego intentar JSON
-      const raw  = await resp.text();
-      let body   = null;
+      const raw = await resp.text();
+      let body = null;
       try { body = JSON.parse(raw); } catch { body = raw; }
 
       console.log('status', resp.status, 'body:', body);

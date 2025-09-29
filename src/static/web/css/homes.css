@@ -205,6 +205,15 @@ body{
   margin-left:auto;
   font-weight:600;
 }
+.error-msg {
+  display: none;
+  font-size: 13px;
+  color: #dc3545;
+  margin-top: 6px;
+}
+
+#input-cultivo.invalid {
+   border-color:#dc3545 !important; }
 
 
 
