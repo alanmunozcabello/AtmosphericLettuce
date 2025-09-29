@@ -158,9 +158,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const regionNueva = inpRegion.value.trim();
   
     let valido = true;
-    if (!nombreNuevo) { inpNombre.classList.add('invalid'); valido = false; }
+    // ✅ Validación del nombre corregida
+    if (!nombreNuevo || !/^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s]+$/.test(nombreNuevo)) { 
+      inpNombre.classList.add('invalid'); 
+      alert("Nombre no valido");
+      valido = false; 
+    }
+
+    // ✅ Validación del correo corregida  
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correoNuevo);
-    if (!correoNuevo || !emailOk) { inpCorreo.classList.add('invalid'); valido = false; }
+    if (!correoNuevo || !emailOk) { 
+      inpCorreo.classList.add('invalid'); 
+      alert("Correo no valido");
+      valido = false; 
+    }
+
     if (!valido) return;
   
     // loading ON
