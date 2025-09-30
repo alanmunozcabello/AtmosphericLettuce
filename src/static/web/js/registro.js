@@ -33,13 +33,61 @@ document.addEventListener('DOMContentLoaded', () => {
     const vPass   = pass.value.trim();
     const vPass2  = pass2.value.trim();
 
-    if (!vNombre || !/^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s]+$/.test(vNombre)) { 
+    // Validación del nombre
+    if (!vNombre) {
       nombre.classList.add('invalid'); 
+      alert('El nombre es obligatorio');
+      ok = false; 
+    } else if (vNombre.length < 1 || vNombre.length > 60) {
+      nombre.classList.add('invalid'); 
+      alert('El nombre debe tener entre 1 y 60 caracteres');
+      ok = false; 
+    } else if (!/^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s]+$/.test(vNombre)) {
+      nombre.classList.add('invalid'); 
+      alert('El nombre solo puede contener letras y espacios');
       ok = false; 
     }
-    if (!vEmail || !vEmail.includes("@") || !vEmail.includes(".")) { email.classList.add("invalid"); ok = false; }
-    if (!vPass || vPass.length < 6) { pass.classList.add('invalid'); ok = false;  }// se quito la alerta de que la contraseña debe tener al menos 6 dígitos
-    if (!vPass2 || vPass2 !== vPass) { pass2.classList.add('invalid'); ok = false; }// se quito la alerta de que las contraseñas no coinciden
+    
+    // Validación del email
+    if (!vEmail) {
+      email.classList.add("invalid"); 
+      alert('El correo electrónico es obligatorio');
+      ok = false;
+    } else if (vEmail.length < 10 || vEmail.length > 70) {
+      email.classList.add("invalid"); 
+      alert('El correo electrónico debe tener entre 10 y 70 caracteres');
+      ok = false;
+    } else if (!vEmail.includes("@") || !vEmail.includes(".")) {
+      email.classList.add("invalid"); 
+      alert('El correo electrónico debe tener un formato válido (ejemplo@dominio.com)');
+      ok = false;
+    }
+    
+    // Validación de la contraseña
+    if (!vPass) {
+      pass.classList.add('invalid'); 
+      alert('La contraseña es obligatoria');
+      ok = false;
+    } else if (vPass.length < 6) {
+      pass.classList.add('invalid'); 
+      alert('La contraseña debe tener al menos 6 caracteres');
+      ok = false;
+    } else if (vPass.length > 25) {
+      pass.classList.add('invalid'); 
+      alert('La contraseña debe tener máximo 25 caracteres');
+      ok = false;
+    }
+    
+    // Validación de confirmación de contraseña
+    if (!vPass2) {
+      pass2.classList.add('invalid'); 
+      alert('Debe confirmar la contraseña');
+      ok = false;
+    } else if (vPass2 !== vPass) {
+      pass2.classList.add('invalid'); 
+      alert('Las contraseñas no coinciden');
+      ok = false;
+    }
     if (!ok) return;
 
     const originalText = btn.textContent;
