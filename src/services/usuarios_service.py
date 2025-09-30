@@ -150,8 +150,7 @@ def service_eliminar_cultivo(correo, cultivo): #busca un cultivo por el nombre y
         if(guardar_usuarios() is True): #de haberse guardado correctamente
             return {"mensaje": "cultivo" + cultivo + " guardado exitosamente"}
        
-
-        return {"mensaje": "cultivo "+ cultivo + " eliminado exitosamente"}
+        return guardar_usuarios()
     
     except FileNotFoundError: #si algo falla en service_obtener_usuario() se capta cualquiera que sea la exception
         return {"error": "Archivo de usuarios no encontrado"}
@@ -259,6 +258,24 @@ def service_modificar_region_ciudad_usuario(correo, region, ciudad):
         
         return guardar_usuarios() #-> retorna error
     
+    except FileNotFoundError: #tomar las excepciones que puedan saltar de service_modificar_usuario()
+        return {"error": "Archivo de usuarios no encontrado"}
+    except UnicodeDecodeError:
+        return {"error": "Archivo JSON corrupto"}
+    except Exception as e:
+        return{"error": e}
+    
+def service_eliminar_usuario(correo):
+    try: #cargar base de datos
+        service_cargar_db()
+
+        #cambiar a la hora de sql
+        usuarios.pop(correo)
+        if(guardar_usuarios() is True): #de haberse guardado correctamente
+            return {"mensaje" : "Usuario " + correo + " eliminado"}
+        
+        return guardar_usuarios()
+
     except FileNotFoundError: #tomar las excepciones que puedan saltar de service_modificar_usuario()
         return {"error": "Archivo de usuarios no encontrado"}
     except UnicodeDecodeError:
