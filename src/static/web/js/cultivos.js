@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!CORREO) {
     console.warn("⚠️ Usuario no identificado");
     // opcional → redirigir al login:
-    window.location.href = "login.html";
+    window.location.href = "index.html";
   }
 
   // aseguramos que siempre esté en localStorage
