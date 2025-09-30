@@ -51,8 +51,14 @@ def ruta_agregar_o_modificar_cultivo(correo, cultivo, hectareas):
 def ruta_eliminar_cultivo(correo, cultivo):
     return controller_eliminar_cultivo(correo, cultivo)
 
+class UsuarioModificado(BaseModel):
+    correo: str
+    nombre: str
+    ciudad: str
+    region: str
+
 @router.put("/usuarios/{correo}/modificar") #HAY QUE CAMBIAR TODITO EL COSIACO
-def ruta_modificar_usuario(correo, usuarioMOD): #usuarioMOD es el dict completo del usuario a modificar
+def ruta_modificar_usuario(correo, usuarioMOD: UsuarioModificado): #usuarioMOD es el dict completo del usuario a modificar
     return controller_modificar_usuario(correo, usuarioMOD)
 
 @router.patch("/usuarios/{correo}/ubicacion/{lat}/{lon}/modificar")

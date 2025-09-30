@@ -160,25 +160,25 @@ def service_eliminar_cultivo(correo, cultivo): #busca un cultivo por el nombre y
     except Exception as e:
         return {"error": e}
 
-def service_modificar_usuario(correo, usuarioMOD): #MODIFICAAAAAAAAAAAAAAAAAAAAAAAAAR ESTÁ TODITO MALOOOOO, TAREA EN TRELLO COMO TO-DO
+def service_modificar_usuario(correo, usuarioMOD): #modifica el nombre, ciudad o region de un usuario
     try: #cargar base de datos
         service_cargar_db()
 
-        contrasena_hasheada = hash_password_simple(usuarioMOD["contrasena"])
-        usuarioMOD["contrasena"] = contrasena_hasheada
-        #del arreglo usuarios hay que reemplazar al usuario con el id=correo por el usuarioMOD
-        longitud=len(usuarios)
+        #cambiar a la hora de sql
+        correo=usuarioMOD["correo"] #correo del usuario a modificar
+        usuarioOG=usuarios[correo] #ussuario original para comparar cambios
 
-        if isinstance(usuarioMOD, str):  
-            usuarioMOD = json.loads(usuarioMOD)
-        
-        i=0
-        while(i<longitud):#iterar sobre cada usuario hasta encontrar el que se desea modificar
-            if(usuarios[i]["id"]==correo):
-                print(i)
-                usuarios[i]=usuarioMOD #reemplazar el usuario antiguo por el modificado
-                break
-            i+=1 #no olvidar el i+=1 porfavor :cccccc
+        #modificar nombre
+        if(usuarioOG["nombre"]!=usuarioMOD["nombre"]):
+            usuarios[correo]["nombre"]=usuarioMOD["nombre"]
+
+        #modificar ciudad
+        if(usuarioOG["ubicacion"]["ciudad"]!=usuarioMOD["ciudad"]):
+            usuarios[correo]["ubicacion"]["ciudad"]=usuarioMOD["ciudad"]
+
+        #modificar region
+        if(usuarioOG["ubicacion"]["region"]!=usuarioMOD["region"]):
+            usuarios[correo]["ubicacion"]["region"]=usuarioMOD["region"]
 
         if(guardar_usuarios() is True):
             return {"mensaje":"usuario modificado correctamente"}
