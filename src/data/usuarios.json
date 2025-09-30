@@ -58,5 +58,16 @@
             "Avena": 20,
             "Trigo": 18
         }
+    },
+    "dieguitovads2006@gmail.com": {
+        "nombre": "Diego Vicente Andrés Deumacán Silva aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$jEp5Z7S6Lx/q5SNYBTdGgg$FUsMbsnDfnh+QBrFABCzoJtUv09KWOThmNCTdSopjOU",
+        "ubicacion": {
+            "latitud": null,
+            "longitud": null,
+            "ciudad": null,
+            "region": null
+        },
+        "cultivos": {}
     }
 }
