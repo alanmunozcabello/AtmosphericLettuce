@@ -14,14 +14,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Sustituye tu putUsuario por esta versión que envía usuarioMOD como query param
   const putUsuario = async (correoActual, body) => {
-    const url = new URL(`${API_BASE}/usuarios/${encodeURIComponent(correoActual)}/modificar`);
-    url.searchParams.set('usuarioMOD', JSON.stringify(body)); // <-- clave: va en la query
+    const url = `${API_BASE}/usuarios/${encodeURIComponent(correoActual)}/modificar`;
+    
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body) // ✅ Enviar como body JSON
+    });
 
-    const res = await fetch(url.toString(), { method: 'PUT' }); // sin body
-    let text = '';
-    try { text = await res.text(); } catch { }
-    if (!res.ok) throw new Error(`PUT fallo: ${res.status} ${res.statusText} ${text}`);
-    try { return JSON.parse(text || '{}'); } catch { return {}; }
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`PUT falló: ${res.status} ${res.statusText} ${text}`);
+    }
+
+    try {
+      return await res.json();
+    } catch {
+      return {};
+    }
   };
 
 
@@ -184,21 +196,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const body = {
       nombre: nombreNuevo,
       correo: correoNuevo,
+      ciudad: ciudadNueva || '',
+      region: regionNueva || ''
     };
   
     try {
       // 1. PUT para actualizar nombre/correo
       await putUsuario(previo.correo || CORREO, body);
     
-      // 2. PATCH para actualizar ciudad y región si ambos tienen valor
-      if (ciudadNueva && regionNueva) {
-        const url = `${API_BASE}/usuarios/${encodeURIComponent(correoNuevo)}/ubicacion/region/${encodeURIComponent(regionNueva)}/${encodeURIComponent(ciudadNueva)}/modificar`;
-        const respPatch = await fetch(url, { method: 'PATCH' });
-        if (!respPatch.ok) {
-          const txtPatch = await respPatch.text();
-          throw new Error(`Error actualizando ciudad/región: ${respPatch.status} ${txtPatch}`);
-        }
-      }
+      // 2. PATCH para actualizar ciudad y región si ambos tienen valor //esta cosa estaba dando error feo de la nada
+      // if (ciudadNueva && regionNueva) {
+      //   const url = `${API_BASE}/usuarios/${encodeURIComponent(correoNuevo)}/ubicacion/region/${encodeURIComponent(regionNueva)}/${encodeURIComponent(ciudadNueva)}/modificar`;
+      //   const respPatch = await fetch(url, { method: 'PATCH' });
+      //   if (!respPatch.ok) {
+      //     const txtPatch = await respPatch.text();
+      //     throw new Error(`Error actualizando ciudad/región: ${respPatch.status} ${txtPatch}`);
+      //   }
+      // }
     
       // 3. Actualizar estado local y repintar
       const fusionado = {
