@@ -1,7 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
   //  Correo desde la URL (home.html?correo=...).
-  const CORREO = new URLSearchParams(location.search).get('correo') 
-               || localStorage.getItem('correoUsuario');
+  const CORREO = new URLSearchParams(location.search).get('correo')
+    || localStorage.getItem('correoUsuario');
+
+  const logoutButton = document.getElementById('btn-logout');
+
+  logoutButton.addEventListener('click', () => {
+    localStorage.clear();
+    location.replace('index.html');
+  });
 
   if (!CORREO) {
     console.warn("⚠️ Usuario no identificado");
