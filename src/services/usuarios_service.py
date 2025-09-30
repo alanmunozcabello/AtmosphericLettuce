@@ -126,6 +126,11 @@ def service_agregar_o_modificar_cultivo(correo, cultivo, herctareas): #se agrega
         service_cargar_db()
         
         #cambiar a la hora de sql
+        #verificar que cultivo entrada.lower no este repetido en los cultivos.lower del usuario
+        cultivos_minusculas = [key.lower() for key in usuarios[correo]["cultivos"].keys()]
+        if cultivo.lower() in cultivos_minusculas:
+            return {"error": "El cultivo ya existe"}
+
         usuarios[correo]["cultivos"][cultivo]=int(herctareas) #-> crea cultivo : hectareas, si ya está en el diccionario lo modifica
         
         if(guardar_usuarios() is True): #de haberse guardado correctamente

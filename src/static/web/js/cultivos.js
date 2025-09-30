@@ -93,8 +93,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (submitBtn) { submitBtn.textContent = 'Guardando…'; submitBtn.disabled = true; }
 
     try {
-      await agregarOModificar(nombre, 1); // 1 ha por defecto mas adelante cambiar 
+      const resp = await agregarOModificar(nombre, 1); // 1 ha por defecto mas adelante cambiar 
       await render();
+      //resp contiene la respuesta del servidor, si es del tipo {"error":"..."} mostrar alerta
+      if (resp && resp.error) {
+        alert(`⚠️ ${resp.error}`);
+      }
       input.value = '';
       input.focus();
     } catch (err) {
