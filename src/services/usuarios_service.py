@@ -165,24 +165,25 @@ def service_modificar_usuario(correo, usuarioMOD): #modifica el nombre, ciudad o
         service_cargar_db()
 
         #cambiar a la hora de sql
-        correo=usuarioMOD["correo"] #correo del usuario a modificar
+        # correo=usuarioMOD["correo"] #correo del usuario a modificar
         usuarioOG=usuarios[correo] #ussuario original para comparar cambios
 
         #modificar nombre
-        if(usuarioOG["nombre"]!=usuarioMOD["nombre"]):
-            usuarios[correo]["nombre"]=usuarioMOD["nombre"]
+        if(usuarioOG["nombre"]!=usuarioMOD.nombre):
+            usuarios[correo]["nombre"]=usuarioMOD.nombre
 
         #modificar ciudad
-        if(usuarioOG["ubicacion"]["ciudad"]!=usuarioMOD["ciudad"]):
-            usuarios[correo]["ubicacion"]["ciudad"]=usuarioMOD["ciudad"]
+        if(usuarioOG["ubicacion"]["ciudad"]!=usuarioMOD.ciudad):
+            usuarios[correo]["ubicacion"]["ciudad"]=usuarioMOD.ciudad
 
         #modificar region
-        if(usuarioOG["ubicacion"]["region"]!=usuarioMOD["region"]):
-            usuarios[correo]["ubicacion"]["region"]=usuarioMOD["region"]
+        if(usuarioOG["ubicacion"]["region"]!=usuarioMOD.region):
+            usuarios[correo]["ubicacion"]["region"]=usuarioMOD.region
 
         if(guardar_usuarios() is True):
             return {"mensaje":"usuario modificado correctamente"}
 
+        return guardar_usuarios() #-> retorna error
         # return {"mensaje":"usuario modificado exitosamente"}
     
     except FileNotFoundError: #tomar las excepciones que puedan saltar de service_leer_usuarios()
