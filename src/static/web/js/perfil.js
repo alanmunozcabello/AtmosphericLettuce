@@ -3,6 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const API_BASE = 'http://localhost:8000'; // ajusta host/puerto
   const LS_KEY = 'perfilAL';
 
+
+  const logoutButton = document.getElementById('btn-logout');
+
+  logoutButton.addEventListener('click', () => {
+    localStorage.clear();
+    location.replace('index.html');
+  });
+
   // --- utilidades ---
   const replaceCorreoInURL = (nuevoCorreo) => {
     try {
@@ -15,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Sustituye tu putUsuario por esta versión que envía usuarioMOD como query param
   const putUsuario = async (correoActual, body) => {
     const url = `${API_BASE}/usuarios/${encodeURIComponent(correoActual)}/modificar`;
-    
+
     const res = await fetch(url, {
       method: 'PUT',
       headers: {
@@ -159,39 +167,39 @@ document.addEventListener('DOMContentLoaded', () => {
   btnGuardar?.addEventListener('click', async (e) => {
     e.preventDefault();
     if (!inpNombre || !inpCorreo) return;
-  
+
     // limpiar estados
     inpNombre.classList.remove('invalid');
     inpCorreo.classList.remove('invalid');
-  
+
     const nombreNuevo = inpNombre.value.trim();
     const correoNuevo = (inpCorreo.value.trim() || CORREO).trim();
     const ciudadNueva = inpUbic.value.trim();
     const regionNueva = inpRegion.value.trim();
-  
+
     let valido = true;
     // ✅ Validación del nombre corregida
-    if (!nombreNuevo || !/^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s]+$/.test(nombreNuevo)) { 
-      inpNombre.classList.add('invalid'); 
+    if (!nombreNuevo || !/^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s]+$/.test(nombreNuevo)) {
+      inpNombre.classList.add('invalid');
       alert("Nombre no valido");
-      valido = false; 
+      valido = false;
     }
 
     // ✅ Validación del correo corregida  
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correoNuevo);
-    if (!correoNuevo || !emailOk) { 
-      inpCorreo.classList.add('invalid'); 
+    if (!correoNuevo || !emailOk) {
+      inpCorreo.classList.add('invalid');
       alert("Correo no valido");
-      valido = false; 
+      valido = false;
     }
 
     if (!valido) return;
-  
+
     // loading ON
     btnGuardar.textContent = 'Guardando...';
     btnGuardar.classList.add('loading');
     btnGuardar.disabled = true;
-  
+
     const previo = leerLS() || {};
     const body = {
       nombre: nombreNuevo,
@@ -199,11 +207,11 @@ document.addEventListener('DOMContentLoaded', () => {
       ciudad: ciudadNueva || '',
       region: regionNueva || ''
     };
-  
+
     try {
       // 1. PUT para actualizar nombre/correo
       await putUsuario(previo.correo || CORREO, body);
-    
+
       // 2. PATCH para actualizar ciudad y región si ambos tienen valor //esta cosa estaba dando error feo de la nada
       // if (ciudadNueva && regionNueva) {
       //   const url = `${API_BASE}/usuarios/${encodeURIComponent(correoNuevo)}/ubicacion/region/${encodeURIComponent(regionNueva)}/${encodeURIComponent(ciudadNueva)}/modificar`;
@@ -213,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
       //     throw new Error(`Error actualizando ciudad/región: ${respPatch.status} ${txtPatch}`);
       //   }
       // }
-    
+
       // 3. Actualizar estado local y repintar
       const fusionado = {
         ...previo,
@@ -223,13 +231,13 @@ document.addEventListener('DOMContentLoaded', () => {
         region: regionNueva || previo.region || '',
         avatar: (avatarV?.src?.startsWith('data:') ? avatarV.src : (previo.avatar || null)) || null,
       };
-    
+
       guardarLS(fusionado);
       localStorage.setItem('correoUsuario', correoNuevo);
       replaceCorreoInURL(correoNuevo);
       pintar(fusionado);
       modoEdicion(false);
-    
+
       console.log('✅ Perfil actualizado correctamente');
     } catch (err) {
       console.error('❌ No se pudo guardar en backend:', err);

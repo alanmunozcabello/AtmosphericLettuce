@@ -59,6 +59,20 @@ body{
   user-select:none;
 }
 
+.btn-logout {
+  background-color: #e74c3c; /* rojo */
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  margin-left: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-logout:hover {
+  background-color: #c0392b;
+}
+
 /* --------- Contenedor del pronóstico --------- */
 .pronostico{
   max-width:1400px;                    

@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let ok = true;
     if (!vEmail || !vEmail.includes('@') || !vEmail.includes('.')) { email.classList.add('invalid'); ok = false; }
     if (!vPass) { pass.classList.add('invalid'); ok = false; }
-    if (vPass.length < 6) { pass.classList.add('invalid'); ok = false;  }
+    if (vPass.length < 6) { pass.classList.add('invalid'); ok = false; }
     if (!ok) return;
 
     const originalText = btn.textContent;
@@ -93,6 +93,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       localStorage.setItem('correoUsuario', vEmail);
+      email.value = "";
+      pass.value = "";
+
+
       try {
         const wn = JSON.parse(window.name || '{}');
         wn.correo = vEmail;
