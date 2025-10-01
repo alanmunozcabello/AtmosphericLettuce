@@ -29,39 +29,20 @@
             "Apio": 2
         }
     },
-    "pedro@pjd.cl": {
-        "nombre": "Pedro",
-        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$OnD+3e2Ph41qO92u2wweKw$Q6XXAdI8qNciCgPmCg0nukxNkPWworq18PK4j4Qu0KQ",
-        "ubicacion": {
-            "latitud": -35.4264,
-            "longitud": -71.6554,
-            "ciudad": "Talca",
-            "region": "Maule"
-        },
-        "cultivos": {
-            "Uvas": 12,
-            "Paltas": 6,
-            "Kiwis": 4
-        }
-    },
-    "juan@pjd.cl": {
-        "nombre": "Juan",
-        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$qDAEkBnPfE3wt9yPFCIq6w$STv+JGqyryUni+AHb4pij1ospeE2f+ObRJiQb7xAYz4",
-        "ubicacion": {
-            "latitud": -39.8142,
-            "longitud": -73.2459,
-            "ciudad": "Valdivia",
-            "region": "Los Ríos"
-        },
-        "cultivos": {
-            "Papas": 15,
-            "Avena": 20,
-            "Trigo": 18
-        }
-    },
     "dieguitovads2006@gmail.com": {
         "nombre": "Diego Vicente Andrés Deumacán Silva aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$jEp5Z7S6Lx/q5SNYBTdGgg$FUsMbsnDfnh+QBrFABCzoJtUv09KWOThmNCTdSopjOU",
+        "ubicacion": {
+            "latitud": null,
+            "longitud": null,
+            "ciudad": null,
+            "region": null
+        },
+        "cultivos": {}
+    },
+    "juan@pjd.cl": {
+        "nombre": "juan",
+        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$lesFt8hGSZ0Fv0m8vgKU+w$IMSftbuCD5hxCG8Zq+vwUlKGocgHUAawp5DYaRwsFf0",
         "ubicacion": {
             "latitud": null,
             "longitud": null,

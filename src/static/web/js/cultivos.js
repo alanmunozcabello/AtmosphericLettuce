@@ -3,12 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const CORREO = new URLSearchParams(location.search).get('correo')
     || localStorage.getItem('correoUsuario');
 
-  const logoutButton = document.getElementById('btn-logout');
-
-  logoutButton.addEventListener('click', () => {
-    localStorage.clear();
-    location.replace('index.html');
-  });
+ 
 
   if (!CORREO) {
     console.warn("⚠️ Usuario no identificado");
