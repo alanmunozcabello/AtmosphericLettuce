@@ -171,6 +171,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // limpiar estados
     inpNombre.classList.remove('invalid');
     inpCorreo.classList.remove('invalid');
+    inpUbic.classList.remove('invalid');
+    inpRegion.classList.remove('invalid');
 
     const nombreNuevo = inpNombre.value.trim();
     const correoNuevo = (inpCorreo.value.trim() || CORREO).trim();
@@ -178,18 +180,40 @@ document.addEventListener('DOMContentLoaded', () => {
     const regionNueva = inpRegion.value.trim();
 
     let valido = true;
-    // ✅ Validación del nombre corregida
-    if (!nombreNuevo || !/^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s]+$/.test(nombreNuevo)) {
+    // ✅ Validación del nombre - longitud y caracteres
+    if (!nombreNuevo) {
       inpNombre.classList.add('invalid');
-      alert("Nombre no valido");
+      alert("El nombre es obligatorio");
+      valido = false;
+    } else if (nombreNuevo.length < 1 || nombreNuevo.length > 60) {
+      inpNombre.classList.add('invalid');
+      alert("El nombre debe tener entre 1 y 60 caracteres");
+      valido = false;
+    } else if (!/^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s]+$/.test(nombreNuevo)) {
+      inpNombre.classList.add('invalid');
+      alert("El nombre solo puede contener letras y espacios");
       valido = false;
     }
 
-    // ✅ Validación del correo corregida  
+    // ✅ Validación del correo
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correoNuevo);
     if (!correoNuevo || !emailOk) {
       inpCorreo.classList.add('invalid');
-      alert("Correo no valido");
+      alert("El correo electrónico debe tener un formato válido");
+      valido = false;
+    }
+
+    // ✅ Validación de ciudad - solo letras y espacios
+    if (ciudadNueva && !/^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s]*$/.test(ciudadNueva)) {
+      inpUbic.classList.add('invalid');
+      alert("La ciudad solo puede contener letras y espacios");
+      valido = false;
+    }
+
+    // ✅ Validación de región - solo letras y espacios
+    if (regionNueva && !/^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s]*$/.test(regionNueva)) {
+      inpRegion.classList.add('invalid');
+      alert("La región solo puede contener letras y espacios");
       valido = false;
     }
 

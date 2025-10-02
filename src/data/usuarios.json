@@ -1,12 +1,12 @@
 {
     "equipo@lechuga.cl": {
-        "nombre": "Equipo Lechuga",
+        "nombre": "EquipoLechuga",
         "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$MQ+S7iz8tAUHn7umywFx1Q$HFTNt+Lig5qNmEDlJFF89g3o38u1poVfyq1CfCdNNvY",
         "ubicacion": {
             "latitud": null,
             "longitud": null,
-            "ciudad": null,
-            "region": null
+            "ciudad": "",
+            "region": ""
         },
         "cultivos": {}
     },
