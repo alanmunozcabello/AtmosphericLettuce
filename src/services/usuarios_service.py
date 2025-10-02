@@ -61,8 +61,8 @@ def service_registrar_nuevo_usuario(correo, nombre, contrasena): #guardar/regist
     contrasena_hasheada = hash_password_simple(contrasena)
     try:
 
-        if correo in usuarios or any(u["nombre"] == nombre for u in usuarios.values()): #validaciones para registrar un usuario
-            return {"error":"nombre de usuario o correo ya utilizado"}
+        if correo in usuarios: #validaciones para registrar un usuario
+            return {"error":"Correo ya utilizado"}
         
         #cambiar a la hora de sql
         nuevo_usuario={"nombre":nombre, #si el usuario o contraseña no existen se crea un nuevo usuario con los parametros de llegada y el resto se "inicializan" en nulo

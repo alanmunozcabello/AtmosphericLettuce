@@ -38,7 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
       ok = false; 
     }
     if (!vEmail || vEmail.length < 10 || vEmail.length > 70 || !vEmail.includes("@") || !vEmail.includes(".")) { email.classList.add("invalid"); ok = false; }
-    if (!vPass || vPass.length < 6 || vPass.length > 25) { pass.classList.add('invalid'); ok = false; }
+    if (!vPass || 
+        vPass.length < 6 || 
+        vPass.length > 25 || 
+        !/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/.test(vPass)) { 
+      pass.classList.add('invalid'); 
+      ok = false; 
+    }
     if (!vPass2 || vPass2 !== vPass) { pass2.classList.add('invalid'); ok = false; }
     if (!ok) return;
 
