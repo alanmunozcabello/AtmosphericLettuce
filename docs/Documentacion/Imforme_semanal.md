@@ -78,3 +78,8 @@
   - `Se actualizo la base de datos con nuevos usuarios con los nuevos datos ciudad y region`
   - `Se aplicaron las mismas validaciones que tiene el correo al nombre para tener validaciones en ese apatado tambien`
   - `Se aplicaron validaciones a los campos de ciudad y region`
+  - `Comienzo de la implementacion del sistema de notificaciones fuera de la carpeta src, por el momento podemos enviar correos con emisario de atmosphericlettuce hacia otros destinatarios (planilla html, planilla pdf y correo de texto)`
+
+## 📌 Semana 8  
+-  
+  - ``
