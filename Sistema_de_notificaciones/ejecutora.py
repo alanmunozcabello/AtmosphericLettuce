@@ -18,7 +18,22 @@ usuarios= {
         },
         "cultivos": {
             "maiz": 10,
-            "trigo": 5
+            "trigo": 5,
+            "arandano":5,
+            "cerezas":5,
+            "maiza": 10,
+            "trigoa": 5,
+            "arandanoa":5,
+            "cerezaas":5,
+            "maiza": 10,
+            "trigoa": 5,
+            "arandanao":5,
+            "cerezaas":5,
+            "maiaz": 10,
+            "trigoa": 5,
+            "arandaano":5,
+            "ceraezas":5
+            
         }
     },
     "pepito321@mail.com": {
@@ -139,17 +154,63 @@ usuarios= {
     }
 }
 usuario=usuarios.get("pipo123@mail.com")
-clima = {"dia1": {"dia": "Lunes", "temp": 20, "max": 20, "min": 10, "estado": "Soleado"},
-        "dia2": {"dia": "Martes", "temp": 20, "max": 20, "min": 10, "estado": "Soleado"},
-        "dia3": {"dia": "Miercoles", "temp": 215, "max": 20, "min": 10, "estado": "Soleado"},
-        "dia4": {"dia": "Jueves", "temp": 215, "max": 215, "min": 10, "estado": "Soleado"},
-        "dia5": {"dia": "Viernes", "temp": 410, "max": 20, "min": 10, "estado": "Soleado"},
-        "dia6": {"dia": "Sabado", "temp": 410, "max": 410, "min": 10, "estado": "Soleado"}}
+
+clima2={
+  "1": {
+    "dia": "Martes",
+    "estado": "Clear",
+    "temp": 19.450000000000045,
+    "min": 5.57000000000005,
+    "max": 22.680000000000007
+  },
+  "2": {
+    "dia": "Miércoles",
+    "estado": "Clear",
+    "temp": 21.510000000000048,
+    "min": 7.350000000000023,
+    "max": 23.80000000000001
+  },
+  "3": {
+    "dia": "Jueves",
+    "estado": "Clouds",
+    "temp": 24.33000000000004,
+    "min": 9.879999999999995,
+    "max": 26.480000000000018
+  },
+  "4": {
+    "dia": "Viernes",
+    "estado": "Clouds",
+    "temp": 23.129999999999995,
+    "min": 10.920000000000016,
+    "max": 24.08000000000004
+  },
+  "5": {
+    "dia": "Sábado",
+    "estado": "Rain",
+    "temp": 16.220000000000027,
+    "min": 6.75,
+    "max": 16.220000000000027
+  },
+  "6": {
+    "dia": "Domingo",
+    "estado": "Clear",
+    "temp": 13.640000000000043,
+    "min": 4.7000000000000455,
+    "max": 16.439999999999998
+  },
+  "7": {
+    "dia": "Lunes",
+    "estado": "Clear",
+    "temp": 13.850000000000023,
+    "min": 2.2900000000000205,
+    "max": 17.57000000000005
+  }
+}
 
 #modificar_html nececita usuario ya filtrado con la informacion en diccionario y el clima em diccionario 
-modificar_html(usuario,clima)
+modificar_html(usuario,clima2,"pipo123@mail.com")
 
 #enviar_archivo nececita el correo del detinatario y la ruta a enviar
 enviar_archivo('nicolasurbina77@gmail.com','Archivos_HTML\salida.html')
-enviar_archivo('nicolasurbina77@gmail.com', 'Archivos_pdf\pdf_modificado.pdf')
+#enviar_archivo('nicolasurbina77@gmail.com', 'Archivos_pdf\pdf_modificado.pdf')
 

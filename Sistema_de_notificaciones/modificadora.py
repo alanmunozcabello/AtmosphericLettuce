@@ -10,7 +10,7 @@ from jinja2 import Environment, FileSystemLoader
 
 
 #cambiar rutas----------------------
-def modificar_html(usuariop1,clima_):
+def modificar_html(usuariop1,clima_,correo):
   #---------------------------------------------------
   # Configurar Jinja2 para que busque la carpeta plantilla_html
   env = Environment(loader=FileSystemLoader("Archivos_html"))
@@ -21,7 +21,7 @@ def modificar_html(usuariop1,clima_):
   # Renderizar el HTML con datos
   html_renderizado = template.render(
       usuario=usuariop1,
-      usuario_correo="pipo123@mail.com",
+      usuario_correo=correo,
       clima=clima_
   )
 
@@ -81,68 +81,68 @@ def modificar_pdf(clima,usuarios):
     #cuadros del tiempo 1
     can.setFillColorRGB(255, 255, 255) # Color blanco
     can.setFont("Helvetica", 18)
-    can.drawString(20, 655, clima.get("dia1").get("dia")) #variable con el dia
-    cadena_aux = str(clima.get("dia1").get("temp"))+"°C"            #str(20)+"°C" #variable con el tiempo de ese dia
+    can.drawString(20, 655, clima.get("1").get("dia")) #variable con el dia
+    cadena_aux = str(clima.get("1").get("temp"))+"°C"            #str(20)+"°C" #variable con el tiempo de ese dia
     can.drawString(20, 633, cadena_aux)
     can.setFont("Helvetica", 12)
-    cadena_aux = "Max: " + str(clima.get("dia1").get("max"))+"°C Min: " + str(clima.get("dia1").get("min"))+"°C" #variable con la temperatura maxima y minima 
+    cadena_aux = "Max: " + str(clima.get("1").get("max"))+"°C Min: " + str(clima.get("1").get("min"))+"°C" #variable con la temperatura maxima y minima 
     can.drawString(20, 615, cadena_aux)
     can.setFont("Helvetica", 18)
-    can.drawString(20, 595, clima.get("dia1").get("estado")) #variable con el estado del tiempo
+    can.drawString(20, 595, clima.get("1").get("estado")) #variable con el estado del tiempo
 
     #cuadros del tiempo 2
-    can.drawString(20, 550, clima.get("dia4").get("dia")) #variable con el dia
-    cadena_aux = str(clima.get("dia4").get("temp"))+"°C"
+    can.drawString(20, 550, clima.get("4").get("dia")) #variable con el dia
+    cadena_aux = str(clima.get("4").get("temp"))+"°C"
     can.drawString(20, 528, cadena_aux) 
     can.setFont("Helvetica", 12)
-    cadena_aux = "Max: " + str(clima.get("dia4").get("max"))+"°C Min: " + str(clima.get("dia4").get("min"))+"°C" #variable con la temperatura maxima y minima 
+    cadena_aux = "Max: " + str(clima.get("4").get("max"))+"°C Min: " + str(clima.get("4").get("min"))+"°C" #variable con la temperatura maxima y minima 
     can.drawString(20, 510, cadena_aux)
     can.setFont("Helvetica", 18)
-    can.drawString(20, 495, clima.get("dia4").get("estado")) #variable con el estado del tiempo
+    can.drawString(20, 495, clima.get("4").get("estado")) #variable con el estado del tiempo
 
 
     #cuadros del tiempo 3
-    can.drawString(215, 655, clima.get("dia2").get("dia")) #variable con el dia
-    cadena_aux = str(clima.get("dia2").get("temp"))+"°C"
+    can.drawString(215, 655, clima.get("2").get("dia")) #variable con el dia
+    cadena_aux = str(clima.get("2").get("temp"))+"°C"
     can.drawString(215, 633, cadena_aux)
     can.setFont("Helvetica", 12)
-    cadena_aux = "Max: " + str(clima.get("dia2").get("max"))+"°C Min: " + str(clima.get("dia2").get("min"))+"°C" #variable con la temperatura maxima y minima 
+    cadena_aux = "Max: " + str(clima.get("2").get("max"))+"°C Min: " + str(clima.get("2").get("min"))+"°C" #variable con la temperatura maxima y minima 
     can.drawString(215, 615, cadena_aux)
     can.setFont("Helvetica", 18)
-    can.drawString(215, 595, clima.get("dia2").get("estado")) #variable con el estado del tiempo
+    can.drawString(215, 595, clima.get("2").get("estado")) #variable con el estado del tiempo
 
 
     #cuadros del tiempo 4
-    can.drawString(215, 550, clima.get("dia5").get("dia")) #variable con el dia
-    cadena_aux =  str(clima.get("dia4").get("temp"))+"°C"
+    can.drawString(215, 550, clima.get("5").get("dia")) #variable con el dia
+    cadena_aux =  str(clima.get("5").get("temp"))+"°C"
     can.drawString(215, 528, cadena_aux) 
     can.setFont("Helvetica", 12)
-    cadena_aux = "Max: " + str(clima.get("dia5").get("max"))+"°C Min: " + str(clima.get("dia5").get("min"))+"°C" #variable con la temperatura maxima y minima 
+    cadena_aux = "Max: " + str(clima.get("5").get("max"))+"°C Min: " + str(clima.get("5").get("min"))+"°C" #variable con la temperatura maxima y minima 
     can.drawString(215, 510, cadena_aux)
     can.setFont("Helvetica", 18)
-    can.drawString(215, 495, clima.get("dia5").get("estado")) #variable con el estado del tiempo
+    can.drawString(215, 495, clima.get("5").get("estado")) #variable con el estado del tiempo
 
 
     #cuadros del tiempo 5
-    can.drawString(410, 655, clima.get("dia3").get("dia")) #variable con el dia
-    cadena_aux =  str(clima.get("dia3").get("temp"))+"°C"
+    can.drawString(410, 655, clima.get("3").get("dia")) #variable con el dia
+    cadena_aux =  str(clima.get("3").get("temp"))+"°C"
     can.drawString(410, 633, cadena_aux) 
     can.setFont("Helvetica", 12)
-    cadena_aux = "Max: " + str(clima.get("dia3").get("max"))+"°C Min: " + str(clima.get("dia3").get("min"))+"°C" #variable con la temperatura maxima y minima 
+    cadena_aux = "Max: " + str(clima.get("3").get("max"))+"°C Min: " + str(clima.get("3").get("min"))+"°C" #variable con la temperatura maxima y minima 
     can.drawString(410, 615, cadena_aux)
     can.setFont("Helvetica", 18)
-    can.drawString(410, 595, clima.get("dia3").get("estado")) #variable con el estado del tiempo
+    can.drawString(410, 595, clima.get("3").get("estado")) #variable con el estado del tiempo
 
 
     #cuadros del tiempo 6
-    can.drawString(410, 550, clima.get("dia6").get("dia")) #variable con el dia
-    cadena_aux =  str(clima.get("dia6").get("temp"))+"°C"
+    can.drawString(410, 550, clima.get("6").get("dia")) #variable con el dia
+    cadena_aux =  str(clima.get("6").get("temp"))+"°C"
     can.drawString(410, 528, cadena_aux) 
     can.setFont("Helvetica", 12)
-    cadena_aux = "Max: " + str(clima.get("dia6").get("max"))+"°C Min: " + str(clima.get("dia6").get("min"))+"°C" #variable con la temperatura maxima y minima 
+    cadena_aux = "Max: " + str(clima.get("6").get("max"))+"°C Min: " + str(clima.get("6").get("min"))+"°C" #variable con la temperatura maxima y minima 
     can.drawString(410, 510, cadena_aux)
     can.setFont("Helvetica", 18)
-    can.drawString(410, 495, clima.get("dia6").get("estado")) #variable con el estado del tiempo
+    can.drawString(410, 495, clima.get("6").get("estado")) #variable con el estado del tiempo
 
 
 
