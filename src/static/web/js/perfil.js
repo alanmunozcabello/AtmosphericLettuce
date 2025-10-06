@@ -1,42 +1,44 @@
-// perfil.js (con persistencia en backend de nombre/correo)
 document.addEventListener('DOMContentLoaded', () => {
-  const API_BASE = 'http://localhost:8000'; // ajusta host/puerto
+  // URL base del backend FastAPI 
+  const API_BASE = 'http://localhost:8000';
+  // Clave para guardar el perfil en localStorage
   const LS_KEY = 'perfilAL';
 
 
-  const logoutButton = document.getElementById('btn-logout');
-
+  // ---cerrar sesion ---
+  const logoutButton = document.getElementById('btn-logout'); 
   logoutButton.addEventListener('click', () => {
-    localStorage.clear();
-    location.replace('index.html');
+    localStorage.clear();            // limpia todo (sesión, caches, etc.)
+    location.replace('index.html');  // redirige reemplazando la entrada del historial
   });
 
-  // --- utilidades ---
+  // --- actualizar el correo en la URL sin recargar la página ---
   const replaceCorreoInURL = (nuevoCorreo) => {
     try {
-      const url = new URL(location.href);
-      url.searchParams.set('correo', nuevoCorreo);
-      history.replaceState(null, '', url.toString());
+      const url = new URL(location.href);// instancia un objeto URL con la URL actual
+      url.searchParams.set('correo', nuevoCorreo);  // cambia el parametro 'correo'
+      history.replaceState(null, '', url.toString()); // reemplaza la URL en el historial sin recargar
     } catch { /* noop */ }
   };
 
-  // Sustituye tu putUsuario por esta versión que envía usuarioMOD como query param
+ 
+  // Envia un JSON con { nombre, correo, ciudad, region } al endpoint PUT /usuarios/{correo}/modificar
   const putUsuario = async (correoActual, body) => {
-    const url = `${API_BASE}/usuarios/${encodeURIComponent(correoActual)}/modificar`;
+    const url = `${API_BASE}/usuarios/${encodeURIComponent(correoActual)}/modificar`; 
 
     const res = await fetch(url, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body) // ✅ Enviar como body JSON
+      method: 'PUT',                            
+      headers: { 'Content-Type': 'application/json' }, // se envía JSON
+      body: JSON.stringify(body)// serializa el body a JSON
     });
 
+    // Si la respuesta no es postiva, lanza error con detalle 
     if (!res.ok) {
       const text = await res.text();
       throw new Error(`PUT falló: ${res.status} ${res.statusText} ${text}`);
     }
 
+    // Intenta parsear el JSON de respuesta; si no hay, devuelve {}
     try {
       return await res.json();
     } catch {
@@ -44,143 +46,156 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-
-  // --- resolver correo actual ---
+  // Prioriza el parametro correo, luego localStorage, si no hay nada, cadena vacía
   const CORREO =
     new URLSearchParams(location.search).get('correo') ||
     localStorage.getItem('correoUsuario') ||
     '';
 
+  // Si no hay correo, se asume que no hay sesión: redirige a index
   if (!CORREO) {
     console.warn('⚠️ Usuario no identificado');
     window.location.href = 'index.html';
-    return;
+    return; // detiene el script
   }
+  // Asegura persistencia del correo en localStorage
   localStorage.setItem('correoUsuario', CORREO);
 
-  // --- refs vista/form ---
-  const nombreV = document.querySelector('.nombre');
-  const filas = document.querySelectorAll('.tarjeta-perfil .fila');
-  const correoV = filas[0]?.querySelector('.valor');
-  const ubicV = filas[1]?.querySelector('.valor');
-  const regionV = filas[2]?.querySelector('.valor');
-  const avatarV = document.querySelector('.avatar-fondo img');
+  // --- referencias a la vistamodo lectura y modo edición---
+  const nombreV = document.querySelector('.nombre');   // título/nombre visible
+  const filas = document.querySelectorAll('.tarjeta-perfil .fila');   // filas de datos (correo, ciudad, región)
+  const correoV = filas[0]?.querySelector('.valor'); // span con valor de correo
+  const ubicV   = filas[1]?.querySelector('.valor');
+  const regionV = filas[2]?.querySelector('.valor'); 
+  const avatarV = document.querySelector('.avatar-fondo img');  // imagen de avatar
 
-  const form = document.getElementById('form-perfil');
-  const inpNombre = document.getElementById('inp-nombre');
-  const inpCorreo = document.getElementById('inp-correo');
-  const inpUbic = document.getElementById('inp-ubicacion');
-  const inpRegion = document.getElementById('inp-region');
-  const inpAvatar = document.getElementById('inp-avatar');
+  const form      = document.getElementById('form-perfil');  // formulario de edición
+  const inpNombre = document.getElementById('inp-nombre');    // input nombre
+  const inpCorreo = document.getElementById('inp-correo');           
+  const inpUbic   = document.getElementById('inp-ubicacion');         
+  const inpRegion = document.getElementById('inp-region');          
+  const inpAvatar = document.getElementById('inp-avatar');           
 
-  const btnEditar = document.getElementById('btn-editar');
-  const btnGuardar = document.getElementById('btn-guardar');
-  const btnCancelar = document.getElementById('btn-cancelar');
+  const btnEditar   = document.getElementById('btn-editar');    // botón para entrar en modo edición
+  const btnGuardar  = document.getElementById('btn-guardar');         
+  const btnCancelar = document.getElementById('btn-cancelar');       
 
-  // --- LS helpers ---
+  // --- ayuda de LocalStorage (cache del perfil) ---
   const leerLS = () => {
-    try { return JSON.parse(localStorage.getItem(LS_KEY) || 'null'); }
-    catch { return null; }
+    try { return JSON.parse(localStorage.getItem(LS_KEY) || 'null'); }  // lee y parsea JSON; si no hay, null
+    catch { return null; }                                               // si falla el parseo, devuelve null
   };
-  const guardarLS = (obj) => localStorage.setItem(LS_KEY, JSON.stringify(obj));
+  const guardarLS = (obj) => localStorage.setItem(LS_KEY, JSON.stringify(obj)); // guarda el objeto perfil como JSON
 
-  // --- pintar ---
+  // --- pintar hace que los datos se vean y guarden en el formuladrio  ---
   function pintar(data) {
+    // Vista (labels/valores visibles)
     if (nombreV) nombreV.textContent = data.nombre ?? 'Usuario';
     if (correoV) correoV.textContent = data.correo ?? '';
-    if (ubicV) ubicV.textContent = data.ubic ?? 'No especificada';
+    if (ubicV)   ubicV.textContent   = data.ubic   ?? 'No especificada';
     if (regionV) regionV.textContent = data.region ?? 'No especificada';
-    if (avatarV && data.avatar) avatarV.src = data.avatar;
+    if (avatarV && data.avatar) avatarV.src = data.avatar; // solo si hay avatar en data
 
+    // Formulario (inputs editables)
     if (inpNombre) inpNombre.value = data.nombre ?? 'Usuario';
     if (inpCorreo) inpCorreo.value = data.correo ?? CORREO;
-    if (inpUbic) inpUbic.value = data.ubic ?? '';
+    if (inpUbic)   inpUbic.value   = data.ubic   ?? '';
     if (inpRegion) inpRegion.value = data.region ?? '';
   }
 
+  // --- usa cache si existe si no, toma lo que ya está en la vista ---
   function cargarInicial() {
-    const cached = leerLS();
-    const base = cached || {
+    const cached = leerLS(); // intenta leer el perfil 
+    const base = cached || { // si no hay cache, arma un objeto base desde la vista/por defecto
       nombre: (nombreV?.textContent || 'Usuario').trim(),
       correo: (correoV?.textContent?.trim()) || CORREO,
-      ubic: (ubicV?.textContent || '').trim(),
+      ubic:   (ubicV?.textContent   || '').trim(),
       region: (regionV?.textContent || '').trim(),
       avatar: null,
     };
-    guardarLS(base);
-    pintar(base);
+    guardarLS(base); // guarda en cache
+    pintar(base);    // muestra en en pantalla 
   }
 
+  // ---  GET /usuarios/{correo} ---
   async function syncConBackend() {
     try {
-      const res = await fetch(`${API_BASE}/usuarios/${encodeURIComponent(CORREO)}`);
-      if (!res.ok) return;
+      const res = await fetch(`${API_BASE}/usuarios/${encodeURIComponent(CORREO)}`); // pide datos al backend
+      if (!res.ok) return; // si falla  sale
 
-      const usuario = await res.json();
-      const previo = leerLS() || {};
+      const usuario = await res.json();  // parsea JSON devuelto por el backend
+      const previo = leerLS() || {};     // lee lo que ya estaba en cache
 
-      // Si el backend manda un "nombre" que es un email, lo tratamos como no-nombre
-      const nombreSrv = (usuario?.nombre ?? '').trim();
-      const esEmail = nombreSrv.includes('@');
+      // A veces el backend puede mandar "nombre" con un email; lo tratamos para mostrar algo amigable
+      const nombreSrv = (usuario?.nombre ?? '').trim();   // nombre recibido
+      const esEmail = nombreSrv.includes('@');            // detecta si parece correo
       const displayName = esEmail
-        ? (previo.nombre && !previo.nombre.includes('@') ? previo.nombre : (CORREO.split('@')[0] || 'Usuario'))
-        : (nombreSrv || previo.nombre || 'Usuario');
+        ? (previo.nombre && !previo.nombre.includes('@')  // si en cache ya teníamos un nombre lo usa
+            ? previo.nombre
+            : (CORREO.split('@')[0] || 'Usuario'))        // si no, usa la parte antes de la @ como nombre
+        : (nombreSrv || previo.nombre || 'Usuario');       // si no es correo, usa el del server o el previo
 
+      // Fusiona datos previos con los nuevos del backend (ubicación/region anidadas)
       const fusionado = {
         ...previo,
         nombre: displayName,
         correo: usuario?.correo ?? CORREO,
-        // Obtener ciudad y región del backend
-        ubic: usuario?.ubicacion?.ciudad ?? previo.ubic ?? '',
+        ubic:   usuario?.ubicacion?.ciudad ?? previo.ubic ?? '',
         region: usuario?.ubicacion?.region ?? previo.region ?? '',
         avatar: previo.avatar ?? null,
       };
 
-      guardarLS(fusionado);
-      pintar(fusionado);
+      guardarLS(fusionado); // actualiza cache
+      pintar(fusionado);    // y pantalla
     } catch (e) {
-      console.warn('No se pudo sincronizar perfil:', e);
+      console.warn('No se pudo sincronizar perfil:', e); 
     }
   }
 
+  // ---  muestra y oculta form y botones según estado ---
   function modoEdicion(on) {
-    if (form) form.style.display = on ? 'block' : 'none';
-    if (btnGuardar) btnGuardar.style.display = on ? 'inline-block' : 'none';
-    if (btnCancelar) btnCancelar.style.display = on ? 'inline-block' : 'none';
-    if (btnEditar) btnEditar.style.display = on ? 'none' : 'inline-block';
+    if (form)        form.style.display       = on ? 'block'       : 'none';
+    if (btnGuardar)  btnGuardar.style.display = on ? 'inline-block': 'none';
+    if (btnCancelar) btnCancelar.style.display= on ? 'inline-block': 'none';
+    if (btnEditar)   btnEditar.style.display  = on ? 'none'        : 'inline-block';
   }
 
+  //  entra a modo edición y enfoca el nombre
   btnEditar?.addEventListener('click', () => {
-    const data = leerLS() || {};
-    pintar(data);
-    modoEdicion(true);
-    inpNombre?.focus();
+    const data = leerLS() || {}; // toma los datos actuales 
+    pintar(data);   // sincroniza el form con esos datos
+    modoEdicion(true); // muestra el formulario
+    inpNombre?.focus(); // enfoca el input de nombre
   });
 
+  // Botón "Cancelar": sale de edición y restaura lo que hay en cache
   btnCancelar?.addEventListener('click', () => {
-    modoEdicion(false);
-    const data = leerLS() || {};
-    pintar(data);
+    modoEdicion(false);          // oculta formulario
+    const data = leerLS() || {}; // recarga desde cache
+    pintar(data);                // repinta la vista
   });
 
-  // --- GUARDAR: también persiste en backend nombre/correo ---
+  // ---valida, hace PUT al backend y actualiza los datos---
   btnGuardar?.addEventListener('click', async (e) => {
-    e.preventDefault();
-    if (!inpNombre || !inpCorreo) return;
+    e.preventDefault();                  
+    if (!inpNombre || !inpCorreo) return; // seguridad: requiere inputs clave
 
-    // limpiar estados
+    // Limpia estados de error previos
     inpNombre.classList.remove('invalid');
     inpCorreo.classList.remove('invalid');
     inpUbic.classList.remove('invalid');
     inpRegion.classList.remove('invalid');
 
+    // Toma valores nuevos del formulario (trim para limpiar espacios)
     const nombreNuevo = inpNombre.value.trim();
     const correoNuevo = (inpCorreo.value.trim() || CORREO).trim();
     const ciudadNueva = inpUbic.value.trim();
     const regionNueva = inpRegion.value.trim();
 
+    // --- validaciones ---
     let valido = true;
-    // ✅ Validación del nombre - longitud y caracteres
+
+    // Nombre: obligatorio, 1-60 chars, solo letras y espacios (incluye tildes/ñ)
     if (!nombreNuevo) {
       inpNombre.classList.add('invalid');
       alert("El nombre es obligatorio");
@@ -195,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
       valido = false;
     }
 
-    // ✅ Validación del correo
+    // Correo: formato básico válido
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correoNuevo);
     if (!correoNuevo || !emailOk) {
       inpCorreo.classList.add('invalid');
@@ -203,28 +218,31 @@ document.addEventListener('DOMContentLoaded', () => {
       valido = false;
     }
 
-    // ✅ Validación de ciudad - solo letras y espacios
+    // Ciudad : solo letras y espacios
     if (ciudadNueva && !/^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s]*$/.test(ciudadNueva)) {
       inpUbic.classList.add('invalid');
       alert("La ciudad solo puede contener letras y espacios");
       valido = false;
     }
 
-    // ✅ Validación de región - solo letras y espacios
+    // Región : solo letras y espacios
     if (regionNueva && !/^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s]*$/.test(regionNueva)) {
       inpRegion.classList.add('invalid');
       alert("La región solo puede contener letras y espacios");
       valido = false;
     }
 
+    // Si no pasa validaciones, no continúa
     if (!valido) return;
 
-    // loading ON
+    // Indicadores de "guardando" para el botón
     btnGuardar.textContent = 'Guardando...';
     btnGuardar.classList.add('loading');
     btnGuardar.disabled = true;
 
+    // Lee el perfil previo del cache
     const previo = leerLS() || {};
+    // Construye el cuerpo que enviará al backend
     const body = {
       nombre: nombreNuevo,
       correo: correoNuevo,
@@ -233,58 +251,55 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     try {
-      // 1. PUT para actualizar nombre/correo
+      // PUT al backend usando el correo previo 
       await putUsuario(previo.correo || CORREO, body);
 
-      // 2. PATCH para actualizar ciudad y región si ambos tienen valor //esta cosa estaba dando error feo de la nada
-      // if (ciudadNueva && regionNueva) {
-      //   const url = `${API_BASE}/usuarios/${encodeURIComponent(correoNuevo)}/ubicacion/region/${encodeURIComponent(regionNueva)}/${encodeURIComponent(ciudadNueva)}/modificar`;
-      //   const respPatch = await fetch(url, { method: 'PATCH' });
-      //   if (!respPatch.ok) {
-      //     const txtPatch = await respPatch.text();
-      //     throw new Error(`Error actualizando ciudad/región: ${respPatch.status} ${txtPatch}`);
-      //   }
-      // }
+    
 
-      // 3. Actualizar estado local y repintar
+      //  Actualiza los datos locales con los nuevos valores
       const fusionado = {
         ...previo,
         nombre: nombreNuevo,
         correo: correoNuevo,
-        ubic: ciudadNueva || previo.ubic || '',
+        ubic:   ciudadNueva || previo.ubic || '',
         region: regionNueva || previo.region || '',
+        // Si en el <img> hay un data URL (base64) de avatar, lo mantiene; si no, conserva el previo
         avatar: (avatarV?.src?.startsWith('data:') ? avatarV.src : (previo.avatar || null)) || null,
       };
 
-      guardarLS(fusionado);
-      localStorage.setItem('correoUsuario', correoNuevo);
-      replaceCorreoInURL(correoNuevo);
-      pintar(fusionado);
-      modoEdicion(false);
+      guardarLS(fusionado); // guarda en cache
+      localStorage.setItem('correoUsuario', correoNuevo);// actualiza el correo de sesión
+      replaceCorreoInURL(correoNuevo);  // cambia ?correo=... en la URL sin recargar
+      pintar(fusionado); // repinta vista y form
+      modoEdicion(false); // sale de modo edición
 
       console.log('✅ Perfil actualizado correctamente');
     } catch (err) {
+
       console.error('❌ No se pudo guardar en backend:', err);
       alert('No se pudo actualizar tus datos en el servidor. Intenta nuevamente.');
     } finally {
-      // loading OFF
+      // Restablece el estado del botón "Guardar"
       btnGuardar.textContent = 'Guardar';
       btnGuardar.classList.remove('loading');
       btnGuardar.disabled = false;
     }
   });
 
-  // avatar preview
+-
+  // Al seleccionar un archivo, lo lee como DataURL (base64) y lo muestra en <img>
   inpAvatar?.addEventListener('change', () => {
-    const file = inpAvatar.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => { if (avatarV) avatarV.src = reader.result; };
-    reader.readAsDataURL(file);
+    const file = inpAvatar.files?.[0];   // toma el primer archivo seleccionado
+    if (!file) return;                   // si no hay archivo, no hace nada
+    const reader = new FileReader();     // lector de archivos del navegador
+    reader.onload = () => {              // cuando termina de leer
+      if (avatarV) avatarV.src = reader.result; // coloca la imagen en el <img>
+    };
+    reader.readAsDataURL(file);          // lee el archivo como base64 (data URL)
   });
 
-  // init
-  cargarInicial();
-  modoEdicion(false);
-  syncConBackend();
+  // --- inicializacion al cargar pagina---
+  cargarInicial();     // pinta con cache o con lo que haya en la vista
+  modoEdicion(false);  
+  syncConBackend();    // trae datos desde el backend y los muestra
 });
