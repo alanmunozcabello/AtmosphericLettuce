@@ -1,4 +1,3 @@
-# src/services/security.py
 import os
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError, InvalidHash
@@ -17,7 +16,5 @@ def verify_password(hash, password):
     except VerifyMismatchError:
         print("Contraseña incorrecta")
         return False
-    # Opcional: si cambias parámetros, puedes actualizar el hash:
     if ph.check_needs_rehash(hash):
         new_hash = ph.hash(password)
-        # guarda new_hash en la BD
