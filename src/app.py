@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routes import usuarios_routes, clima_routes, chat_routes
+from routes import  notificaciones_routes, usuarios_routes, clima_routes, chat_routes #, notificaciones_routes
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -16,6 +16,8 @@ app.add_middleware(
 app.include_router(usuarios_routes.router)
 app.include_router(clima_routes.router)
 app.include_router(chat_routes.router)
+app.include_router(notificaciones_routes.router)
+
 
 # # Montar carpeta de archivos estáticos
 app.mount("/static", StaticFiles(directory="static"), name="static")

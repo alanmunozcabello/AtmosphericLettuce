@@ -32,8 +32,8 @@ def filtrar_informacion_semana(respuesta): #la idea de esta funcion es filtrar l
         temp=dia["temp"]["day"]-273.15 #pasar las temperaturas de kelvin a celcius :p
         temp_min=dia["temp"]["min"]-273.15
         temp_max=dia["temp"]["max"]-273.15
-
-        respuesta_formateada[i]={ #comienza en 1 por dia 1, dia 2, dia 3...
+#cambio aqui
+        respuesta_formateada[str(i)]={ #comienza en 1 por dia 1, dia 2, dia 3...
             "dia":dia_semana_esp,
             "estado":estado,
             "temp":temp,

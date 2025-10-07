@@ -56,5 +56,16 @@
             "Peras": 1,
             "Manzanas": 1
         }
+    },
+    "nicolasurbina77@gmail.com": {
+        "nombre": "Skill",
+        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$s9sX3yqB6nzUgba7nt2qWw$2aIhs4Ok4Vy/ckJhemEc4wXfw4F9oz2nPUGVntbh7ec",
+        "ubicacion": {
+            "latitud": 0,
+            "longitud": 0,
+            "ciudad": "Curicó",
+            "region": "Español"
+        },
+        "cultivos": {}
     }
 }

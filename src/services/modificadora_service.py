@@ -4,42 +4,43 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
-import io #para que es esa libreria?
+import io 
 
 from jinja2 import Environment, FileSystemLoader
 
 
 #cambiar rutas----------------------
-def modificar_html(usuariop1,clima_,correo):
+def modificar_html(correo,usuariop1,clima_,consejos):
   #---------------------------------------------------
   # Configurar Jinja2 para que busque la carpeta plantilla_html
-  env = Environment(loader=FileSystemLoader("Archivos_html"))
+  env = Environment(loader=FileSystemLoader("services/Archivos_HTML"))
 
   # Cargar la plantilla
-  template = env.get_template("index.html")
+  template = env.get_template("index.html")  
 
   # Renderizar el HTML con datos
   html_renderizado = template.render(
       usuario=usuariop1,
       usuario_correo=correo,
-      clima=clima_
+      clima=clima_,
+      consejo=consejos
   )
 
   # Guardar el HTML resultante
-  with open("Archivos_HTML\salida.html", "w", encoding="utf-8") as f:
+  with open("services/Archivos_HTML/salida.html", "w", encoding="utf-8") as f:
       f.write(html_renderizado)
 
   print("✅ HTML generado en salida.html")
 #---------------------------------------------------
 
 
-def modificar_pdf(clima,usuarios):
+def modificar_pdf(correo,usuarios,clima,consejos):
    
     #rutas completas para cada archivo
-    ruta_imagen_chestappen ="Imagenes\chestappen.jpg"
-    ruta_imagen_lechuga = "Imagenes\Lechuga.jpg"
-    ruta_planilla = "Archivos_pdf\Planilla.pdf"
-    ruta_pdf_modificado = "Archivos_pdf\pdf_modificado.pdf"
+    ruta_imagen_chestappen = "Sistema_de_notificaciones/Imagenes/chestappen.jpg"
+    ruta_imagen_lechuga = "Sistema_de_notificaciones/Imagenes/lechuga.jpg"
+    ruta_planilla = "services/Archivos_pdf/Planilla.pdf"
+    ruta_pdf_modificado = "services/Archivos_pdf/pdf_modificado.pdf"
     
 
     # Crear un PDF temporal con el texto que quieres escribir
