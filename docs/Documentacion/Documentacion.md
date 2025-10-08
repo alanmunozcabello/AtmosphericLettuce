@@ -14,6 +14,9 @@ Dependencias principales del proyecto:
 - requests
 - argon2-cffi (hash de contraseñas)
 - PyMuPDF (módulo `fitz`, para leer PDF)
+- reportlab PyPDF2
+- --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
+- Jinja2
 
 ## Instalación rápida (Windows)
 
@@ -48,6 +51,7 @@ OPENROUTER_MISTRAL_API_KEY=tu_api_key_de_openrouter
 # Clave para CropKindwise (detección de enfermedades en plantas)
 CROPHEALTH_API_KEY=tu_api_key_de_crop_kindwise
 ```
+
 
 Notas:
 - Si ejecutas el servidor desde `src/`, `.env` debe estar en la carpeta raiz del proyecto.
