@@ -67,10 +67,10 @@ def service_registrar_nuevo_usuario(correo, nombre, contrasena): #guardar/regist
         #cambiar a la hora de sql
         nuevo_usuario={"nombre":nombre, #si el usuario o contraseña no existen se crea un nuevo usuario con los parametros de llegada y el resto se "inicializan" en nulo
                        "contrasena":contrasena_hasheada, 
-                       "ubicacion":{"latitud":None, 
-                                    "longitud":None,
-                                    "ciudad":None,
-                                    "region":None}, 
+                       "ubicacion":{"latitud": 0, 
+                                    "longitud": 0,
+                                    "ciudad": "",
+                                    "region": ""}, 
                        "cultivos":{}}
         usuarios[correo]=nuevo_usuario #ahora el id es el correo -> mucho mejor y se puede implementar eliminación de usuarios (no necesarios pero se podría ahora)
 

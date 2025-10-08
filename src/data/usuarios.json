@@ -3,8 +3,8 @@
         "nombre": "EquipoLechuga",
         "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$MQ+S7iz8tAUHn7umywFx1Q$HFTNt+Lig5qNmEDlJFF89g3o38u1poVfyq1CfCdNNvY",
         "ubicacion": {
-            "latitud": null,
-            "longitud": null,
+            "latitud": 0,
+            "longitud": 0,
             "ciudad": "",
             "region": ""
         },
@@ -14,10 +14,10 @@
         "nombre": "Ejemplo",
         "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$+woPVM/8J93YWlKFls2X0g$eB6bK0RC/q0p//9iMuRbxsWXchGMPpbM4qBCHv8TbmA",
         "ubicacion": {
-            "latitud": null,
-            "longitud": null,
-            "ciudad": null,
-            "region": null
+            "latitud": 0,
+            "longitud": 0,
+            "ciudad": "",
+            "region": ""
         },
         "cultivos": {}
     },
@@ -25,10 +25,10 @@
         "nombre": "Pedro",
         "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$kZpWxV7UGEo+09or3ty02Q$Argjpg+6Ll8gUGvMW79hIIOf7gbrRXCY3rODRSE6WTU",
         "ubicacion": {
-            "latitud": null,
-            "longitud": null,
-            "ciudad": null,
-            "region": null
+            "latitud": 0,
+            "longitud": 0,
+            "ciudad": "",
+            "region": ""
         },
         "cultivos": {}
     },
@@ -36,10 +36,10 @@
         "nombre": "Juan",
         "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$3qVVRCLW3UlpA4CH1CdpUw$gtm9hDXiLgrmvZS5nPGWIdHZYvnpnJ9SLFZYECgKdZQ",
         "ubicacion": {
-            "latitud": null,
-            "longitud": null,
-            "ciudad": null,
-            "region": null
+            "latitud": 0,
+            "longitud": 0,
+            "ciudad": "",
+            "region": ""
         },
         "cultivos": {}
     },
@@ -47,8 +47,8 @@
         "nombre": "Diego",
         "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$wyaeGp50PtOY0FwVx2HYdA$WvC76PKf/ML+ocRBnb7xsSuxzYuGAKgTESLGGTlhg38",
         "ubicacion": {
-            "latitud": null,
-            "longitud": null,
+            "latitud": 0,
+            "longitud": 0,
             "ciudad": "Curicó",
             "region": "Maule"
         },
