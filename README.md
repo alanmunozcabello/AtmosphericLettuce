@@ -4,10 +4,10 @@
 
 **Equipo:** *Lechuga* 🥬  
 **Integrantes:**  
-- 👨‍💻 Cristian Aliaga  
-- 🛠️ Alan Muñoz  
-- 🎨 John Rojas  
-- 📑 Nicolás Urbina  
+- 👨‍💻 Nicolás Urbina
+- 🛠️ Cristian Aliaga
+- 🎨 Alan Muñoz
+- 📑 John Rojas
 
 **Universidad de Talca – Proyecto de Programación 2025**  
 
@@ -50,11 +50,10 @@ Nuestro objetivo es entregar a agricultores y usuarios en general información c
 
 ## 👥 Roles en rotación  
 
-- **Líder Técnico:** Cristian Aliaga  
-- **Backend:** Alan Muñoz  
-- **Frontend:** John Rojas  
-- **QA & Documentación:** Nicolás Urbina
-
+- **Líder Técnico:** Nicolás Urbina  
+- **Backend:** Cristian Aliaga  
+- **Frontend:** Alan Muñoz  
+- **QA & Documentación:** John Rojas
 ---
 
 ## 🎯 Objetivo Académico  

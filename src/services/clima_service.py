@@ -199,7 +199,12 @@ def clima_hoy_service(lat, lon):
     
 def clima_semana_service(lat, lon):
     url = f"https://api.openweathermap.org/data/2.5/forecast/daily?lat={lat}&lon={lon}&cnt={7}&appid={API_KEY}" #solo este servício no está funcionando
-
+    dias = { #diccionario de estados en español, basicamente un traductor
+    "Clouds": "Nublado",
+    "Rain": "Luvia",
+    "Wednesday": "Miércoles",
+    
+    }
     try:
         respuesta = requests.get(url) 
         if respuesta.status_code == 200: 
@@ -207,7 +212,7 @@ def clima_semana_service(lat, lon):
 
             #filtrar la info
             respuesta_filtrada=filtrar_informacion_semana(respuesta)
-
+#aqui ---------------
             return respuesta_filtrada
         else:
             return {"error": respuesta.json()}

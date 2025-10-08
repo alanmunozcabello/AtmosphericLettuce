@@ -112,6 +112,7 @@ def enviar_archivo(destinatario, archivo_path):
         create_message = {'raw': encoded_message}
         send_message = service.users().messages().send(userId="me", body=create_message).execute()
         print(f"📩 Correo enviado. Message ID: {send_message['id']}")
+        return "correo enviado"
 
     except HttpError as error:
         print(f"Ocurrió un error: {error}")

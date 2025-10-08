@@ -66,6 +66,12 @@
             "ciudad": "Curicó",
             "region": "Español"
         },
-        "cultivos": {}
+        "cultivos": {
+            "papa": 1,
+            "zanahoria": 1,
+            "manzana": 1,
+            "mama": 1,
+            "papá": 1
+        }
     }
 }
