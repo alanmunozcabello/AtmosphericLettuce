@@ -120,10 +120,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // ---  GET /usuarios/{correo} ---
   async function syncConBackend() {
     try {
-      const res = await fetch(`${API_BASE}/usuarios/${encodeURIComponent(CORREO)}`); // pide datos al backend
-      if (!res.ok) return; // si falla  sale
+      // const res = await fetch(`${API_BASE}/usuarios/${encodeURIComponent(CORREO)}`); // pide datos al backend
+      // if (!res.ok) return; // si falla  sale
 
-      const usuario = await res.json();  // parsea JSON devuelto por el backend
+      const usuario = await obtenerUsuario(CORREO);  // parsea JSON devuelto por el backend
       const previo = leerLS() || {};     // lee lo que ya estaba en cache
 
       // A veces el backend puede mandar "nombre" con un email; lo tratamos para mostrar algo amigable
@@ -254,7 +254,14 @@ document.addEventListener('DOMContentLoaded', () => {
       // PUT al backend usando el correo previo 
       await putUsuario(previo.correo || CORREO, body);
 
-    
+      actualizarCacheUsuario({
+        nombre: nombreNuevo,
+        correo: correoNuevo,
+        ubicacion: {
+          ciudad: ciudadNueva || '',
+          region: regionNueva || ''
+        }
+      });
 
       //  Actualiza los datos locales con los nuevos valores
       const fusionado = {

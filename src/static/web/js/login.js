@@ -97,8 +97,22 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // En éxito: guarda el correo en localStorage (sesión)
-      localStorage.setItem('correoUsuario', vEmail);
+      // En éxito: guarda el correo en localStorage (sesión) y todo el usuario para evitar hacer llamadas innecesarias al backend
+      if(success){
+        // Guardar datos completos del usuario
+        const usuarioCompleto = {
+          correo: vEmail,
+          nombre: body.nombre || 'Usuario',
+          ubicacion: body.ubicacion || {},
+          cultivos: body.cultivos || {}
+        };
+
+        localStorage.setItem('correoUsuario', vEmail);
+        localStorage.setItem('usuario', JSON.stringify(usuarioCompleto)); // ✅ CACHE COMPLETO
+        localStorage.setItem('ultimaActualizacion', Date.now()); // ✅ TIMESTAMP
+
+        window.location.href = `home.html?correo=${encodeURIComponent(vEmail)}`;
+      }
       // Limpia los campos del formulario
       email.value = "";
       pass.value = "";

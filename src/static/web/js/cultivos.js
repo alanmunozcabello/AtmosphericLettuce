@@ -65,8 +65,10 @@ document.addEventListener('DOMContentLoaded', () => {
     lista.innerHTML = '<li>Cargando… ⏳</li>'; // mensaje temporal mientras se carga el cultvo 
 
     try {
-      const cultivos = await leer(); // obtiene los cultivos desde el backend
-      const entries = Object.entries(cultivos || {}); // convierte el objeto en lista de pares [nombre, valor]
+      const usuario = await obtenerUsuario(CORREO); // obtener todo el usuario
+
+      const cultivos = usuario.cultivos || {}; // quedarse solo con los cultivos del usuario
+      const entries = Object.entries(cultivos); // convierte el objeto en lista de pares [nombre, valor]
       lista.innerHTML = ''; // limpia la lista anterior
 
       // Si no hay cultivos, muestra un mensaje vacío para que no se vea tan pela la zona 
@@ -120,6 +122,15 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const resp = await agregarOModificar(nombre, hectareas); // agrega con 1 ha por defecto
       await render(); // vuelve a renderizar la lista actualizada
+
+      const usuarioActual = JSON.parse(localStorage.getItem('usuario') || '{}');
+
+      actualizarCacheUsuario({
+        cultivos: {...usuarioActual.cultivos, //mantener los cultivos que se tenian
+        [nombre]: hectareas //agregar o modificar otros
+        }
+      });
+
       if (resp && resp.error) {
         alert(`⚠️ ${resp.error}`);
       }
@@ -150,6 +161,16 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       await eliminar(nombre); // llama al backend para eliminar
       await render(); // muestra lista actualizada
+
+      //actualizar el local storage
+      const usuarioActual = JSON.parse(localStorage.getItem('usuario') || '{}');
+      const cultivosActualizados = { ...usuarioActual.cultivos };
+      delete cultivosActualizados[nombre];
+      
+      actualizarCacheUsuario({
+        cultivos: cultivosActualizados
+      });
+
     } catch (err) {
       console.error(err);
       alert('⚠️ No se pudo eliminar el cultivo. Revisa la consola.');
