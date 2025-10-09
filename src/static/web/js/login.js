@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.warn("⚠️ Usuario no identificado");
     window.location.href = "index.html";
   }
-
+  //commit prueba post actualización
   localStorage.setItem('correoUsuario', CORREO);
 
   // Referencias a elementos del formulario de login
