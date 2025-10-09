@@ -306,28 +306,40 @@ body{
   background: darkred;
 }
 
-
 .form-cultivo{
   display:flex;
-  gap:10px;
+  gap:8px;
   margin-bottom:8px;
 }
-.form-cultivo input{
-  flex:1;
+
+.form-cultivo input[type="text"]{
+  flex:5; /* nombre del cultivo más ancho */
   padding:10px 12px;
   border:1px solid #e3e5ea;
   border-radius:10px;
   font-size:14px;
   outline:none;
 }
+
+.form-cultivo input[type="number"]{
+  flex:1; /* hectáreas más angosto */
+  padding:10px 12px;
+  border:1px solid #e3e5ea;
+  border-radius:10px;
+  font-size:14px;
+  outline:none;
+}
+
 .form-cultivo input:focus{ border-color:#28a745; }
+
 .form-cultivo button{
   padding:10px 14px;
   border:1px solid #e3e5ea;
   border-radius:10px;
   background:linear-gradient(135deg, #5db5ff, #55c2a5);
-  color: #fff; /* <-- Cambia el color del texto aquí */
+  color: #fff;
   cursor:pointer;
+  white-space: nowrap; /* evita que se rompa en móvil */
 }
 .form-cultivo button:hover{
   transform:translateY(-1px);
@@ -374,4 +386,17 @@ body{
       "consejos";
   }
   .buscador{ justify-content:flex-start; }
+}
+
+@media (max-width: 600px) {
+  .form-cultivo {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .form-cultivo input[type="text"],
+  .form-cultivo input[type="number"] {
+    flex: 1;
+    width: 100%;
+  }
 }

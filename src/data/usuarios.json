@@ -53,8 +53,9 @@
             "region": "Maule"
         },
         "cultivos": {
+            "Cerezos": 100000,
             "Peras": 1,
-            "Manzanas": 1
+            "Manzanas": 50
         }
     }
 }

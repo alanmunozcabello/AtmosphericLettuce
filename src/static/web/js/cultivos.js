@@ -17,12 +17,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const API_URL = 'http://127.0.0.1:8000/usuarios'; // Base del backend
   const form = document.getElementById('form-cultivo'); // formulario de agregar cultivo
   const input = document.getElementById('input-cultivo'); // input donde el usuario escribe el cultivo
+  const inputHectareas = document.getElementById('input-hectareas'); // input de las hectareas
   const lista = document.getElementById('lista-cultivos'); // lista  donde se muestran los cultivos
   const submitBtn = form?.querySelector('button[type="submit"]'); // botón de enviar dentro del form
 
   // Si alguno de estos elementos no existe muestra error en consola 
-  if (!form || !input || !lista) {
-    console.error('⚠️ Faltan elementos: form-cultivo / input-cultivo / lista-cultivos');
+  if (!form || !input || !inputHectareas || !lista) {
+    console.error('⚠️ Faltan elementos: form-cultivo / input-cultivo / input-hectareas / lista-cultivos');
     return;
   }
 
@@ -96,8 +97,19 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault(); // evita que se recargue la página
 
-    const nombre = input.value.trim(); // obtiene el texto del input
-    if (!nombre) return;               // si está vacío, no hace nada
+    const nombre = input.value.trim(); //obtener input texto
+    const hectareas = parseInt(inputHectareas.value); //obtener input hectareas
+
+    if(!nombre){ // si está vacío, no hace nada
+      input.focus();
+      alert("Ingrese un nombre valido");
+      return;
+    }
+    if(!hectareas || hectareas < 1 || hectareas > 100000){ // si está vacío o está bajo 1 o sobre 100 mil hectareas no hace nada
+      inputHectareas.focus();
+      alert("Ingrese una cantidad razonable de hectareas");
+      return;
+    }
 
     const prev = submitBtn?.textContent; // guarda el texto original del botón
     if (submitBtn) { 
@@ -106,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      const resp = await agregarOModificar(nombre, 1); // agrega con 1 ha por defecto
+      const resp = await agregarOModificar(nombre, hectareas); // agrega con 1 ha por defecto
       await render(); // vuelve a renderizar la lista actualizada
       if (resp && resp.error) {
         alert(`⚠️ ${resp.error}`);

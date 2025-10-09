@@ -50,10 +50,11 @@
 <div class="tarjeta cultivos">
   <div class="titulo">Cultivos</div>
 
-  <form id="form-cultivo" class="form-cultivo" autocomplete="off">
-    <input id="input-cultivo" type="text" placeholder="Añadir cultivo (p. ej., Zanahoria)">
-    <button type="submit">Agregar</button>
-  </form>
+<form id="form-cultivo" class="form-cultivo" autocomplete="off">
+  <input id="input-cultivo" type="text" placeholder="Nombre del cultivo (ej. Zanahoria)" required>
+  <input id="input-hectareas" type="number" placeholder="Hectáreas" min="1" max="100000" step="1" required>
+  <button type="submit">Agregar</button>
+</form>
   
   <ul id="lista-cultivos" class="lista-cultivos"></ul>
 
