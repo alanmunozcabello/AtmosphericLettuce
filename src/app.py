@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routes import usuarios_routes, clima_routes, chat_routes
+from routes import  notificaciones_routes, usuarios_routes, clima_routes, chat_routes #, notificaciones_routes
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -16,6 +16,8 @@ app.add_middleware(
 app.include_router(usuarios_routes.router)
 app.include_router(clima_routes.router)
 app.include_router(chat_routes.router)
+app.include_router(notificaciones_routes.router)
+
 
 # # Montar carpeta de archivos estáticos
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -23,3 +25,9 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 #iniciar servidor: python -m uvicorn app:app --reload
 #iniciar servidor LAN publico: python -m uvicorn app:app --host 0.0.0.0 --port 8000
 #para abrir el chatbot una vez el servidor esté andando: http://127.0.0.1:8000/static/chat_bot/chat_bot.html
+
+#Migrar datos (actualizar): python scripts\migrar_a_sqlite.py
+#Verificar todo: python scripts\verificar_sqlite.py
+#Consultar usuario específico: python scripts\verificar_sqlite.py --usuario diego@pjd.cl
+#Menú interactivo: python scripts\consultas_sqlite.py
+#Consulta directa: python scripts\consultas_sqlite.py --query "SELECT * FROM usuarios WHERE ciudad IS NOT NULL"

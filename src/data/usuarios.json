@@ -1,77 +1,60 @@
 {
     "equipo@lechuga.cl": {
-        "nombre": "Equipo Lechuga",
-        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$Gfddb3bHI62+LN/INOXI/w$wY5/l/5rMEG3rQnjiZiJFBbFeJoMpgVvkqwkznkJwqA",
+        "nombre": "EquipoLechuga",
+        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$MQ+S7iz8tAUHn7umywFx1Q$HFTNt+Lig5qNmEDlJFF89g3o38u1poVfyq1CfCdNNvY",
         "ubicacion": {
-            "latitud": -33.4489,
-            "longitud": -70.6693,
-            "ciudad": "Santiago",
-            "region": "Metropolitana"
+            "latitud": 0,
+            "longitud": 0,
+            "ciudad": "",
+            "region": ""
         },
-        "cultivos": {
-            "Maiz": 14,
-            "Cerezos": 2,
-            "Lechugas": 5
-        }
+        "cultivos": {}
     },
     "ejemplo@ejemplo.com": {
         "nombre": "Ejemplo",
-        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$3Zw4tsvtKRChmYPLjKU2rQ$Awezve3AzM+744ONnwi3+VIEJoSGPTiEr0HBfcb4jjs",
+        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$+woPVM/8J93YWlKFls2X0g$eB6bK0RC/q0p//9iMuRbxsWXchGMPpbM4qBCHv8TbmA",
         "ubicacion": {
-            "latitud": -36.8201,
-            "longitud": -73.0444,
-            "ciudad": "Concepción",
-            "region": "Biobío"
+            "latitud": 0,
+            "longitud": 0,
+            "ciudad": "",
+            "region": ""
         },
-        "cultivos": {
-            "Tomates": 8,
-            "Pimientos": 3,
-            "Apio": 2
-        }
+        "cultivos": {}
     },
     "pedro@pjd.cl": {
         "nombre": "Pedro",
-        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$OnD+3e2Ph41qO92u2wweKw$Q6XXAdI8qNciCgPmCg0nukxNkPWworq18PK4j4Qu0KQ",
+        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$kZpWxV7UGEo+09or3ty02Q$Argjpg+6Ll8gUGvMW79hIIOf7gbrRXCY3rODRSE6WTU",
         "ubicacion": {
-            "latitud": -35.4264,
-            "longitud": -71.6554,
-            "ciudad": "Talca",
-            "region": "Maule"
+            "latitud": 0,
+            "longitud": 0,
+            "ciudad": "",
+            "region": ""
         },
-        "cultivos": {
-            "Uvas": 12,
-            "Paltas": 6,
-            "Kiwis": 4
-        }
+        "cultivos": {}
     },
     "juan@pjd.cl": {
         "nombre": "Juan",
-        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$qDAEkBnPfE3wt9yPFCIq6w$STv+JGqyryUni+AHb4pij1ospeE2f+ObRJiQb7xAYz4",
+        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$3qVVRCLW3UlpA4CH1CdpUw$gtm9hDXiLgrmvZS5nPGWIdHZYvnpnJ9SLFZYECgKdZQ",
         "ubicacion": {
-            "latitud": -39.8142,
-            "longitud": -73.2459,
-            "ciudad": "Valdivia",
-            "region": "Los Ríos"
+            "latitud": 0,
+            "longitud": 0,
+            "ciudad": "",
+            "region": ""
         },
-        "cultivos": {
-            "Papas": 15,
-            "Avena": 20,
-            "Trigo": 18
-        }
+        "cultivos": {}
     },
     "diego@pjd.cl": {
         "nombre": "Diego",
-        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$mPY84Zs7fa4/CQh9l05ARQ$tR9rxcjcb0UraQ0xy4mYthhRrpPvZk2mTWporAfl1qM",
+        "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$wyaeGp50PtOY0FwVx2HYdA$WvC76PKf/ML+ocRBnb7xsSuxzYuGAKgTESLGGTlhg38",
         "ubicacion": {
-            "latitud": -29.9027,
-            "longitud": -71.2519,
-            "ciudad": "La Serena",
-            "region": "Coquimbo"
+            "latitud": 0,
+            "longitud": 0,
+            "ciudad": "Curicó",
+            "region": "Maule"
         },
         "cultivos": {
-            "Duraznos": 7,
-            "Limones": 5,
-            "Chirimoyas": 3
+            "Peras": 1,
+            "Manzanas": 1
         }
     }
 }

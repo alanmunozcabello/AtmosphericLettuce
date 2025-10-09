@@ -122,7 +122,12 @@ body{
 .input input.invalid {
   border-color: #dc3545 !important;
 }
-.input input.invalid + .error-msg {
+
+.error-msg span {
+  display: block;
+  
+}
+.input input.invalid ~ .error-msg {
   display: block;
 }
 

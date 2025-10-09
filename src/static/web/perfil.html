@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <title>Atmospheric Lettuce</title>
   <link rel="stylesheet" href="css/perfil.css" />
 </head>
+
 <body>
   <!-- Barra superior -->
   <div class="barra-superior">
@@ -19,6 +21,7 @@
     <div class="acciones">
       <div class="icono">🔔</div>
       <div class="icono">👤</div>
+      <button id="btn-logout" class="btn-logout">Cerrar sesión</button>
     </div>
   </div>
 
@@ -33,7 +36,7 @@
 
     <!-- Columna derecha -->
     <div class="columna-derecha">
-      <div class="nombre">Juan Carlos</div>
+      <div class="nombre"></div>
       <div class="desde">Usuario desde marzo de 2020</div>
 
       <div class="tarjeta-perfil">
@@ -49,19 +52,21 @@
 
         <div class="fila">
           <div class="etiqueta">Correo electrónico</div>
-          <div class="valor" id = "valor-correo">juancarlos@gmail.com</div>
+          <div class="valor" id="valor-correo"></div>
         </div>
 
         <div class="fila">
           <div class="etiqueta">Ubicación</div>
-          <div class="valor" id = "valor-cuidad">Curicó</div>
+          <div class="valor" id="valor-cuidad"></div>
         </div>
 
         <div class="fila">
           <div class="etiqueta">Region</div>
-          <div class="valor" id="valor-region">Español</div>
+          <div class="valor" id="valor-region"></div>
         </div>
       </div>
+     
+
 
       <!--Formulario oculto de edición -->
       <form id="form-perfil" class="form-perfil" style="display:none;" autocomplete="off">
@@ -72,7 +77,7 @@
         </div>
         <div class="grupo">
           <label>Correo electrónico</label>
-          <input id="inp-correo" type="email" placeholder="correo@ejemplo.com" required/>
+          <input id="inp-correo" type="email" placeholder="correo@ejemplo.com" required />
           <span class="error-msg">⚠️ El correo es obligatorio</span>
         </div>
         <div class="grupo">
@@ -94,11 +99,30 @@
     </div>
   </div>
 
+
+   <div class="contenedor-delete">
+        <button id="btn-delete" class="btn-delete">Borrar cuenta</button>
+      </div>
+
+      <!-- Alerta de confirmación -->
+      <div id="alerta-borrar" class="alerta-borrar">
+        <div class="alerta-contenido">
+          <h2>⚠️ ¿Estás seguro?</h2>
+          <p>Esta acción eliminará tu cuenta permanentemente.</p>
+          <div class="alerta-acciones">
+            <button id="btn-cancelar-borrar" class="btn-cancelar">Cancelar</button>
+            <button id="btn-confirmar-borrar" class="btn-confirmar">Sí, borrar</button>
+          </div>
+        </div>
+      </div>
+
   <!-- Conecta el JavaScript -->
- 
+
   <script src="js/nav_correo.js" defer></script>
   <script src="js/perfil.js" defer></script>
+  <script src="js/borrar_cuenta.js" defer></script>
 
-   
+
 </body>
+
 </html>

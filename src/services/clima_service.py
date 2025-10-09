@@ -32,8 +32,8 @@ def filtrar_informacion_semana(respuesta): #la idea de esta funcion es filtrar l
         temp=dia["temp"]["day"]-273.15 #pasar las temperaturas de kelvin a celcius :p
         temp_min=dia["temp"]["min"]-273.15
         temp_max=dia["temp"]["max"]-273.15
-
-        respuesta_formateada[i]={ #comienza en 1 por dia 1, dia 2, dia 3...
+#cambio aqui
+        respuesta_formateada[str(i)]={ #comienza en 1 por dia 1, dia 2, dia 3...
             "dia":dia_semana_esp,
             "estado":estado,
             "temp":temp,
@@ -199,7 +199,12 @@ def clima_hoy_service(lat, lon):
     
 def clima_semana_service(lat, lon):
     url = f"https://api.openweathermap.org/data/2.5/forecast/daily?lat={lat}&lon={lon}&cnt={7}&appid={API_KEY}" #solo este servício no está funcionando
-
+    dias = { #diccionario de estados en español, basicamente un traductor
+    "Clouds": "Nublado",
+    "Rain": "Luvia",
+    "Wednesday": "Miércoles",
+    
+    }
     try:
         respuesta = requests.get(url) 
         if respuesta.status_code == 200: 
@@ -207,7 +212,7 @@ def clima_semana_service(lat, lon):
 
             #filtrar la info
             respuesta_filtrada=filtrar_informacion_semana(respuesta)
-
+#aqui ---------------
             return respuesta_filtrada
         else:
             return {"error": respuesta.json()}

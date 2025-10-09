@@ -61,16 +61,16 @@ def service_registrar_nuevo_usuario(correo, nombre, contrasena): #guardar/regist
     contrasena_hasheada = hash_password_simple(contrasena)
     try:
 
-        if correo in usuarios or any(u["nombre"] == nombre for u in usuarios.values()): #validaciones para registrar un usuario
-            return {"error":"nombre de usuario o correo ya utilizado"}
+        if correo in usuarios: #validaciones para registrar un usuario
+            return {"error":"Correo ya utilizado"}
         
         #cambiar a la hora de sql
         nuevo_usuario={"nombre":nombre, #si el usuario o contraseña no existen se crea un nuevo usuario con los parametros de llegada y el resto se "inicializan" en nulo
                        "contrasena":contrasena_hasheada, 
-                       "ubicacion":{"latitud":None, 
-                                    "longitud":None,
-                                    "ciudad":None,
-                                    "region":None}, 
+                       "ubicacion":{"latitud": 0, 
+                                    "longitud": 0,
+                                    "ciudad": "",
+                                    "region": ""}, 
                        "cultivos":{}}
         usuarios[correo]=nuevo_usuario #ahora el id es el correo -> mucho mejor y se puede implementar eliminación de usuarios (no necesarios pero se podría ahora)
 
@@ -126,6 +126,11 @@ def service_agregar_o_modificar_cultivo(correo, cultivo, herctareas): #se agrega
         service_cargar_db()
         
         #cambiar a la hora de sql
+        #verificar que cultivo entrada.lower no este repetido en los cultivos.lower del usuario
+        cultivos_minusculas = [key.lower() for key in usuarios[correo]["cultivos"].keys()]
+        if cultivo.lower() in cultivos_minusculas:
+            return {"error": "El cultivo ya existe"}
+
         usuarios[correo]["cultivos"][cultivo]=int(herctareas) #-> crea cultivo : hectareas, si ya está en el diccionario lo modifica
         
         if(guardar_usuarios() is True): #de haberse guardado correctamente
@@ -150,8 +155,7 @@ def service_eliminar_cultivo(correo, cultivo): #busca un cultivo por el nombre y
         if(guardar_usuarios() is True): #de haberse guardado correctamente
             return {"mensaje": "cultivo" + cultivo + " guardado exitosamente"}
        
-
-        return {"mensaje": "cultivo "+ cultivo + " eliminado exitosamente"}
+        return guardar_usuarios()
     
     except FileNotFoundError: #si algo falla en service_obtener_usuario() se capta cualquiera que sea la exception
         return {"error": "Archivo de usuarios no encontrado"}
@@ -160,29 +164,30 @@ def service_eliminar_cultivo(correo, cultivo): #busca un cultivo por el nombre y
     except Exception as e:
         return {"error": e}
 
-def service_modificar_usuario(correo, usuarioMOD): #MODIFICAAAAAAAAAAAAAAAAAAAAAAAAAR ESTÁ TODITO MALOOOOO, TAREA EN TRELLO COMO TO-DO
+def service_modificar_usuario(correo, usuarioMOD): #modifica el nombre, ciudad o region de un usuario
     try: #cargar base de datos
         service_cargar_db()
 
-        contrasena_hasheada = hash_password_simple(usuarioMOD["contrasena"])
-        usuarioMOD["contrasena"] = contrasena_hasheada
-        #del arreglo usuarios hay que reemplazar al usuario con el id=correo por el usuarioMOD
-        longitud=len(usuarios)
+        #cambiar a la hora de sql
+        # correo=usuarioMOD["correo"] #correo del usuario a modificar
+        usuarioOG=usuarios[correo] #ussuario original para comparar cambios
 
-        if isinstance(usuarioMOD, str):  
-            usuarioMOD = json.loads(usuarioMOD)
-        
-        i=0
-        while(i<longitud):#iterar sobre cada usuario hasta encontrar el que se desea modificar
-            if(usuarios[i]["id"]==correo):
-                print(i)
-                usuarios[i]=usuarioMOD #reemplazar el usuario antiguo por el modificado
-                break
-            i+=1 #no olvidar el i+=1 porfavor :cccccc
+        #modificar nombre
+        if(usuarioOG["nombre"]!=usuarioMOD.nombre):
+            usuarios[correo]["nombre"]=usuarioMOD.nombre
+
+        #modificar ciudad
+        if(usuarioOG["ubicacion"]["ciudad"]!=usuarioMOD.ciudad):
+            usuarios[correo]["ubicacion"]["ciudad"]=usuarioMOD.ciudad
+
+        #modificar region
+        if(usuarioOG["ubicacion"]["region"]!=usuarioMOD.region):
+            usuarios[correo]["ubicacion"]["region"]=usuarioMOD.region
 
         if(guardar_usuarios() is True):
             return {"mensaje":"usuario modificado correctamente"}
 
+        return guardar_usuarios() #-> retorna error
         # return {"mensaje":"usuario modificado exitosamente"}
     
     except FileNotFoundError: #tomar las excepciones que puedan saltar de service_leer_usuarios()
@@ -258,6 +263,24 @@ def service_modificar_region_ciudad_usuario(correo, region, ciudad):
         
         return guardar_usuarios() #-> retorna error
     
+    except FileNotFoundError: #tomar las excepciones que puedan saltar de service_modificar_usuario()
+        return {"error": "Archivo de usuarios no encontrado"}
+    except UnicodeDecodeError:
+        return {"error": "Archivo JSON corrupto"}
+    except Exception as e:
+        return{"error": e}
+    
+def service_eliminar_usuario(correo):
+    try: #cargar base de datos
+        service_cargar_db()
+
+        #cambiar a la hora de sql
+        usuarios.pop(correo)
+        if(guardar_usuarios() is True): #de haberse guardado correctamente
+            return {"mensaje" : "Usuario " + correo + " eliminado"}
+        
+        return guardar_usuarios()
+
     except FileNotFoundError: #tomar las excepciones que puedan saltar de service_modificar_usuario()
         return {"error": "Archivo de usuarios no encontrado"}
     except UnicodeDecodeError:
