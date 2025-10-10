@@ -47,15 +47,16 @@
         "nombre": "Diego",
         "contrasena": "$argon2id$v=19$m=65536,t=2,p=2$wyaeGp50PtOY0FwVx2HYdA$WvC76PKf/ML+ocRBnb7xsSuxzYuGAKgTESLGGTlhg38",
         "ubicacion": {
-            "latitud": 0,
-            "longitud": 0,
+            "latitud": -34.975675120029315,
+            "longitud": -71.22933887014732,
             "ciudad": "Curicó",
             "region": "Maule"
         },
         "cultivos": {
-            "Peras": 1,
-            "Manzanas": 50,
-            "Cerezos": 10000
+            "Zanahorias": 20,
+            "Manzanas": 2,
+            "Cerezos": 500,
+            "Alfalfa": 1000
         }
     }
 }

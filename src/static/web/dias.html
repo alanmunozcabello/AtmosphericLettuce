@@ -27,78 +27,78 @@
 <div class="pronostico">
   <div class="tarjeta clima-card">
     <div class="dia">Lunes</div>
-    <div class="temperatura">22°C</div>
+    <div class="temperatura">--°C</div>
     <div class="minmax">
-      <span class="max">Máx: 26°C</span>
-      <span class="min">Mín: 15°C</span>
+      <span class="max">Máx: --°C</span>
+      <span class="min">Mín: --°C</span>
     </div>
-    <div class="descripcion">Soleado</div>
-    <div class="icono-clima">☀️</div>
+    <div class="descripcion">Cargando...</div>
+    <div class="icono-clima"></div>
   </div>
 
   <div class="tarjeta clima-card">
     <div class="dia">Martes</div>
-    <div class="temperatura">27°C</div>
+    <div class="temperatura">--°C</div>
     <div class="minmax">
-      <span class="max">Máx: 28°C</span>
-      <span class="min">Mín: 19°C</span>
+      <span class="max">Máx: --°C</span>
+      <span class="min">Mín: --°C</span>
     </div>
-    <div class="descripcion">Soleado</div>
-    <div class="icono-clima">☀️</div>
+    <div class="descripcion">Cargando...</div>
+    <div class="icono-clima"></div>
   </div>
 
   <div class="tarjeta clima-card">
     <div class="dia">Miércoles</div>
-    <div class="temperatura">22°C</div>
+    <div class="temperatura">--°C</div>
     <div class="minmax">
-      <span class="max">Máx: 26°C</span>
-      <span class="min">Mín: 15°C</span>
+      <span class="max">Máx: --°C</span>
+      <span class="min">Mín: --°C</span>
     </div>
-    <div class="descripcion">Soleado</div>
-    <div class="icono-clima">☀️</div>
+    <div class="descripcion">Cargando...</div>
+    <div class="icono-clima"></div>
   </div>
 
   <div class="tarjeta clima-card">
     <div class="dia">Jueves</div>
-    <div class="temperatura">22°C</div>
+    <div class="temperatura">--°C</div>
     <div class="minmax">
-      <span class="max">Máx: 26°C</span>
-      <span class="min">Mín: 15°C</span>
+      <span class="max">Máx: --°C</span>
+      <span class="min">Mín: --°C</span>
     </div>
-    <div class="descripcion">Soleado</div>
-    <div class="icono-clima">☀️</div>
+    <div class="descripcion">Cargando...</div>
+    <div class="icono-clima"></div>
   </div>
 
   <div class="tarjeta clima-card">
     <div class="dia">Viernes</div>
-    <div class="temperatura">22°C</div>
+    <div class="temperatura">--°C</div>
     <div class="minmax">
-      <span class="max">Máx: 26°C</span>
-      <span class="min">Mín: 15°C</span>
+      <span class="max">Máx: --°C</span>
+      <span class="min">Mín: --°C</span>
     </div>
-    <div class="descripcion">Soleado</div>
-    <div class="icono-clima">☀️</div>
+    <div class="descripcion">Cargando...</div>
+    <div class="icono-clima"></div>
   </div>
 
   <div class="tarjeta clima-card">
     <div class="dia">Sabado</div>
-    <div class="temperatura">22°C</div>
+    <div class="temperatura">--°C</div>
     <div class="minmax">
-      <span class="max">Máx: 26°C</span>
-      <span class="min">Mín: 15°C</span>
+      <span class="max">Máx: --°C</span>
+      <span class="min">Mín: --°C</span>
     </div>
-    <div class="descripcion">Soleado</div>
-    <div class="icono-clima">☀️</div>
+    <div class="descripcion">Cargando...</div>
+    <div class="icono-clima"></div>
   </div>
     <div class="tarjeta clima-card">
         <div class="dia">Domingo</div>
-        <div class="temperatura">22°C</div>
+        <div class="temperatura">--°C</div>
         <div class="minmax">
-        <span class="max">Máx: 26°C</span>
-        <span class="min">Mín: 15°C</span>
+        <span class="max">Máx: --°C</span>
+        <span class="min">Mín: --°C</span>
         </div>
-        <div class="descripcion">Soleado</div>
-        <div class="icono-clima">☀️</div>
+        <div class="descripcion">Cargando...</div>
+        <div class="icono-clima"></div>
 </div>
 </div>
 
@@ -132,8 +132,17 @@
   </div>
   
   <script src="js/utils.js" defer></script>
-  <script src="js/clima.js" defer></script>
+  <script src="js/cache_clima.js" defer></script>
+  <script src="js/clima_dias.js" defer></script>
   <script src="js/nav_correo.js" defer></script>
   <script src="js/chat_controller.js" defer></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Cargar clima semanal después de que todo esté listo
+      setTimeout(cargarClimaSemana, 1000);
+    });
+  </script>
+
 </body>
 </html>

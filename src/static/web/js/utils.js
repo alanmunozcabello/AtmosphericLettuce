@@ -1,4 +1,4 @@
-const API_BASE = 'http://127.0.0.1:8000';
+// const API_BASE = 'http://127.0.0.1:8000';
 
 function obtenerUsuarioCache(correo) {
   try {
@@ -120,4 +120,24 @@ function verEstadoCache(correo) {
   console.log('   Usuario en cache:', usuario?.correo);
   console.log('   Última actualización:', new Date(ultimaActualizacion).toLocaleString());
   console.log('   Expirado:', (ahora - ultimaActualizacion) > 5 * 60 * 1000);
+}
+
+// Invalidar cache de clima cuando cambien las coordenadas del usuario
+function invalidarCacheClimaSiCambiaUbicacion(usuarioNuevo) {
+  try {
+    const usuarioAnterior = JSON.parse(localStorage.getItem('usuario') || '{}');
+    
+    const latAnterior = usuarioAnterior.ubicacion?.latitud || 0;
+    const lonAnterior = usuarioAnterior.ubicacion?.longitud || 0;
+    const latNueva = usuarioNuevo.ubicacion?.latitud || 0;
+    const lonNueva = usuarioNuevo.ubicacion?.longitud || 0;
+    
+    // Si las coordenadas cambiaron, invalidar cache de clima
+    if (latAnterior !== latNueva || lonAnterior !== lonNueva) {
+      console.log('🌍 Coordenadas cambiaron, invalidando cache de clima');
+      invalidarCacheClima();
+    }
+  } catch (error) {
+    console.error('Error verificando cambio de coordenadas:', error);
+  }
 }

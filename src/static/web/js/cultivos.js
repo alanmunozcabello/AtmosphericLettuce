@@ -121,7 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const resp = await agregarOModificar(nombre, hectareas); // agrega con 1 ha por defecto
-      await render(); // vuelve a renderizar la lista actualizada
 
       const usuarioActual = JSON.parse(localStorage.getItem('usuario') || '{}');
 
@@ -130,6 +129,8 @@ document.addEventListener('DOMContentLoaded', () => {
         [nombre]: hectareas //agregar o modificar otros
         }
       });
+
+      await render(); // vuelve a renderizar la lista actualizada
 
       if (resp && resp.error) {
         alert(`⚠️ ${resp.error}`);
@@ -160,7 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       await eliminar(nombre); // llama al backend para eliminar
-      await render(); // muestra lista actualizada
 
       //actualizar el local storage
       const usuarioActual = JSON.parse(localStorage.getItem('usuario') || '{}');
@@ -171,12 +171,22 @@ document.addEventListener('DOMContentLoaded', () => {
         cultivos: cultivosActualizados
       });
 
+      await render(); // muestra lista actualizada
+
     } catch (err) {
       console.error(err);
       alert('⚠️ No se pudo eliminar el cultivo. Revisa la consola.');
     }
   });
 
+  if (window.location.pathname.includes('home.html')) {
+      // Solo cargar clima si estamos en home.html
+      setTimeout(() => {
+        if (typeof cargarClimaHome === 'function') {
+          cargarClimaHome();
+        }
+      }, 1500); // mientras tanto será un tiempo fijo
+    }
 
   // --- se cargan los cultivos y se muestran en la pagina ---
   render(); // carga y muestra los cultivos automáticamente
