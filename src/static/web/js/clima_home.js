@@ -18,6 +18,10 @@ async function cargarClimaHome() {
     try {
         // Obtener datos del clima (con cache incluido)
         const clima = await obtenerClimaDia();
+        const clima_semana = await obtenerClimaSemana();
+
+        clima.min = clima_semana["1"].min;
+        clima.max = clima_semana["1"].max;
         
         if (clima) {
             mostrarClimaEnHome(clima);
