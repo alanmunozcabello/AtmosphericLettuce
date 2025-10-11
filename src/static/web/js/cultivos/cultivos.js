@@ -109,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if(!hectareas || hectareas < 1 || hectareas > 100000){ // si está vacío o está bajo 1 o sobre 100 mil hectareas no hace nada
       inputHectareas.focus();
+      inputHectareas.value = '';
       alert("Ingrese una cantidad razonable de hectareas");
       return;
     }
@@ -121,23 +122,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const resp = await agregarOModificar(nombre, hectareas); // agrega con 1 ha por defecto
+      if (resp && resp.error) {
+        alert(`⚠️ ${resp.error}`);
+      }else{
 
-      const usuarioActual = JSON.parse(localStorage.getItem('usuario') || '{}');
+        const usuarioActual = JSON.parse(localStorage.getItem('usuario') || '{}');
 
-      actualizarCacheUsuario({
-        cultivos: {...usuarioActual.cultivos, //mantener los cultivos que se tenian
-        [nombre]: hectareas //agregar o modificar otros
-        }
-      });
+        actualizarCacheUsuario({
+          cultivos: {...usuarioActual.cultivos, //mantener los cultivos que se tenian
+          [nombre]: hectareas //agregar o modificar otros
+          }
+        });
+      }
 
       await render(); // vuelve a renderizar la lista actualizada
 
-      if (resp && resp.error) {
-        alert(`⚠️ ${resp.error}`);
-      }
-
       input.value = ''; // limpia el campo
+      inputHectareas.value = '';
       input.focus();    // vuelve a enfocar el input para seguir escribiendo
+      inputHectareas.focus();
+
     } catch (err) {
       console.error(err);
       alert('⚠️ No se pudo agregar/modificar el cultivo. Revisa la consola.');

@@ -33,7 +33,6 @@
 //         info:"info dia 7"
 //     }
 // }
-const API_BASE = 'http://localhost:8000';
 
 // ✅ FUNCIONES DE CACHE
 function obtenerClimaCacheDia() {
@@ -113,6 +112,7 @@ function invalidarCacheClima() {
 
 // ✅ FUNCIONES PRINCIPALES CON CACHE
 async function obtenerClimaDia() {
+  const API_BASE = 'http://localhost:8000';
   try {
     // 1. Intentar cache primero
     const climaCache = obtenerClimaCacheDia();
@@ -121,13 +121,14 @@ async function obtenerClimaDia() {
     }
 
     // 2. Obtener coordenadas del usuario
-    const usuarioStr = localStorage.getItem('usuario');
-    if (!usuarioStr) {
+    const CORREO = localStorage.getItem('correoUsuario');
+    const usuario = await obtenerUsuario(CORREO);
+    if (!usuario){
       console.log("No hay usuario en la cache");
       return null;
     }
 
-    const usuario = JSON.parse(usuarioStr);
+    // const usuario = JSON.parse(usuarioStr);
     const lat = usuario.ubicacion?.latitud || usuario.ubicacion?.lat || -999;
     const lon = usuario.ubicacion?.longitud || usuario.ubicacion?.lon || -999;
 
@@ -160,6 +161,7 @@ async function obtenerClimaDia() {
 }
 
 async function obtenerClimaSemana() {
+  const API_BASE = 'http://localhost:8000';
   try {
     // 1. Intentar cache primero
     const climaCache = obtenerClimaCacheSemana();
@@ -207,6 +209,7 @@ async function obtenerClimaSemana() {
 }
 
 async function obtenerClimaHora() {
+  const API_BASE = 'http://localhost:8000';
   try {
     // Para clima por horas no usamos cache porque cambia muy frecuentemente
     const usuarioStr = localStorage.getItem('usuario');

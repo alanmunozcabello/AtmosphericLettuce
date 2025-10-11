@@ -1,3 +1,38 @@
+document.addEventListener('DOMContentLoaded', async () => {
+  // 1. Obtener correo como en otros archivos
+  const CORREO = new URLSearchParams(location.search).get('correo')
+    || localStorage.getItem('correoUsuario');
+
+  if (!CORREO) {
+    console.warn("⚠️ Usuario no identificado");
+    window.location.href = "index.html";
+    return;
+  }
+
+  localStorage.setItem('correoUsuario', CORREO);
+
+  let latUsuario, lonUsuario;
+
+  try {
+    // 2. ✅ Usar obtenerUsuario() como en el resto del proyecto
+    const usuario = await obtenerUsuario(CORREO);
+    
+    if (!usuario) {
+      console.warn("⚠️ No se pudo obtener datos del usuario");
+      window.location.href = "index.html";
+      return;
+    }
+
+    // 3. Extraer coordenadas
+    latUsuario = usuario.ubicacion?.latitud || usuario.ubicacion?.lat || -33.446;
+    lonUsuario = usuario.ubicacion?.longitud || usuario.ubicacion?.lon || -70.681;
+
+  } catch (error) {
+    console.error("❌ Error obteniendo usuario:", error);
+    // Usar Santiago como fallback
+    latUsuario = -33.446;
+    lonUsuario = -70.681;
+  }
 // Crear mapa base centrado en Chile
 const map = new ol.Map({
   target: 'map',
@@ -7,11 +42,11 @@ const map = new ol.Map({
     }),
   ],
   view: new ol.View({
-    center: ol.proj.fromLonLat([-71.543, -35.426]), // Chile central
-    zoom: 6,
+    center: ol.proj.fromLonLat([lonUsuario, latUsuario]), // Ubicacion
+    zoom: 16,
   }),
 });
-
+console.log(latUsuario, lonUsuario);
 // Capa para marcadores
 const vectorSource = new ol.source.Vector();
 const vectorLayer = new ol.layer.Vector({ source: vectorSource });
@@ -41,9 +76,8 @@ map.on('click', async function (evt) {
   const res = await fetch(url);
   const data = await res.json();
 
-  let ciudad = "Desconocida", region = "Desconocida", pais = "Desconocido";
+  let ciudad = "Desconocida", region = "Desconocida", pais = "Desconocido", ubi = lat + "," + lon;
   if (data.address) {
-    ubi = lat + " , " + lon;
     ciudad = data.address.city || data.address.town || data.address.village || "Desconocida";
     region = data.address.state || "Desconocida";
     pais = data.address.country || "Desconocido";
@@ -57,4 +91,5 @@ map.on('click', async function (evt) {
     <strong>🌎 País:</strong> ${pais}
   `;
   overlay.setPosition(evt.coordinate);
+});
 });
