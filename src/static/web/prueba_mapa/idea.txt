@@ -1,0 +1,10 @@
+ESTE TXT ES PARA NO PERDER LA IDEA E IR ACTUALIZANDOLA MIENTRAS AVANZO CON LA IMPLEMENTACION
+
+Usar barra de "ingresar ubicacion" del home.html que al apretarlo aparezca una ventana flotante (tipo la del chatbot) con un mapa interactivo 
+donde podrá apretar un punto para seleccionar su ubicación o la ubicación que necesita (y que el fondo se difumine (si es que eso existe) al 
+aparecer la ventana). 
+    -> Y usar Nominatim (OpenStreetMap) para obtener la ciudady region del usuario usando las coordenadas d esu ubicación
+        -> este combo (OpenLayers + Nominatim) permite que sea compatible con cualquier usuario en cualquier ubicación incluso fuera de Chile!!
+
+Habrá un formulario para cada cultivo que el usuario podrá rellenar/editar (de haberlo rellenado antes)
+en donde estará tambien un apartado de un mapa interactivo para que pueda dibujar con puntos la superficie de su cultivo/cuartel/etc especifico
