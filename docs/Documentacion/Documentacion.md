@@ -210,6 +210,23 @@ Si cambias la estructura de carpetas, ajusta en `app.py`:
 app.mount("/static", StaticFiles(directory="static"), name="static")
 ```
 
+## Migracion a SQL lite
+- Ahora los datos en vez de estar guardados en un archivo .json se encuentra dentro de SQL lite
+- Se actualizo `usuarios_services.py` para que ahora funcione en base a SQL lite
+Las herramientas utilizadas son:
+- SQLite como motor de base de datos embebido.
+- DB Browser for SQLite para la inspección y validación de la base de datos.
+- Enlace de descarga: https://sqlitebrowser.org/
+
+Los resultados obtenidos son:
+- Una base de datos funcional y portable archivo(.db).
+- Confirmación de la persistencia de datos tras reiniciar la aplicación.
+- Adaptación del código de conexión y consultas SQL al nuevo entorno.
+
+ Pruebas realizadas:
+- Agregar, Edicion y eliminación de registros en tablas principales.
+- Visualización de los datos en DB Browser para verificar consistencia.
+
 ## Configuración y notas
 
 - CORS: está abierto a `*` para pruebas locales en `app.py`. En producción restringe `allow_origins`.
@@ -241,4 +258,4 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 ---
 
-¿Quieres que agreguemos un `requirements.txt` y un script `tasks.json` para lanzar el servidor con un clic en VS Code? Puedo crearlos en un paso si te sirve.
+
