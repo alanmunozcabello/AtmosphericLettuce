@@ -108,13 +108,8 @@ def service_agregar_o_modificar_cultivo(correo, cultivo, hectareas): #se agrega 
         resultado = cursor.fetchone()
         if resultado is not None:
             cultivos = json.loads(resultado[0]) if resultado[0] else {}
-            if cultivo.lower() in [c.lower() for c in cultivos.keys()]:
-                # Si el cultivo ya existe, lo modificamos
-                cultivos[cultivo] = hectareas
-            else:
-                # Si el cultivo no existe, lo agregamos
-                cultivos[cultivo] = hectareas
-            cursor.execute("UPDATE usuarios SET cultivos = ? WHERE correo = ?", (json.dumps(cultivos), correo))
+            cultivos[cultivo] = hectareas
+            cursor.execute("UPDATE usuarios SET cultivos = ? WHERE correo = ?", (json.dumps(cultivos, ensure_ascii=False), correo))
             conexion.commit()
             conexion.close()
             return {"mensaje": "Cultivo guardado exitosamente"}
