@@ -27,36 +27,42 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-
-  // ---Helper general para peticiones al backend ---
-  async function safeFetch(url, options) {
-    const res = await fetch(url, options); // hace la petición HTTP
-    const text = await res.text().catch(() => '');// intenta leer la respuesta como texto
-    if (!res.ok) {                               
-      console.error('❌', res.status, res.statusText, text); // muestra error en consola
-      throw new Error(`HTTP ${res.status}: ${text || res.statusText}`); // lanza excepción
-    }
-    try { return JSON.parse(text); } catch { return null; }  // intenta parsear el texto a JSON
-  }
-
-
-  // ---Funciones específicas para cada ruta del backend de los cultvios  ---
-  // Obtener los cultivos del usuario
-  async function leer() {
-    const url = `${API_URL}/${encodeURIComponent(CORREO)}/cultivos`;
-    return await safeFetch(url, { method: 'GET' }); // Ejemplo de respuesta: { "tomate": 1, "trigo": 2 }
-  }
-
   // Agregar o modificar un cultivo (PATCH)
   async function agregarOModificar(nombre, hectareasNum) {
-    const url = `${API_URL}/${encodeURIComponent(CORREO)}/${encodeURIComponent(nombre)}/${hectareasNum}/agregar_modificar`;
-    return await safeFetch(url, { method: 'PATCH' });
+    const res = await fetch(`${API_URL}/${encodeURIComponent(CORREO)}/${encodeURIComponent(nombre)}/${hectareasNum}/agregar_modificar`, {method: 'PATCH'}); // hace la petición HTTP
+    const text = await res.text().catch(() => '');// intenta leer la respuesta como texto
+
+    if (!res.ok) { //si algo salió mal muestra error por ahora -> cambiar a que mande una alerta                        
+      console.error('❌', res.status, res.statusText, text);
+      throw new Error(`HTTP ${res.status}: ${text || res.statusText}`); // lanza excepción
+      //return;
+    }
+
+    try { 
+      return JSON.parse(text); //parsea la respuesta
+    } catch { 
+      return null; 
+    }
+
   }
 
   // Eliminar un cultivo
   async function eliminar(nombre) {
-    const url = `${API_URL}/${encodeURIComponent(CORREO)}/${encodeURIComponent(nombre)}/eliminar`;
-    await safeFetch(url, { method: 'DELETE' });
+    const res = await fetch(`${API_URL}/${encodeURIComponent(CORREO)}/${encodeURIComponent(nombre)}/eliminar`, {method: 'PATCH'}); // hace la petición HTTP
+    const text = await res.text().catch(() => '');// intenta leer la respuesta como texto
+
+    if (!res.ok) { //si algo salió mal muestra error por ahora -> cambiar a que mande una alerta                        
+      console.error('❌', res.status, res.statusText, text);
+      throw new Error(`HTTP ${res.status}: ${text || res.statusText}`); // lanza excepción
+      //return;
+    }
+
+    try { 
+      return JSON.parse(text); //parsea la respuesta
+    } catch { 
+      return null; 
+    }
+
   }
 
 
@@ -157,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ---Evento: eliminar cultivo ---
   lista.addEventListener('click', async (e) => {
-    // Busca si se hizo clic en un botón con clase .btn-eliminar
+    // Busca si se hizo click en un botón con clase .btn-eliminar
     const btn = e.target.closest('.btn-eliminar');
     if (!btn) return; 
 

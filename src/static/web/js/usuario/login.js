@@ -61,15 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Realiza la petición al backend; pide JSON en la respuesta
       const resp = await fetch(LOGIN_URL, { method: 'GET', headers: { 'Accept': 'application/json' } });
-
-      // Lee como texto y luego intenta convertir a formato JSON
-      const raw = await resp.text();
-      let body = null;
-      try { body = JSON.parse(raw); } catch { body = raw; }
-
-      // Log auxiliar para debug: status HTTP y cuerpo interpretado
-      console.log('status', resp.status, 'body:', body);
-
+      
       // Si la respuesta HTTP no es OK, maneja distintos códigos
       if (!resp.ok) {
         if (resp.status === 404) { alert('Usuario no encontrado'); }
@@ -78,6 +70,16 @@ document.addEventListener('DOMContentLoaded', () => {
         return; // corta aquí si no fue exitoso
       }
 
+      // Lee como texto y luego intenta convertir a formato JSON
+      const raw = await resp.text();
+      let body = null;
+      try { 
+        body = JSON.parse(raw); 
+      } catch { 
+        body = raw; 
+      }
+
+      //VER QUE ONDA CON ESTA SECCIÓN MAS TARDE CON CONSOLE.LOG() PARA VER A QUE If ENTRA -> SE HIZO PENSANDO EN 5 RESPUESTAS DISTINTAS DEL BACKEND (SOLO HAY 2!!!!)
       // metodos  para considerar "éxito" según distintos formatos de respuesta
       let success = false;
       if (body === true) success = true; // backend que devuelve booleano
