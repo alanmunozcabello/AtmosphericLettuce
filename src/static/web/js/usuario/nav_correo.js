@@ -29,6 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Función global para cerrar sesión
 function logout() {
-    localStorage.removeItem('correoUsuario');
+    // localStorage.removeItem('correoUsuario');
+    invalidarCache(); //funcion de utils que se encarga de sacar los datos del usuario del local storage
+    localStorage.clear();
     window.location.href = 'index.html';
 }

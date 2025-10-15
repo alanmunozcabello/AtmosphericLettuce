@@ -29,12 +29,12 @@
   
    <div class="tarjeta clima-card" onclick="location.href='dias.html'">
     <div class="dia">Hoy</div>
-    <div class="temperatura">22°C</div>
+    <div class="temperatura">Cargando...</div>
     <div class="minmax">
-      <span class="max">Máx: 26°C</span>
-      <span class="min">Mín: 15°C</span>
+      <span class="max">Máx: --°C</span>
+      <span class="min">Mín: --°C</span>
     </div>
-    <div class="descripcion">Soleado</div>
+    <div class="descripcion">Obteniendo clima...</div>
     <div class="icono-clima">☀️</div>
   </div>
 
@@ -50,10 +50,11 @@
 <div class="tarjeta cultivos">
   <div class="titulo">Cultivos</div>
 
-  <form id="form-cultivo" class="form-cultivo" autocomplete="off">
-    <input id="input-cultivo" type="text" placeholder="Añadir cultivo (p. ej., Zanahoria)">
-    <button type="submit">Agregar</button>
-  </form>
+<form id="form-cultivo" class="form-cultivo" autocomplete="off">
+  <input id="input-cultivo" type="text" placeholder="Nombre del cultivo (ej. Zanahoria)" required>
+  <input id="input-hectareas" type="number" placeholder="Hectáreas" min="1" max="100000" step="1" required>
+  <button type="submit">Agregar</button>
+</form>
   
   <ul id="lista-cultivos" class="lista-cultivos"></ul>
 
@@ -94,9 +95,12 @@
     </div>
   </div>
 
-  <script src="js/nav_correo.js" defer></script>
-  <script src="js/cultivos.js" defer></script>
-  <script src="js/chat_controller.js" defer></script>
+  <script src="js/utilidades/utils.js" defer></script>
+  <script src="js/clima/cache_clima.js" defer></script>
+  <script src="js/clima/clima_home.js" defer></script>
+  <script src="js/usuario/nav_correo.js" defer></script>
+  <script src="js/cultivos/cultivos.js" defer></script>
+  <script src="js/chatbot/chat_controller.js" defer></script>
 
 </body>
 </html>

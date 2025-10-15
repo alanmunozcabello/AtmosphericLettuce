@@ -187,12 +187,11 @@ def clima_hoy_service(lat, lon):
         respuesta = requests.get(url) 
         if respuesta.status_code == 200: 
             respuesta = respuesta.json() 
-
             #filtrar la info
             respuesta_filtrada=filtrar_informacion_dia(respuesta)
-
             return respuesta_filtrada 
         else:
+            print(respuesta.json())
             return {"error": respuesta.json()}
     except Exception as e: 
         return "error:", e
