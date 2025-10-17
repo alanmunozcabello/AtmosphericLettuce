@@ -35,10 +35,6 @@ class UsuarioRegistro(BaseModel):
 def ruta_registrar_usuario(usuario: UsuarioRegistro):
     return controller_registrar_usuario(usuario.correo, usuario.nombre, usuario.contrasena)
 
-# @router.post("/usuarios/registrar") #post es para recibir información
-# def ruta_registrar_usuario(correo, nombre, contrasena): #se llama al controlador para procese el guardado del nuevo usuario
-#     return controller_registrar_usuario(correo, nombre, contrasena) #----------------front
-
 @router.get("/usuarios/{correo}/cultivos")
 def ruta_obtener_cultivos_usuario(correo):
     return controller_obtener_cultivos_usuario(correo)
@@ -52,10 +48,11 @@ def ruta_eliminar_cultivo(correo, cultivo):
     return controller_eliminar_cultivo(correo, cultivo)
 
 class UsuarioModificado(BaseModel):
-    correo: str
+    #correo: str
     nombre: str
     ciudad: str
     region: str
+    foto_perfil: str
 
 @router.put("/usuarios/{correo}/modificar") #HAY QUE CAMBIAR TODITO EL COSIACO
 def ruta_modificar_usuario(correo, usuarioMOD: UsuarioModificado): #usuarioMOD es el dict completo del usuario a modificar
