@@ -106,8 +106,10 @@ document.addEventListener('DOMContentLoaded', () => {
           correo: vEmail,
           nombre: body.nombre || 'Usuario',
           ubicacion: body.ubicacion || {},
-          cultivos: body.cultivos || {}
+          cultivos: body.cultivos || {},
+          foto_perfil: body.foto_perfil || ''
         };
+        console.log(usuarioCompleto.ubicacion);
 
         localStorage.setItem('correoUsuario', vEmail);
         localStorage.setItem('usuario', JSON.stringify(usuarioCompleto)); // ✅ CACHE COMPLETO

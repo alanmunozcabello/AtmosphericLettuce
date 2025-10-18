@@ -94,7 +94,23 @@ document.addEventListener('DOMContentLoaded', () => {
     if (correoV) correoV.textContent = data.correo ?? '';
     if (ubicV)   ubicV.textContent   = data.ubic   ?? 'No especificada';
     if (regionV) regionV.textContent = data.region ?? 'No especificada';
-    if (avatarV && data.avatar) avatarV.src = data.avatar; // solo si hay avatar en data
+    // if (avatarV && data.avatar) avatarV.src = data.avatar; // solo si hay avatar en data
+
+    if (avatarV) {
+    if (data.avatar && data.avatar.startsWith('data:')) {
+      // Si hay avatar en formato base64, mostrarlo
+      avatarV.src = data.avatar;
+      console.log('✅ Mostrando avatar desde cache/backend');
+    } else if (data.foto_perfil && data.foto_perfil.startsWith('data:')) {
+      // Si viene del backend con nombre foto_perfil
+      avatarV.src = data.foto_perfil;
+      console.log('✅ Mostrando foto_perfil desde backend');
+    } else {
+      // Avatar por defecto o placeholder
+      avatarV.src = 'img/avatar-default.png'; // o cualquier imagen por defecto
+      console.log('📷 Usando avatar por defecto');
+    }
+  }
 
     // Formulario (inputs editables)
     if (inpNombre) inpNombre.value = data.nombre ?? 'Usuario';
@@ -135,15 +151,26 @@ document.addEventListener('DOMContentLoaded', () => {
             : (CORREO.split('@')[0] || 'Usuario'))        // si no, usa la parte antes de la @ como nombre
         : (nombreSrv || previo.nombre || 'Usuario');       // si no es correo, usa el del server o el previo
 
-      // Fusiona datos previos con los nuevos del backend (ubicación/region anidadas)
-      const fusionado = {
-        ...previo,
-        nombre: displayName,
-        correo: usuario?.correo ?? CORREO,
-        ubic:   usuario?.ubicacion?.ciudad ?? previo.ubic ?? '',
-        region: usuario?.ubicacion?.region ?? previo.region ?? '',
-        avatar: previo.avatar ?? null,
-      };
+    let avatarFinal = null;
+    if (usuario?.foto_perfil && usuario.foto_perfil.startsWith('data:')) {
+      // Prioridad 1: Foto del backend
+      avatarFinal = usuario.foto_perfil;
+      console.log('Foto de perfil cargada desde backend');
+    } else if (previo.avatar && previo.avatar.startsWith('data:')) {
+      // Prioridad 2: Foto del cache local
+      avatarFinal = previo.avatar;
+      console.log('📸 Foto de perfil mantenida desde cache');
+    }
+
+    // Fusiona datos previos con los nuevos del backend (ubicación/region anidadas)
+    const fusionado = {
+      ...previo,
+      nombre: displayName,
+      correo: usuario?.correo ?? CORREO,
+      ubic:   usuario?.ubicacion?.ciudad ?? previo.ubic ?? '',
+      region: usuario?.ubicacion?.region ?? previo.region ?? '',
+      avatar: avatarFinal,
+    };
 
       guardarLS(fusionado); // actualiza cache
       pintar(fusionado);    // y pantalla
@@ -242,12 +269,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Lee el perfil previo del cache
     const previo = leerLS() || {};
+
+    //obtener foto de perfil   
+    let fotoActual = '';
+    if(avatarV?.src && avatarV.src.startsWith('data:')){
+      fotoActual = avatarV.src;
+    }else if(previo.avatar){
+      fotoActual = previo.avatar;
+    }
+
     // Construye el cuerpo que enviará al backend
     const body = {
       nombre: nombreNuevo,
       correo: correoNuevo,
       ciudad: ciudadNueva || '',
-      region: regionNueva || ''
+      region: regionNueva || '',
+      foto_perfil: fotoActual || ''
     };
 
     try {
@@ -270,8 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
         correo: correoNuevo,
         ubic:   ciudadNueva || previo.ubic || '',
         region: regionNueva || previo.region || '',
-        // Si en el <img> hay un data URL (base64) de avatar, lo mantiene; si no, conserva el previo
-        avatar: (avatarV?.src?.startsWith('data:') ? avatarV.src : (previo.avatar || null)) || null,
+        avatar: fotoActual || previo.avatar || null,
       };
 
       guardarLS(fusionado); // guarda en cache

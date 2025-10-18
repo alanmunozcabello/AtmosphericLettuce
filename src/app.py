@@ -27,7 +27,4 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 #para abrir el chatbot una vez el servidor esté andando: http://127.0.0.1:8000/static/chat_bot/chat_bot.html
 
 #Migrar datos (actualizar): python scripts\migrar_a_sqlite.py
-#Verificar todo: python scripts\verificar_sqlite.py
-#Consultar usuario específico: python scripts\verificar_sqlite.py --usuario diego@pjd.cl
-#Menú interactivo: python scripts\consultas_sqlite.py
 #Consulta directa: python scripts\consultas_sqlite.py --query "SELECT * FROM usuarios WHERE ciudad IS NOT NULL"

@@ -58,7 +58,7 @@
   - `Cambios estéticos en el chatbot, incluyendo mejoras en el feedback hacia el usuario al momento de seleccionar archivos.` 
   - `Mejoras en la selección de archivos: anteriormente, al seleccionar archivos nuevos, se eliminaban los ya seleccionados; ahora, los archivos se añaden a la lista existente, y los no deseados pueden eliminarse mediante un botón “X”.` 
   - `La burbuja del chat ahora es completamente responsiva, adaptándose a distintos tamaños de pantalla.`
-  - `Se implemento el archvio security que contiene dos funciones una permite resivir una contraseña y devolverla hasheada con Argon2 y la otra permite verificar si la contraseña es igual a la hasheada que esta en la base de datos`
+  - `
 
 - Implementacion rama Frontend   
     **Integración entre el backend y el frontend**
@@ -67,27 +67,4 @@
   - `En la pantalla Home, dentro de la sección de cultivos, se implementó la funcionalidad de agregar y eliminar cultivos, los cuales se cargan también en la base de datos (JSON).`
   - `En la sección Perfil, se muestran los datos del usuario que haya iniciado sesión, incluyendo nombre, correo, ciudad y región.`
   - `Todos estos cambios se realizaron utilizando fetch, reemplazando el uso anterior de localStorage, lo que mejora la comunicación con la base de datos y la persistencia de la información.`
-
-## 📌 Semana 7
-- Corregion de errores y termino de tareas pendientes 
-  - `Se implemto la opcion de eliminar usuario (Backend/ frontend) utilizando los metodos del backend y fetch en el frontend`
-  - `Se implemento la opcion de cerrar sesión con persistencia de datos `
-  - `Se implmento la opcion de modficar datos del usuario (todos los datos menos el correo) con persistencia de datos`
-  - `Se implemento la opcion de verificar si un cultivo ya esta ingresado en la base de datos y no permite agregarlo denuevo`
-  - `Se implemento la opcion validaciones en la contraseña al momento de registrar usuarios [ahora se requiere una mayuscula, un caracter especial y un numero más las restricciones que estaban antes], tambien se quitó la limitación de nombres distintos entre usuarios [ahora se permite que dos usuarios tengan el mismo nombre pero obviamente distinto correo!!!]`
-  - `Se actualizo la base de datos con nuevos usuarios con los nuevos datos ciudad y region`
-  - `Se aplicaron las mismas validaciones que tiene el correo al nombre para tener validaciones en ese apatado tambien`
-  - `Se aplicaron validaciones a los campos de ciudad y region`
-  - `Comienzo de la implementacion del sistema de notificaciones fuera de la carpeta src, por el momento podemos enviar correos con emisario de atmosphericlettuce hacia otros destinatarios (planilla html, planilla pdf y correo de texto)`
-
-## 📌 Semana 8  
-- Correcion de errores del hito 1  
-  - ` `
-## 📌 Semana 9
-- Migracion a SQL Lite con el CRUD completo
-- `Solo pueden ingresar usuaruios que se encuentren dentro de la base de datos.`
-- `Se pueden registar usuarios y estos de guardan dentro de la base de datos.`
-- `Se pueden agregar y eliminar cultivos con la cantidad de hectareas que el usuario le defina. `
-- `El usuario puede editar su informacion(nombre,cuidad,region) y estos datos se actualizan dentro de la base de datos.`
-- `El usuario puede cerrar seson siendo redirigido al login. `
-- `El usuario puede eliminar su cuenta y esta tambien se borra de forma permanete dentro de la base de datos.` 
+  

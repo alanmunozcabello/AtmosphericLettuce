@@ -123,14 +123,13 @@ async function obtenerClimaDia() {
     // 2. Obtener coordenadas del usuario
     const CORREO = localStorage.getItem('correoUsuario');
     const usuario = await obtenerUsuario(CORREO);
-    if (!usuario){
-      console.log("No hay usuario en la cache");
+    if (!usuario) {
+      console.log("No se pudo obtener datos del usuario");
       return null;
     }
 
-    // const usuario = JSON.parse(usuarioStr);
-    const lat = usuario.ubicacion?.latitud || usuario.ubicacion?.lat || -999;
-    const lon = usuario.ubicacion?.longitud || usuario.ubicacion?.lon || -999;
+    const lat = usuario.ubicacion?.latitud ?? usuario.ubicacion?.lat ?? -999;
+    const lon = usuario.ubicacion?.longitud ?? usuario.ubicacion?.lon ?? -999;
 
     if (lat === -999 && lon === -999) {
       console.log("No se pudo obtener latitud y longitud");
@@ -170,15 +169,15 @@ async function obtenerClimaSemana() {
     }
 
     // 2. Obtener coordenadas del usuario
-    const usuarioStr = localStorage.getItem('usuario');
-    if (!usuarioStr) {
-      console.log("No hay usuario en la cache");
+    const CORREO = localStorage.getItem('correoUsuario');
+    const usuario = await obtenerUsuario(CORREO);
+    if (!usuario) {
+      console.log("No se pudo obtener datos del usuario");
       return null;
     }
 
-    const usuario = JSON.parse(usuarioStr);
-    const lat = usuario.ubicacion?.latitud || usuario.ubicacion?.lat || -999;
-    const lon = usuario.ubicacion?.longitud || usuario.ubicacion?.lon || -999;
+    const lat = usuario.ubicacion?.latitud ?? usuario.ubicacion?.lat ?? -999;
+    const lon = usuario.ubicacion?.longitud ?? usuario.ubicacion?.lon ?? -999;
 
     if (lat === -999 && lon === -999) {
       console.log("No se pudo obtener latitud y longitud");
@@ -212,16 +211,15 @@ async function obtenerClimaHora() {
   const API_BASE = 'http://localhost:8000';
   try {
     // Para clima por horas no usamos cache porque cambia muy frecuentemente
-    const usuarioStr = localStorage.getItem('usuario');
-    if (!usuarioStr) {
-      console.log("No hay usuario en la cache");
+    const CORREO = localStorage.getItem('correoUsuario');
+    const usuario = await obtenerUsuario(CORREO);
+    if (!usuario) {
+      console.log("No se pudo obtener datos del usuario");
       return null;
     }
 
-    const usuario = JSON.parse(usuarioStr);
-    const lat = usuario.ubicacion?.latitud || usuario.ubicacion?.lat || -999;
-    const lon = usuario.ubicacion?.longitud || usuario.ubicacion?.lon || -999;
-
+    const lat = usuario.ubicacion?.latitud ?? usuario.ubicacion?.lat ?? -999;
+    const lon = usuario.ubicacion?.longitud ?? usuario.ubicacion?.lon ?? -999;
     if (lat === -999 && lon === -999) {
       console.log("No se pudo obtener latitud y longitud");
       return null;
