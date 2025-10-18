@@ -2,33 +2,26 @@ import requests
 import json
 from dotenv import load_dotenv
 import os
+from openai import OpenAI
 # prueba de respuesta de la API
 # OBS: funciona bien, usa bien el contexto y responde coherentemente. dependiendo de la complegidad de la pregunta tarda minimo 2 segundos en dar una repsuesta.
 #      Lo que si la IA no recuerda preguntas anteriores, solo responde a la actual. 
 
 load_dotenv()
-API_KEY=os.getenv("OPENROUTER_MISTRAL_API_KEY")
+API_KEY=os.getenv("DEEPSEEK_API_KEY")
 
 def preguntar_mistral(contexto):
-    url = "https://openrouter.ai/api/v1/chat/completions" #url generico de openrouter
+    url = "https://api.deepseek.com/chat/completions"
+    mensaje_usuario = json.dumps(contexto, ensure_ascii=False)
 
+    #sk-b38d6962ace645718f7acbc10e463312
     headers={
         "Authorization": f"Bearer {API_KEY}", #API
         "Content-Type": "application/json" #requerido 
     }
 
-    #USAR ESTE CONTEXTO PARA NO GASTAR CREDITOS DE LA API!!!!!!!!!!!!!!!!
-    # contexto = [
-    #             {
-    #                 "json": '{"access_token": "1l0CuuVxFyYDKMN", "model_version": "crop_health:1.2.1", "custom_id": null, "input": {"latitude": null, "longitude": null, "images": ["https://crop.kindwise.com/media/images/3bc16d35d5a14bde8743429b22da4a1c.jpg"], "datetime": "2025-09-12T17:55:02.771588+00:00"}, "result": {"is_plant": {"probability": 0.4246417, "threshold": 0.5, "binary": false}, "disease": {"suggestions": [{"id": "84f87885243b5692", "name": "white mold", "probability": 0.99, "details": {"language": "en", "entity_id": "84f87885243b5692"}, "scientific_name": "Sclerotinia sclerotiorum"}]}, "crop": {"suggestions": [{"id": "2eddf7839d2253d5", "name": "tobacco", "probability": 0.0002, "details": {"language": "en", "entity_id": "2eddf7839d2253d5"}, "scientific_name": "Nicotiana tabacum"}]}}, "status": "COMPLETED", "sla_compliant_client": true, "sla_compliant_system": true, "created": 1757699702.771588, "completed": 1757699703.833882}'
-    #             }
-    #         ]
-    
-    mensaje_usuario = json.dumps(contexto, ensure_ascii=False)
-    #mistral: mistralai/mistral-small-3.2-24b-instruct:free
-    #deepseek: deepseek/deepseek-chat-v3.1:free
     payload = {
-      "model": "mistralai/mistral-small-3.2-24b-instruct:free",
+      "model": "deepseek-chat",
       "messages": [
           {
               "role": "system",
@@ -49,16 +42,18 @@ def preguntar_mistral(contexto):
           }
       ]
   }
-    
-    # print(payload) #debugging
+
+    print(payload) #debugging
     try:
-        respuesta=requests.post(url, headers=headers, json=payload) #hacer request
+        respuesta=requests.post(url, headers=headers, data=json.dumps(payload)) #hacer request
 
         if respuesta.status_code==200: #si funcionó ta bien
             respuesta=respuesta.json() #transformar a fromato lejible y manejable
+            print(respuesta)
             return respuesta["choices"][0]["message"]["content"] #mostrar respuesta, esas cosas no se que son :p
         else: #si falló semuestra el error
             # print("error aquí") #debugging
+            print(respuesta)
             return {"error": respuesta.text} #si da error y no se entiende o no s epuede manipular cambiar .text -> .json()
     except Exception as e: #manejo de errores "potente"
         return "error", e
