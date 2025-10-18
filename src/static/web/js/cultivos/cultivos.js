@@ -90,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         li.innerHTML = `
           <span class="tick">✔</span>
           <span><strong>${nombre}</strong> — ${hectareas} ha</span>
+          <button class="btn-config" data-nombre="${nombre}" aria-label="Configurar ${nombre}">⚙️</button>
           <button class="btn-eliminar" data-nombre="${nombre}" aria-label="Eliminar ${nombre}">✕</button>
         `;
         lista.appendChild(li); // añade el <li> a la lista
@@ -163,6 +164,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ---Evento: eliminar cultivo ---
   lista.addEventListener('click', async (e) => {
+    // Busca si se hizo click en un botón con clase .btn-config
+    const btnConfig = e.target.closest('.btn-config');
+    if (btnConfig) {
+      const nombre = btnConfig.dataset.nombre;
+      // Redirigir al formulario de plantas con el cultivo
+      window.location.href = `formulario_plantas.html?cultivo=${encodeURIComponent(nombre)}&correo=${encodeURIComponent(CORREO)}`;
+      return;
+    }
+
     // Busca si se hizo click en un botón con clase .btn-eliminar
     const btn = e.target.closest('.btn-eliminar');
     if (!btn) return; 

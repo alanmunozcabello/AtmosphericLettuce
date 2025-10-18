@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario de plantas</title>
+    <link rel="stylesheet" href="css/formulario_plantas.css">
+</head>
+<body>
+    <form id="formulario-plantas">
+        <div class="contenedor_general">
+            <div class="contenedor_superior">
+                <div class="logo">
+                    <img src="img/logo.png" alt="Logo de la empresa">
+                </div>
+                <div class="acciones-formulario">
+                    <button type="button" class="btn-regresar" id="btnRegresar">← Regresar</button>
+                    <button type="submit" class="enviar">Enviar</button>
+                </div>
+            </div>
+            <div class="formulario">
+                <div class="fijos">
+                    <div class="info-cultivo" id="infoCultivo" style="display: none;">
+                        <h2 style="margin-left: 10px; color: #2c3e50;">Configurando cultivo: <span id="nombreCultivo" class="nombre-cultivo"></span></h2>
+                    </div>
+                    <h2 id="tituloGeneral" style="margin-left: 10px;">Información del cultivo</h2>
+                    
+                    <label style="margin-left: 10px;" for="etapa">Etapa de la planta:</label>
+                    <select  style="margin-left: 10px;" id="etapa" name="etapa" required>
+                        <option value="">Selecciona una etapa</option>
+                        <option value="siembra-germinacion">Siembra/Germinación</option>
+                        <option value="crecimiento-vegetativo">Crecimiento vegetativo</option>
+                        <option value="floracion">Floración</option>
+                        <option value="fructificacion">Fructificación/Llenado de grano</option>
+                        <option value="maduracion">Maduración</option>
+                        <option value="cosecha-dormancia">Cosecha/Dormancia</option>
+                    </select>
+                    <label style="margin-left: 10px; margin-top: 10px;" for="tipo_riego">Tipo de riego:</label>
+                    <div class="opciones-riego">
+                        <label class="opcion-riego">
+                            <input type="radio" name="tipo_riego" value="goteo" required>
+                            <span class="checkmark"></span>
+                            Goteo
+                        </label>
+                        
+                        <label class="opcion-riego">
+                            <input type="radio" name="tipo_riego" value="aspersion">
+                            <span class="checkmark"></span>
+                            Aspersión
+                        </label>
+                        
+                        <label class="opcion-riego">
+                            <input type="radio" name="tipo_riego" value="inundacion">
+                            <span class="checkmark"></span>
+                            Inundación
+                        </label>
+                        
+                        <label class="opcion-riego">
+                            <input type="radio" name="tipo_riego" value="pivote-central">
+                            <span class="checkmark"></span>
+                            Pivote central
+                        </label>
+                        
+                        <label class="opcion-riego">
+                            <input type="radio" name="tipo_riego" value="microaspersion">
+                            <span class="checkmark"></span>
+                            Microaspersión
+                        </label>
+
+                        <label class="opcion-riego">
+                            <input type="radio" name="tipo_riego" value="otro" id="otro_riego_radio">
+                            <span class="checkmark"></span>
+                            Otro
+                        </label>
+                    </div>
+
+                    <!-- Campo para "Otro" -->
+                    <input type="text" id="otro_riego" name="otro_riego" placeholder="Especificar otro tipo de riego" style="display: none; width: 80%; margin-left: 30px; margin-top: 5px;">
+                    <label style="margin-left: 10px;" for="ultimo_riego">Último riego:</label>
+                    <input style="margin-left: 10px;" type="datetime-local" id="ultimo_riego" name="ultimo_riego" required>
+
+                    <label style="margin-left: 10px; margin-top:10px;" for="frecuencia">Frecuencia Actual de Riego:</label>
+                    <select style="margin-left: 10px; margin-bottom:10px;" id="frecuencia" name="frecuencia" required>
+                        <option value="">Selecciona días</option>
+                        <option value="1">Cada 1 día</option>
+                        <option value="2">Cada 2 días</option>
+                        <option value="3">Cada 3 días</option>
+                        <option value="4">Cada 4 días</option>
+                        <option value="5">Cada 5 días</option>
+                    </select>
+
+                    <label style="margin-left: 10px;" for="humedad_suelo">Humedad del Suelo (%):</label>
+                    <select style="margin-bottom: 10px; margin-left: 10px;" id="humedad_suelo" name="humedad_suelo" required>
+                        <option value="">Selecciona porcentaje</option>
+                        <option value="10">10%</option>
+                        <option value="15">15%</option>
+                        <option value="20">20%</option>
+                        <option value="25">25%</option>
+                        <option value="30">30%</option>
+                    </select>
+                    <br>
+
+                    <button type="button" class="datos_adicionales" id="btnDatosAdicionales">
+                        Datos adicionales
+                    </button>
+
+                    <!-- Campos adicionales (ocultos inicialmente) -->
+                    <div class="campos-adicionales" id="camposAdicionales" style="display: none;">
+                        <h2 style="margin-left: 10px; margin-top: 20px;">Datos de las plantas</h2>
+                        
+                        <label style="margin-left: 10px;" for="textura">Textura del suelo:</label>
+                        <select style="margin-left: 10px; margin-bottom:10px;" id="textura" name="textura">
+                            <option value="">Selecciona textura</option>
+                            <option value="arenoso">Arenoso</option>
+                            <option value="franco">Franco</option>
+                            <option value="arcilloso">Arcilloso</option>
+                            <option value="franco-arenoso">Franco arenoso</option>
+                            <option value="franco-arcilloso">Franco arcilloso</option>
+                            <option value="arcillo-arenoso">Arcillo arenoso</option>
+                        </select>
+
+                        <label style="margin-left: 10px;" for="variedad">Variedad de la planta:</label>
+                        <input type="text" id="variedad" name="variedad" placeholder="Ingresa la variedad">
+
+                        <label style="margin-left: 10px;" for="estado_planta">Estado de la Planta:</label>
+                        <input type="text" id="estado_planta" name="estado_planta" placeholder="(Observación Visual) ¿Cómo se ve la planta?">
+
+                        <label style="margin-left: 10px;" for="estres_hidrico">Estrés Hídrico:</label>
+                        <input type="text" id="estres_hidrico" name="estres_hidrico" placeholder="¿Ve señales de falta de agua? (Hojas marchitas o caídas)">
+
+                        <label style="margin-left: 10px;" for="profundidad_radical">Profundidad radical (cm):</label>
+                        <input style="margin-left: 10px; margin-bottom:10px;"type="number" id="profundidad_radical" name="profundidad_radical" placeholder="Profundidad en cm" min="1" step="1">
+                            
+                        <label style="margin-left: 10px;" for="densidad_plantacion">Densidad de la plantación (plantas/ha):</label>
+                        <input style="margin-left: 10px;" type="number" id="densidad_plantacion" name="densidad_plantacion" placeholder="Número de plantas por hectárea" min="1" step="1">
+
+                        <h2 style="margin-left: 10px; margin-top: 20px;">Datos del riego</h2>
+                        
+                        <label style="margin-left: 10px;" for="sensor_humedad">Tipo de Sensor:</label>
+                        <select style="margin-left: 10px; margin-bottom:10px;" id="sensor_humedad" name="sensor_humedad">
+                            <option value="">Selecciona tipo de sensor</option>
+                            <option value="capacitancia">Capacitancia</option>
+                            <option value="tensiometro">Tensiómetro</option>
+                            <option value="resistencia">Resistencia eléctrica</option>
+                            <option value="neutrones">Neutrones</option>
+                            <option value="tdr">TDR (Time Domain Reflectometry)</option>
+                            <option value="gravimetrico">Gravimétrico</option>
+                            <option value="no-tiene">No tiene sensor</option>
+                        </select>
+                        
+                        <label style="margin-left: 10px; " for="eficiencia">Eficiencia del riego (%):</label>
+                        <input style="margin-left: 10px; margin-bottom:10px;" type="number" id="eficiencia" name="eficiencia" placeholder="Ingresa la eficiencia sin el %" min="0" max="100" step="0.1">
+
+                        <label style="margin-left: 10px;margin-bottom:10px;" for="caudal">Caudal (L/h):</label>
+                        <input style="margin-left: 10px; margin-bottom:10px;" type="number" id="caudal" name="caudal" placeholder="Litros por hora" min="0" step="0.1">
+                        
+                        <label style="margin-left: 10px;" for="ph_agua">pH del agua:</label>
+                        <input style="margin-left: 10px; margin-bottom:10px;" type="number" id="ph_agua" name="ph_agua" placeholder="Ingresa el pH del agua" min="0" max="14" step="0.1">
+                        
+                        <label style="margin-left: 10px;" for="acolchado">Acolchado:</label>
+                        <input style="margin-left: 10px;" type="text" id="acolchado" name="acolchado" placeholder="¿Hay acolchado en la base de la planta? y si hay ¿de que tipo?">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <script src="js/formulario_plantas.js"></script>
+</body>
+</html>
