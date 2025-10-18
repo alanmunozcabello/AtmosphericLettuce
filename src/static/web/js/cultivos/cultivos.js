@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Eliminar un cultivo
   async function eliminar(nombre) {
-    const res = await fetch(`${API_URL}/${encodeURIComponent(CORREO)}/${encodeURIComponent(nombre)}/eliminar`, {method: 'PATCH'}); // hace la petición HTTP
+    const res = await fetch(`${API_URL}/${encodeURIComponent(CORREO)}/${encodeURIComponent(nombre)}/eliminar`, {method: 'DELETE'}); // hace la petición HTTP
     const text = await res.text().catch(() => '');// intenta leer la respuesta como texto
 
     if (!res.ok) { //si algo salió mal muestra error por ahora -> cambiar a que mande una alerta                        
