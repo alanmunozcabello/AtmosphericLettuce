@@ -70,7 +70,7 @@
 
 ## 📌 Semana 7
 - Corregion de errores y termino de tareas pendientes 
-  - `Se implemto la opcion de liminar usuario (Backend/ frontend) utilizando los metodos del backend y fetch en el frontend`
+  - `Se implemto la opcion de eliminar usuario (Backend/ frontend) utilizando los metodos del backend y fetch en el frontend`
   - `Se implemento la opcion de cerrar sesión con persistencia de datos `
   - `Se implmento la opcion de modficar datos del usuario (todos los datos menos el correo) con persistencia de datos`
   - `Se implemento la opcion de verificar si un cultivo ya esta ingresado en la base de datos y no permite agregarlo denuevo`
@@ -81,5 +81,13 @@
   - `Comienzo de la implementacion del sistema de notificaciones fuera de la carpeta src, por el momento podemos enviar correos con emisario de atmosphericlettuce hacia otros destinatarios (planilla html, planilla pdf y correo de texto)`
 
 ## 📌 Semana 8  
--  
-  - ``
+- Correcion de errores del hito 1  
+  - ` `
+## 📌 Semana 9
+- Migracion a SQL Lite con el CRUD completo
+- `Solo pueden ingresar usuaruios que se encuentren dentro de la base de datos.`
+- `Se pueden registar usuarios y estos de guardan dentro de la base de datos.`
+- `Se pueden agregar y eliminar cultivos con la cantidad de hectareas que el usuario le defina. `
+- `El usuario puede editar su informacion(nombre,cuidad,region) y estos datos se actualizan dentro de la base de datos.`
+- `El usuario puede cerrar seson siendo redirigido al login. `
+- `El usuario puede eliminar su cuenta y esta tambien se borra de forma permanete dentro de la base de datos.` 
