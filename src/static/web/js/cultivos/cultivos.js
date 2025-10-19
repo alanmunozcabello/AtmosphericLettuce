@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         li.innerHTML = `
           <span class="tick">✔</span>
           <span><strong>${nombre}</strong> — ${hectareas} ha</span>
-          <button class="btn-config" data-nombre="${nombre}" aria-label="Configurar ${nombre}">⚙️</button>
+          <button class="btn-config" data-nombre="${nombre}" aria-label="Configurar ${nombre}">⚙️ Especificaciones</button>
           <button class="btn-eliminar" data-nombre="${nombre}" aria-label="Eliminar ${nombre}">✕</button>
         `;
         lista.appendChild(li); // añade el <li> a la lista
