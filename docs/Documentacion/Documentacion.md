@@ -154,6 +154,24 @@ Login
 ```powershell
 Invoke-RestMethod -Uri http://127.0.0.1:8000/usuarios/iniciar_sesion/user@example.com/Secreta123 -Method Get
 ```
+## Endpoints API externas
+
+OpenWeatherMap
+- `GET /clima/hoy/{lat}/{lon}` → estado del día actual.
+- `GET /clima/semana/{lat}/{lon}` → resumen diario de 7 días.
+
+- crop.health de KindWise
+
+Google Gmail
+- `POST/notificaciones/enviar_html` → se manda un archivo html en el cual aparece el clima de los dias ademas de los consejos que ofrece la ia para los cutivos, etc.
+
+- OpenLayers
+
+- Nominatim
+
+DeepSeek
+- `POST/chat/consulta` → para poder realizar la pregunta al chat bot 
+
 
 ### Clima (requiere `OPENWEATHER_API_KEY`)
 - `GET /clima/hora/{lat}/{lon}` → pronóstico hora a hora para 4 días, agrupado por día.

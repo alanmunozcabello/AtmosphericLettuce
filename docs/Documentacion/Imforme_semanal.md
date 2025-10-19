@@ -85,9 +85,17 @@
   - ` `
 ## 📌 Semana 9
 - Migracion a SQL Lite con el CRUD completo
-- `Solo pueden ingresar usuaruios que se encuentren dentro de la base de datos.`
+- `Solo pueden ingresar usuarios que se encuentren dentro de la base de datos.`
 - `Se pueden registar usuarios y estos de guardan dentro de la base de datos.`
 - `Se pueden agregar y eliminar cultivos con la cantidad de hectareas que el usuario le defina. `
 - `El usuario puede editar su informacion(nombre,cuidad,region) y estos datos se actualizan dentro de la base de datos.`
 - `El usuario puede cerrar seson siendo redirigido al login. `
-- `El usuario puede eliminar su cuenta y esta tambien se borra de forma permanete dentro de la base de datos.` 
+- `El usuario puede eliminar su cuenta y esta tambien se borra de forma permanete dentro de la base de datos.`
+
+## 📌 Semana 10
+-API REST
+- `El clima del dia actual se muestra en la pestaña home segun la ubicacion del usuario.`
+- `El usuario puede ver el clima real de su zona de los 7 dias de la semana.  `
+- `El usuario puede realizar consultas al chatbot, tambien puede mandar imagenes o archivos pdf.`
+- `La foto de perfil del usuario tiene persitencia dentro de la base de datos.`
+- `Se pueden mandar correos a los usuarios en los cuales pueden ver toda la info del clima y demas informacion.`
