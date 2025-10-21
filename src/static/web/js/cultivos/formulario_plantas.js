@@ -63,50 +63,69 @@ document.addEventListener('DOMContentLoaded', function() {
     formulario.addEventListener('submit', function(e) {
         e.preventDefault();
         
+        // Validar que tenemos la información del cultivo
+        if (!correo || !cultivo) {
+            alert('⚠️ Error: Falta información del cultivo o usuario. Por favor accede desde la página de cultivos.');
+            return;
+        }
+        
         // Recopilar todos los datos del formulario
         const formData = new FormData(formulario);
-        const data = {};
         
-        // Convertir FormData a objeto
-        for (let [key, value] of formData.entries()) {
-            data[key] = value;
-        }
+        // Mapear los nombres de los campos del HTML a los nombres que espera el backend
+        const datosParaBackend = {
+            nombre_cultivo: cultivo, // Ya validado que existe arriba
+            hectareas: 0, // Este valor debe venir del formulario si lo tienes
+            fecha_siembra: null,
+            notas: null,
+            etapa_planta: formData.get('etapa') || null,
+            tipo_riego: formData.get('tipo_riego') || null,
+            ultimo_riego: formData.get('ultimo_riego') || null,
+            frecuencia_riego: formData.get('frecuencia') || null,
+            humedad_suelo: formData.get('humedad_suelo') || null,
+            textura_suelo: formData.get('textura') || null,
+            variedad_planta: formData.get('variedad') || null,
+            estado_planta: formData.get('estado_planta') || null,
+            estres_hidrico: formData.get('estres_hidrico') ? (formData.get('estres_hidrico') === 'si' ? 1 : 0) : null,
+            profundidad_radical: formData.get('profundidad_radical') ? parseInt(formData.get('profundidad_radical')) : null,
+            densidad_plantacion: formData.get('densidad_plantacion') ? parseInt(formData.get('densidad_plantacion')) : null,
+            tipo_sensor: formData.get('sensor_humedad') || null,
+            eficiencia_riego: formData.get('eficiencia') ? parseFloat(formData.get('eficiencia')) : null,
+            caudal: formData.get('caudal') ? parseFloat(formData.get('caudal')) : null,
+            ph_agua: formData.get('ph_agua') ? parseFloat(formData.get('ph_agua')) : null,
+            acolchado: formData.get('acolchado') ? (formData.get('acolchado') === 'si' ? 1 : 0) : null
+        };
         
-        // Agregar información del cultivo si está disponible
-        if (cultivo) {
-            data.nombre_cultivo = cultivo;
-        }
-        if (correo) {
-            data.correo_usuario = correo;
-        }
+        console.log('Datos del formulario mapeados:', datosParaBackend);
         
-        // Convertir campos numéricos a números
-        const camposNumericos = [
-            'frecuencia', 'humedad_suelo', 'profundidad_radical', 
-            'densidad_plantacion', 'eficiencia', 'caudal', 'ph_agua'
-        ];
-        
-        camposNumericos.forEach(campo => {
-            if (data[campo] && data[campo] !== '') {
-                data[campo] = parseFloat(data[campo]);
+        // Enviar al backend
+        fetch(`/usuarios/${encodeURIComponent(correo)}/agregar_modificar`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datosParaBackend)
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    throw new Error(`HTTP ${response.status}: ${text || response.statusText}`);
+                });
             }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Respuesta del servidor:', data);
+            if (data.mensaje) {
+                alert(`✅ ${data.mensaje}`);
+                window.location.href = `home.html?correo=${encodeURIComponent(correo)}`;
+            } else if (data.error) {
+                alert(`❌ Error: ${data.error}`);
+            }
+        })
+        .catch(error => {
+            console.error('Error completo:', error);
+            alert(`❌ Error al guardar la configuración del cultivo: ${error.message}`);
         });
-        
-        console.log('Datos del formulario:', data);
-        
-        if (cultivo) {
-            alert(`Configuración guardada para el cultivo: ${cultivo}. Revisa la consola para ver los datos.`);
-        } else {
-            alert('Formulario preparado para envío al backend. Revisa la consola para ver los datos.');
-        }
-        
-        // Aquí es donde enviarías los datos al backend
-        // fetch('/api/plantas', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify(data)
-        // });
     });
 });

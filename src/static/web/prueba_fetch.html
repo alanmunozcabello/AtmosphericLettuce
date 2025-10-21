@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Prueba de Fetch - Formulario Plantas</title>
+</head>
+<body>
+    <h1>🧪 Prueba de Conexión con el Servidor</h1>
+    
+    <div id="resultado"></div>
+    
+    <h2>Prueba 1: Ping al servidor</h2>
+    <button onclick="probarPing()">Probar Ping</button>
+    <pre id="resultadoPing"></pre>
+    
+    <h2>Prueba 2: Obtener cultivos</h2>
+    <input type="text" id="correoTest" placeholder="correo@ejemplo.com" value="aurora@asknes.nw">
+    <button onclick="probarCultivos()">Obtener Cultivos</button>
+    <pre id="resultadoCultivos"></pre>
+    
+    <h2>Prueba 3: Enviar datos de formulario</h2>
+    <button onclick="probarEnvio()">Enviar Datos de Prueba</button>
+    <pre id="resultadoEnvio"></pre>
+    
+    <script>
+        function probarPing() {
+            document.getElementById('resultadoPing').textContent = '⏳ Enviando...';
+            
+            fetch('/ping')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('resultadoPing').textContent = 
+                        '✅ Servidor responde:\n' + JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    document.getElementById('resultadoPing').textContent = 
+                        '❌ Error: ' + error.message;
+                });
+        }
+        
+        function probarCultivos() {
+            const correo = document.getElementById('correoTest').value;
+            document.getElementById('resultadoCultivos').textContent = '⏳ Cargando...';
+            
+            const url = `/usuarios/${encodeURIComponent(correo)}/cultivos`;
+            console.log('🔗 URL:', url);
+            
+            fetch(url)
+                .then(response => {
+                    console.log('📡 Status:', response.status, response.statusText);
+                    console.log('📝 Content-Type:', response.headers.get('content-type'));
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('resultadoCultivos').textContent = 
+                        '✅ Cultivos obtenidos:\n' + JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    document.getElementById('resultadoCultivos').textContent = 
+                        '❌ Error: ' + error.message;
+                });
+        }
+        
+        function probarEnvio() {
+            const correo = document.getElementById('correoTest').value || 'aurora@asknes.nw';
+            const datosTest = {
+                nombre_cultivo: 'Tomate',
+                hectareas: 2.5,
+                fecha_siembra: null,
+                notas: 'Prueba desde script',
+                etapa_planta: 'floracion',
+                tipo_riego: 'goteo',
+                ultimo_riego: '2025-10-20T10:00',
+                frecuencia_riego: '2',
+                humedad_suelo: '25',
+                textura_suelo: 'franco',
+                variedad_planta: 'Cherry',
+                estado_planta: 'Saludable',
+                estres_hidrico: 0,
+                profundidad_radical: 30,
+                densidad_plantacion: 10000,
+                tipo_sensor: 'capacitancia',
+                eficiencia_riego: 85.5,
+                caudal: 2.5,
+                ph_agua: 6.5,
+                acolchado: 1
+            };
+            
+            document.getElementById('resultadoEnvio').textContent = '⏳ Enviando...';
+            
+            fetch(`/usuarios/${encodeURIComponent(correo)}/agregar_modificar`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(datosTest)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('resultadoEnvio').textContent = 
+                    '✅ Respuesta del servidor:\n' + JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                document.getElementById('resultadoEnvio').textContent = 
+                    '❌ Error: ' + error.message;
+            });
+        }
+    </script>
+</body>
+</html>

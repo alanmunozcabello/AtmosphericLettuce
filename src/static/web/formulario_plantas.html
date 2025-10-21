@@ -20,7 +20,7 @@
             <div class="formulario">
                 <div class="fijos">
                     <div class="info-cultivo" id="infoCultivo" style="display: none;">
-                        <h2 style="margin-left: 10px; color: #2c3e50;">Configurando cultivo: <span id="nombreCultivo" class="nombre-cultivo"></span></h2>
+                        <h2 style="margin-left: 10px; color: #2c3e50;">Datos tecnicos del cultivo: <span id="nombreCultivo" class="nombre-cultivo"></span></h2>
                     </div>
                     <h2 id="tituloGeneral" style="margin-left: 10px;">Información del cultivo</h2>
                     
@@ -127,7 +127,11 @@
                         <input type="text" id="estado_planta" name="estado_planta" placeholder="(Observación Visual) ¿Cómo se ve la planta?">
 
                         <label style="margin-left: 10px;" for="estres_hidrico">Estrés Hídrico:</label>
-                        <input type="text" id="estres_hidrico" name="estres_hidrico" placeholder="¿Ve señales de falta de agua? (Hojas marchitas o caídas)">
+                        <select style="margin-left: 10px; margin-bottom:10px;" id="estres_hidrico" name="estres_hidrico">
+                            <option value="">Selecciona una opción</option>
+                            <option value="si">Sí - Ve señales de falta de agua</option>
+                            <option value="no">No - La planta se ve saludable</option>
+                        </select>
 
                         <label style="margin-left: 10px;" for="profundidad_radical">Profundidad radical (cm):</label>
                         <input style="margin-left: 10px; margin-bottom:10px;"type="number" id="profundidad_radical" name="profundidad_radical" placeholder="Profundidad en cm" min="1" step="1">
@@ -159,7 +163,11 @@
                         <input style="margin-left: 10px; margin-bottom:10px;" type="number" id="ph_agua" name="ph_agua" placeholder="Ingresa el pH del agua" min="0" max="14" step="0.1">
                         
                         <label style="margin-left: 10px;" for="acolchado">Acolchado:</label>
-                        <input style="margin-left: 10px;" type="text" id="acolchado" name="acolchado" placeholder="¿Hay acolchado en la base de la planta? y si hay ¿de que tipo?">
+                        <select style="margin-left: 10px; margin-bottom:10px;" id="acolchado" name="acolchado">
+                            <option value="">Selecciona una opción</option>
+                            <option value="si">Sí - Hay acolchado en la base</option>
+                            <option value="no">No - No hay acolchado</option>
+                        </select>
                     </div>
                 </div>
             </div>

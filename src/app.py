@@ -19,8 +19,9 @@ app.include_router(chat_routes.router)
 app.include_router(notificaciones_routes.router)
 
 
-# # Montar carpeta de archivos estáticos
+# Montar carpeta de archivos estáticos
 app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/web", StaticFiles(directory="static/web", html=True), name="web")
 
 #iniciar servidor: python -m uvicorn app:app --reload
 #iniciar servidor LAN publico: python -m uvicorn app:app --host 0.0.0.0 --port 8000

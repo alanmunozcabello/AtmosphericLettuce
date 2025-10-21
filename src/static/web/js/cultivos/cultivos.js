@@ -29,7 +29,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Agregar o modificar un cultivo (PATCH)
   async function agregarOModificar(nombre, hectareasNum) {
-    const res = await fetch(`${API_URL}/${encodeURIComponent(CORREO)}/${encodeURIComponent(nombre)}/${hectareasNum}/agregar_modificar`, {method: 'PATCH'}); // hace la petición HTTP
+    const res = await fetch(`${API_URL}/${encodeURIComponent(CORREO)}/agregar_modificar`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        nombre_cultivo: nombre,
+        hectareas: hectareasNum,
+        fecha_siembra: null,
+        notas: null,
+        etapa_planta: null,
+        tipo_riego: null,
+        ultimo_riego: null,
+        frecuencia_riego: null,
+        humedad_suelo: null,
+        textura_suelo: null,
+        variedad_planta: null,
+        estado_planta: null,
+        estres_hidrico: null,
+        profundidad_radical: null,
+        densidad_plantacion: null,
+        tipo_sensor: null,
+        eficiencia_riego: null,
+        caudal: null,
+        ph_agua: null,
+        acolchado: null
+      })
+    });
+    
     const text = await res.text().catch(() => '');// intenta leer la respuesta como texto
 
     if (!res.ok) { //si algo salió mal muestra error por ahora -> cambiar a que mande una alerta                        
