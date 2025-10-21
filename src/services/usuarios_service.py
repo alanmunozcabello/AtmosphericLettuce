@@ -321,7 +321,7 @@ def service_iniciar_sesion(correo, contrasena):
 
 def service_modificar_region_ciudad_usuario(correo, region, ciudad):
     return service_modificar_usuario(correo, {
-        "region": region,
+        "region": region,   
         "ciudad": ciudad
     })
 
