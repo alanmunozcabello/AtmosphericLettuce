@@ -196,13 +196,14 @@
 .btn-eliminar {
   margin-left: auto;
   background: #ef4444;
-  color: white;
+  color: rgb(255, 0, 0);
   border: none;
   width: 24px;
   height: 24px;
   border-radius: 50%;
   cursor: pointer;
   font-size: 14px;
+  font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;
