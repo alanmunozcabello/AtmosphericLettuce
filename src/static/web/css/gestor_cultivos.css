@@ -1,0 +1,548 @@
+/* ========== CONTENEDOR PRINCIPAL ========== */
+#gestor-container {
+  width: 100%;
+  height: calc(100vh - 100px); /* Ajustado a altura de barra superior */
+  display: flex;
+  position: relative;
+  background: #f5f5f5;
+  overflow: hidden;
+}
+
+/* ========== MAPA (ocupa el espacio restante) ========== */
+.map-container {
+  flex: 1;
+  position: relative;
+  min-width: 0;
+  background: #e8f4f8;
+}
+
+/* ========== PANEL LATERAL DERECHO ========== */
+.gestor-panel {
+  width: 350px;
+  background: #ffffff;
+  border-left: 2px solid #e3e5ea;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  box-shadow: -2px 0 12px rgba(0,0,0,0.1);
+  z-index: 10;
+  overflow-y: auto;
+}
+
+/* ✅ HEADER: mismo gradiente que home/días */
+.panel-header {
+  padding: 20px;
+  background: linear-gradient(135deg, #5db5ff, #55c2a5);
+  border-bottom: 2px solid #e3e5ea;
+}
+
+.panel-header h4 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* ========== RESUMEN ========== */
+.panel-summary {
+  display: flex;
+  gap: 12px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e3e5ea;
+}
+
+.summary-item {
+  flex: 1;
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  border: 1px solid #e3e5ea;
+}
+
+.summary-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+/* ✅ Valor con el color del gradiente */
+.summary-value {
+  display: block;
+  font-size: 20px;
+  font-weight: 700;
+  color: #5db5ff;
+}
+
+/* ========== FORMULARIO ========== */
+.panel-form {
+  padding: 16px;
+  border-bottom: 1px solid #e3e5ea;
+  background: #fafafa;
+}
+
+.panel-form h5 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #374151;
+}
+
+#form-cultivo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#form-cultivo input {
+  padding: 10px 12px;
+  border: 2px solid #e3e5ea;
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+/* ✅ Focus con color del proyecto */
+#form-cultivo input:focus {
+  border-color: #5db5ff;
+  box-shadow: 0 0 0 3px rgba(93,181,255,0.15);
+}
+
+/* ✅ Botón con gradiente del proyecto */
+#form-cultivo button {
+  padding: 10px;
+  background: linear-gradient(135deg, #5db5ff, #55c2a5);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#form-cultivo button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(93,181,255,0.3);
+}
+
+/* ========== LISTA DE CULTIVOS ========== */
+.panel-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.panel-content h5 {
+  margin: 0 0 12px 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  border-bottom: 2px solid #e3e5ea;
+  padding-bottom: 8px;
+}
+
+.lista-cultivos {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item-cultivo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: white;
+  border: 2px solid #e3e5ea;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+/* ✅ Hover con color del proyecto */
+.item-cultivo:hover {
+  border-color: #5db5ff;
+  background: #f0f9ff;
+  transform: translateX(-4px);
+}
+
+/* ✅ Activo con color del proyecto */
+.item-cultivo.active {
+  border-color: #5db5ff;
+  background: linear-gradient(135deg, rgba(93,181,255,0.08), rgba(85,194,165,0.08));
+  box-shadow: 0 0 0 3px rgba(93,181,255,0.1);
+}
+
+.tick {
+  color: #5db5ff;
+  font-size: 16px;
+}
+
+.item-cultivo span strong {
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.btn-eliminar {
+  margin-left: auto;
+  background: #ef4444;
+  color: white;
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.btn-eliminar:hover {
+  background: #dc2626;
+}
+
+.cultivo-item-loading {
+  padding: 20px;
+  text-align: center;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* ========== ACCIONES ========== */
+.panel-actions {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid #e3e5ea;
+  background: #fafafa;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+  padding: 12px 16px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* ✅ Botón primario con gradiente del proyecto */
+.btn-primary {
+  background: linear-gradient(135deg, #5db5ff, #55c2a5);
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(93,181,255,0.3);
+}
+
+.btn-secondary {
+  background: #6b7280;
+  color: white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #4b5563;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(107,114,128,0.3);
+}
+
+.btn-danger {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #dc2626;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239,68,68,0.3);
+}
+
+.btn-primary:disabled,
+.btn-secondary:disabled,
+.btn-danger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ========== ESTADO ========== */
+.panel-status {
+  padding: 12px 16px;
+  background: #dbeafe;
+  border-top: 2px solid #3b82f6;
+  font-size: 13px;
+  color: #1e40af;
+  text-align: center;
+  font-style: italic;
+}
+
+.panel-status.success {
+  background: #d1fae5;
+  border-top-color: #10b981;
+  color: #065f46;
+}
+
+.panel-status.error {
+  background: #fee2e2;
+  border-top-color: #ef4444;
+  color: #991b1b;
+}
+
+.panel-status.info {
+  background: #dbeafe;
+  border-top-color: #3b82f6;
+  color: #1e40af;
+}
+
+/* ========== OVERLAY MARCAR ÁREA ========== */
+.overlay-marcar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overlay-content-marcar {
+  width: 95%;
+  height: 90%;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ✅ Header del overlay con gradiente del proyecto */
+.overlay-header-marcar {
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #5db5ff, #55c2a5);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.overlay-header-marcar h3 {
+  margin: 0;
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.btn-cerrar-overlay {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 20px;
+  transition: background 0.2s;
+}
+
+.btn-cerrar-overlay:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+/* ========== MAPA SUPERFICIE ========== */
+#mapa-superficie-container {
+  display: flex;
+  flex: 1;
+}
+
+.superficie-panel {
+  width: 300px;
+  background: #ffffff;
+  border-left: 2px solid #e3e5ea;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+}
+
+.superficie-panel .panel-header {
+  padding: 12px 16px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e3e5ea;
+}
+
+.superficie-panel .panel-header h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.superficie-panel .panel-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.info-item {
+  margin-bottom: 12px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e3e5ea;
+}
+
+.info-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.info-value {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.superficie-panel .panel-actions {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid #e3e5ea;
+  background: #fafafa;
+}
+
+.superficie-panel .panel-status {
+  padding: 12px 16px;
+  background: #dbeafe;
+  border-top: 2px solid #3b82f6;
+  font-size: 13px;
+  color: #1e40af;
+  text-align: center;
+  font-style: italic;
+}
+
+/* ========== POPUP EN EL MAPA ========== */
+.ol-popup-cultivo {
+  position: absolute;
+  background-color: white;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 2px solid #5db5ff;
+  box-shadow: 0 6px 18px rgba(93,181,255,0.25);
+  min-width: 150px;
+  z-index: 100;
+}
+
+.ol-popup-cultivo::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #5db5ff;
+}
+
+.popup-nombre {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 6px;
+}
+
+.popup-hectareas {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.btn-cerrar-popup {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 2px 6px;
+  transition: color 0.2s;
+}
+
+.btn-cerrar-popup:hover {
+  color: #ef4444;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  #gestor-container {
+    flex-direction: column;
+  }
+  
+  .gestor-panel {
+    width: 100%;
+    max-height: 50vh;
+    border-left: none;
+    border-bottom: 2px solid #e3e5ea;
+  }
+
+  .overlay-content-marcar {
+    width: 98%;
+    height: 95%;
+  }
+
+  #mapa-superficie-container {
+    flex-direction: column;
+  }
+
+  .superficie-panel {
+    width: 100%;
+    max-height: 200px;
+    border-left: none;
+    border-top: 2px solid #e3e5ea;
+    order: -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .gestor-panel {
+    max-height: 60vh;
+  }
+
+  .panel-summary {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .superficie-panel {
+    max-height: 150px;
+  }
+}

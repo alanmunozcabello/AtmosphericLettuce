@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestor de Cultivos - Atmospheric Lettuce</title>
+  
+  <!-- OpenLayers -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.5.2/ol.css">
+  
+  <!-- Estilos -->
+  <link rel="stylesheet" href="css/homes.css">
+  <link rel="stylesheet" href="css/gestor_cultivos.css">
+</head>
+<body>
+  
+  <!-- Barra superior (igual que home) -->
+  <div class="barra-superior">
+    <div class="logo">
+      <img src="img/logo.png" alt="Logo" style="cursor: pointer;">
+    </div>
+    <div class="buscador">
+      <h2 style="color: rgb(0, 0, 0); margin: 0;">Gestor de Cultivos</h2>
+    </div>
+    <div class="acciones">
+      <a href="home.html" class="icono" title="Inicio">🏠</a>
+      <div class="icono">🔔</div>
+      <a href="perfil.html" class="icono" title="Perfil">👤</a>
+    </div>
+  </div>
+
+  <!-- Contenedor principal: Mapa + Panel -->
+  <div id="gestor-container">
+    
+    <!-- MAPA (ocupa la mayor parte) -->
+    <div id="map-gestor" class="map-container"></div>
+    
+    <!-- PANEL LATERAL DERECHO -->
+    <div class="gestor-panel">
+      
+      <!-- Header del panel -->
+      <div class="panel-header">
+        <h4>🌱 Mis Cultivos</h4>
+      </div>
+
+      <!-- Resumen -->
+      <div class="panel-summary">
+        <div class="summary-item">
+          <span class="summary-label">📊 Total:</span>
+          <span class="summary-value" id="total-cultivos">0</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">📏 Área:</span>
+          <span class="summary-value" id="area-total">0 ha</span>
+        </div>
+      </div>
+
+      <!-- Formulario: Agregar/Modificar -->
+      <div class="panel-form">
+        <h5>➕ Agregar/Modificar Cultivo</h5>
+        <form id="form-cultivo" autocomplete="off">
+          <input 
+            id="input-cultivo" 
+            type="text" 
+            placeholder="Nombre del cultivo" 
+            required
+          >
+          <input 
+            id="input-hectareas" 
+            type="number" 
+            placeholder="Hectáreas" 
+            min="0.01" 
+            max="100000" 
+            step="0.01" 
+            required
+          >
+          <button type="submit" class="btn-primary">Guardar</button>
+        </form>
+      </div>
+
+      <!-- Lista de cultivos -->
+      <div class="panel-content">
+        <h5>📋 Lista de cultivos</h5>
+        <ul id="lista-cultivos" class="lista-cultivos">
+          <li class="cultivo-item-loading">Cargando cultivos...</li>
+        </ul>
+      </div>
+
+      <!-- Acciones del panel -->
+      <div class="panel-actions">
+        <button id="btn-marcar-area" class="btn-primary">
+          📍 Marcar área de cultivo
+        </button>
+        <button id="btn-centrar-vista" class="btn-secondary">
+          🎯 Centrar en mi ubicación
+        </button>
+      </div>
+
+      <!-- Estado/ayuda -->
+      <div class="panel-status" id="panel-status">
+        💡 Haz clic en un cultivo del mapa para ver detalles
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ✅ OVERLAY PARA MARCAR ÁREA (reutilizamos estructura de area_cultivo.html) -->
+  <div id="overlay-marcar-area" class="overlay-marcar" style="display: none;">
+    <div class="overlay-content-marcar">
+      
+      <!-- Header -->
+      <div class="overlay-header-marcar">
+        <h3>📐 Marcar Área del Cultivo</h3>
+        <button id="cerrar-overlay-marcar" class="btn-cerrar-overlay">✕</button>
+      </div>
+
+      <!-- Mapa para marcar -->
+      <div id="mapa-superficie-container" style="width: 100%; height: calc(100% - 60px);">
+        <div id="map-superficie" class="map-container"></div>
+        
+        <div class="superficie-panel">
+          <div class="panel-header">
+            <h4>📐 Información del área</h4>
+          </div>
+          
+          <div class="panel-content">
+            <div class="info-item">
+              <span class="info-label">📍 Puntos marcados:</span>
+              <span class="info-value" id="puntos-count">0 / 20</span>
+            </div>
+            
+            <div class="info-item">
+              <span class="info-label">📏 Área aproximada:</span>
+              <span class="info-value" id="area-superficie">0 m²</span>
+            </div>
+            
+            <div class="info-item">
+              <span class="info-label">🌱 Cultivo:</span>
+              <span class="info-value" id="cultivo-actual">-</span>
+            </div>
+          </div>
+          
+          <div class="panel-actions">
+            <button id="btn-deshacer" class="btn-secondary" disabled>↩️ Deshacer</button>
+            <button id="btn-limpiar" class="btn-danger" disabled>🗑️ Limpiar todo</button>
+            <button id="btn-completar" class="btn-primary" disabled>✅ Guardar área</button>
+          </div>
+          
+          <div class="panel-status" id="panel-status-marcar">
+            👆 Haz clic en el mapa para marcar los límites
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/ol@v7.5.2/dist/ol.js"></script>
+  <script src="js/utilidades/utils.js"></script>
+  <script src="js/usuario/nav_correo.js"></script>
+  
+  <script src="js/cultivos/ui_cultivos.js"></script>
+  <script src="js/mapa/mapa_principal.js"></script>
+  <script src="js/mapa/mapa_marcar_area.js"></script>
+  <script src="js/cultivos/crud_cultivos.js"></script>
+  <script src="js/cultivos/cultivos.js"></script>
+
+</body>
+</html>
