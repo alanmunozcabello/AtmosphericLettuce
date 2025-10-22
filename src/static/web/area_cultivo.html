@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marcar Superficie de Cultivo</title>
+  
+  <!-- OpenLayers CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.5.2/ol.css">
+  
+  <!-- Estilos del mapa -->
+  <link rel="stylesheet" href="css/area_cultivo.css">
+</head>
+<body>
+  <div style="width: 800px; height: 600px;">
+  
+  <!-- CONTENEDOR MODULAR DEL MAPA (100% reutilizable) -->
+  <div id="mapa-superficie-container">
+    <!-- Contenedor del mapa OpenLayers -->
+    <div id="map-superficie" class="map-container"></div>
+    
+    <!-- Panel de información lateral -->
+    <div class="superficie-panel">
+      <div class="panel-header">
+        <h4>📐 Información del área</h4>
+      </div>
+      
+      <div class="panel-content">
+        <div class="info-item">
+          <span class="info-label">📍 Puntos marcados:</span>
+          <span class="info-value" id="puntos-count">0 / 20</span>
+        </div>
+        
+        <div class="info-item">
+          <span class="info-label">📏 Área aproximada:</span>
+          <span class="info-value" id="area-superficie">0 m²</span>
+        </div>
+        
+        <div class="info-item">
+          <span class="info-label">🌱 Estado:</span>
+          <span class="info-value" id="estado-superficie">Sin marcar</span>
+        </div>
+      </div>
+      
+      <div class="panel-actions">
+        <button id="btn-deshacer" class="btn-secondary" disabled>↩️ Deshacer</button>
+        <button id="btn-limpiar" class="btn-danger" disabled>🗑️ Limpiar todo</button>
+        <button id="btn-completar" class="btn-primary" disabled>✅ Completar área</button>
+      </div>
+      
+      <div class="panel-status" id="panel-status">
+        👆 Haz clic en el mapa para marcar los límites de tu cultivo
+      </div>
+    </div>
+
+  </div>
+  </div>
+
+  <!-- OpenLayers JS -->
+  <script src="https://cdn.jsdelivr.net/npm/ol@v7.5.2/dist/ol.js"></script>
+  
+  <!-- Script del mapa -->
+  <script src="js/mapa/area_cultivos.js"></script>
+
+  <script src="js/utilidades/utils.js" defer></script>
+  <script src="js/usuario/nav_correo.js" defer></script>
+
+</body>
+</html>
+
+<!-- integrar en otro html -->
+ <!-- <div style="width: 800px; height: 600px;"> -->
+  <!-- Copiar y pegar este div -->
+  <!-- <div id="mapa-superficie-container"> -->
+    <!-- ... todo el contenido ... -->
+  <!-- </div> -->
+<!-- </div> -->

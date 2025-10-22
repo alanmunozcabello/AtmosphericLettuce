@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visor de Cultivos</title>
+  
+  <!-- OpenLayers CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.5.2/ol.css">
+  
+  <!-- Estilos del visor -->
+  <link rel="stylesheet" href="css/visor_cultivos.css">
+</head>
+<body>
+  
+  <!-- ✅ CONTENEDOR MODULAR DEL VISOR (100% reutilizable) -->
+  <div id="visor-cultivos-container">
+    <!-- Contenedor del mapa OpenLayers -->
+    <div id="map-visor" class="map-container"></div>
+    
+    <!-- Panel de información lateral -->
+    <div class="visor-panel">
+      <div class="panel-header">
+        <h4>🌱 Gestor de Cultivos</h4>
+      </div>
+      
+      <!-- Estado de carga -->
+      <div id="loading-state" class="loading-state">
+        <div class="spinner"></div>
+        <p>Cargando cultivos...</p>
+      </div>
+
+      <!-- Lista de cultivos -->
+      <div class="panel-content" id="cultivos-list" style="display: none;">
+        <div class="info-item summary">
+          <span class="info-label">📊 Total de cultivos:</span>
+          <span class="info-value" id="total-cultivos">0</span>
+        </div>
+        
+        <div class="info-item summary">
+          <span class="info-label">📏 Área total:</span>
+          <span class="info-value" id="area-total">0 m²</span>
+        </div>
+
+        <div class="cultivos-header">
+          <h5>📋 Lista de cultivos</h5>
+        </div>
+
+        <!-- Aquí se cargarán los cultivos dinámicamente -->
+        <div id="cultivos-items" class="cultivos-items">
+          <!-- Se llenará con JavaScript -->
+        </div>
+      </div>
+
+      <!-- Estado vacío -->
+      <div id="empty-state" class="empty-state" style="display: none;">
+        <div class="empty-icon">🌾</div>
+        <p>No tienes cultivos registrados</p>
+        <!-- <a href="area_cultivo.html" class="btn-primary">➕ Agregar cultivo</a> -->
+      </div>
+
+      <!-- Estado de error -->
+      <div id="error-state" class="error-state" style="display: none;">
+        <div class="error-icon">❌</div>
+        <p id="error-message">Error al cargar cultivos</p>
+        <button id="btn-retry" class="btn-secondary">🔄 Reintentar</button>
+      </div>
+      
+      <div class="panel-actions">
+        <!-- <a href="area_cultivo.html" class="btn-primary">➕ Nuevo cultivo</a> -->
+        <button id="btn-centrar" class="btn-secondary">🎯 Centrar vista</button>
+      </div>
+      
+      <div class="panel-status" id="panel-status">
+        👁️ Vista general de tus cultivos
+      </div>
+    </div>
+
+  </div>
+
+  <!-- OpenLayers JS -->
+  <script src="https://cdn.jsdelivr.net/npm/ol@v7.5.2/dist/ol.js"></script>
+  
+  <!-- Utilidades -->
+  <script src="js/utilidades/utils.js"></script>
+  
+  <!-- Script del visor -->
+  <script src="js/cultivos/visor_cultivos.js"></script>
+
+</body>
+</html>

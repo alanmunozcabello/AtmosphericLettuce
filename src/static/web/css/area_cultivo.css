@@ -1,0 +1,204 @@
+/* ========== CONTENEDOR PRINCIPAL (100% adaptable) ========== */
+#mapa-superficie-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  position: relative;
+  background: #f5f5f5;
+  overflow: hidden;
+}
+
+/* ========== MAPA ========== */
+.map-container {
+  flex: 1;
+  position: relative;
+  min-width: 0;
+  background: #e8f4f8;
+}
+
+/* ========== PANEL LATERAL ========== */
+.superficie-panel {
+  width: 300px;
+  background: #ffffff;
+  border-left: 2px solid #e3e5ea;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+  z-index: 10;
+}
+
+.panel-header {
+  padding: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-bottom: 1px solid #e3e5ea;
+}
+
+.panel-header h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.panel-content {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.info-item {
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e3e5ea;
+}
+
+.info-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.info-value {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+/* ========== BOTONES ========== */
+.panel-actions {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid #e3e5ea;
+  background: #fafafa;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+  background: #6b7280;
+  color: white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #4b5563;
+}
+
+.btn-danger {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #dc2626;
+}
+
+.btn-primary:disabled,
+.btn-secondary:disabled,
+.btn-danger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ========== ESTADO ========== */
+.panel-status {
+  padding: 12px 16px;
+  background: #fef3c7;
+  border-top: 2px solid #f59e0b;
+  font-size: 13px;
+  color: #92400e;
+  text-align: center;
+  font-style: italic;
+}
+
+.panel-status.success {
+  background: #d1fae5;
+  border-top-color: #10b981;
+  color: #065f46;
+}
+
+.panel-status.error {
+  background: #fee2e2;
+  border-top-color: #ef4444;
+  color: #991b1b;
+}
+
+.panel-status.info {
+  background: #dbeafe;
+  border-top-color: #3b82f6;
+  color: #1e40af;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  #mapa-superficie-container {
+    flex-direction: column;
+  }
+  
+  .superficie-panel {
+    width: 100%;
+    max-height: 250px;
+    border-left: none;
+    border-bottom: 2px solid #e3e5ea;
+  }
+  
+  .panel-actions {
+    flex-direction: row;
+  }
+}
+
+/* ========== Estilos OpenLayers personalizados ========== */
+.ol-control {
+  background: rgba(255,255,255,0.9) !important;
+  border-radius: 8px !important;
+}
+
+.ol-zoom {
+  top: 10px;
+  left: 10px;
+}
+
+/* Estilo para el polígono dibujado */
+.superficie-polygon {
+  stroke: #667eea;
+  stroke-width: 3;
+  fill: rgba(102, 126, 234, 0.2);
+}
+
+/* Estilo para los puntos marcados */
+.superficie-point {
+  fill: #ef4444;
+  stroke: #ffffff;
+  stroke-width: 2;
+}
