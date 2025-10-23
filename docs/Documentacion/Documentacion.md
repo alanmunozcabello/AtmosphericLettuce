@@ -160,14 +160,22 @@ OpenWeatherMap
 - `GET /clima/hoy/{lat}/{lon}` → estado del día actual.
 - `GET /clima/semana/{lat}/{lon}` → resumen diario de 7 días.
 
-- crop.health de KindWise
+crop.health de KindWise
+- URL: https://crop.kindwise.com/api/v1/identification
+- Método: POST
 
 Google Gmail
 - `POST/notificaciones/enviar_html` → se manda un archivo html en el cual aparece el clima de los dias ademas de los consejos que ofrece la ia para los cutivos, etc.
 
-- OpenLayers
+OpenLayers
+- Esta es una libreria de javascript la cual lo que hace es es cargar datos de mapas desde fuentes externas.
+- URL: https://cdn.jsdelivr.net/npm/ol@latest/dist/ol.js
+- URL Hoja de estilos: https://cdn.jsdelivr.net/npm/ol@latest/ol.css
 
-- Nominatim
+
+Nominatim
+- URL: https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1
+- Metodo: GET
 
 DeepSeek
 - `POST/chat/consulta` → para poder realizar la pregunta al chat bot 
