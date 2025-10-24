@@ -2,7 +2,6 @@ import requests
 import json
 from dotenv import load_dotenv
 import os
-from openai import OpenAI
 # prueba de respuesta de la API
 # OBS: funciona bien, usa bien el contexto y responde coherentemente. dependiendo de la complegidad de la pregunta tarda minimo 2 segundos en dar una repsuesta.
 #      Lo que si la IA no recuerda preguntas anteriores, solo responde a la actual. 
