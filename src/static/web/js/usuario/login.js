@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const emailEnc = encodeURIComponent(vEmail);
       const passEnc = encodeURIComponent(vPass);
       // Endpoint de login (método GET con credenciales en la ruta)
-      const LOGIN_URL = `http://127.0.0.1:8000/usuarios/iniciar_sesion/${emailEnc}/${passEnc}`;
+      const LOGIN_URL = `/usuarios/iniciar_sesion/${emailEnc}/${passEnc}`;
 
       // Realiza la petición al backend; pide JSON en la respuesta
       const resp = await fetch(LOGIN_URL, { method: 'GET', headers: { 'Accept': 'application/json' } });

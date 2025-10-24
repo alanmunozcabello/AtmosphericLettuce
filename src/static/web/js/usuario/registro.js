@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       // Endpoint para registrar usuarios en tu backend
-      const REGISTER_URL = 'http://127.0.0.1:8000/usuarios/registrar';
+      const REGISTER_URL = '/usuarios/registrar';
 
       // Llamada POST con el cuerpo en JSON
       const resp = await fetch(REGISTER_URL, {

@@ -129,7 +129,7 @@ document.getElementById("enviarBtn").addEventListener("click", async () => {
     // console.log(payload);
 
     // Enviar al backend
-    const respuesta = await fetch("http://127.0.0.1:8000/chat/consulta", {
+    const respuesta = await fetch("/chat/consulta", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)

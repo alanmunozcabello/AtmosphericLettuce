@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
         //2: "/usuarios/{correo}/ubicacion/{lat}/{lon}/modificar"
 
         try{
-            const respuesta = await fetch(`http://127.0.0.1:8000/usuarios/${correo}/ubicacion/${latMod}/${lonMod}/modificar`, {
+            const respuesta = await fetch(`/usuarios/${correo}/ubicacion/${latMod}/${lonMod}/modificar`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
             });
@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(e);
         }
         try{
-            const respuesta = await fetch(`http://127.0.0.1:8000/usuarios/${correo}/ubicacion/region/${region}/${ciudad}/modificar`, {
+            const respuesta = await fetch(`/usuarios/${correo}/ubicacion/region/${region}/${ciudad}/modificar`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
             });

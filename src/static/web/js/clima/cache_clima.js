@@ -137,7 +137,7 @@ async function obtenerClimaDia() {
     }
 
     // 3. Hacer fetch al backend
-    const url = `${API_BASE}/clima/hoy/${lat}/${lon}`;
+    const url = `/clima/hoy/${lat}/${lon}`;
     console.log('🌐 Obteniendo clima del día desde backend');
 
     const respuesta = await fetch(url, { method: 'GET' });
@@ -185,7 +185,7 @@ async function obtenerClimaSemana() {
     }
 
     // 3. Hacer fetch al backend
-    const url = `${API_BASE}/clima/semana/${lat}/${lon}`;
+    const url = `/clima/semana/${lat}/${lon}`;
     console.log('🌐 Obteniendo clima semanal desde backend');
 
     const respuesta = await fetch(url, { method: 'GET' });
@@ -225,7 +225,7 @@ async function obtenerClimaHora() {
       return null;
     }
 
-    const url = `${API_BASE}/clima/hora/${lat}/${lon}`;
+    const url = `/clima/hora/${lat}/${lon}`;
     console.log('🌐 Obteniendo clima por horas desde backend');
 
     const respuesta = await fetch(url, { method: 'GET' });

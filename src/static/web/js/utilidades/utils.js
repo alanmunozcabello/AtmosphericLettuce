@@ -54,7 +54,7 @@ async function obtenerUsuario(correo) {
   // solo ir al backend si realmente es necesario
   try {
     console.log('🌐 Cache expirado/inexistente - cargando desde backend');
-    const res = await fetch(`${API_BASE}/usuarios/${encodeURIComponent(correo)}`);
+    const res = await fetch(`/usuarios/${encodeURIComponent(correo)}`);
     
     if (!res.ok) {
       throw new Error(`HTTP ${res.status}: ${res.statusText}`);
