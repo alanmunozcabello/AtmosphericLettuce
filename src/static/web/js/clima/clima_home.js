@@ -1,3 +1,14 @@
+document.addEventListener('DOMContentLoaded', async () => {
+    if (window.location.pathname.includes('home.html')) {
+      // Solo cargar clima si estamos en home.html
+      setTimeout(() => {
+        if (typeof cargarClimaHome === 'function') {
+          cargarClimaHome();
+        }
+      }, 1500); // mientras tanto será un tiempo fijo
+    }
+})
+
 async function cargarClimaHome() {
     console.log('🌤️ Iniciando carga de clima para home...');
   

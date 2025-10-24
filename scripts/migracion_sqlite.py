@@ -55,7 +55,7 @@ class Migrador:
             )
         ''')
         
-        # Tabla cultivos (relacionada con nuevos atributos)
+        # Tabla cultivos (relacionada)
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS cultivos (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -65,7 +65,7 @@ class Migrador:
                 fecha_siembra DATE,
                 notas TEXT,
                 
-                -- Nuevos atributos para manejo avanzado de cultivos
+                
                 etapa_planta TEXT,
                 tipo_riego TEXT,
                 ultimo_riego DATETIME,
@@ -74,14 +74,14 @@ class Migrador:
                 textura_suelo TEXT,
                 variedad_planta TEXT,
                 estado_planta TEXT,
-                estres_hidrico TEXT,
+                estres_hidrico INTEGER DEFAULT 0,
                 profundidad_radical INTEGER,
                 densidad_plantacion INTEGER,
                 tipo_sensor TEXT,
-                eficiencia_riego INTEGER,
-                caudal INTEGER,
-                ph_agua INTEGER,
-                acolchado TEXT,
+                eficiencia_riego REAL,
+                caudal REAL,
+                pH_agua REAL,
+                acolchado INTEGER DEFAULT 0,
                 
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 
@@ -101,16 +101,9 @@ class Migrador:
         print("✅ Nueva estructura creada: usuarios + cultivos + índices")
     
     def migrar_usuarios(self, conn_antigua, conn_nueva):
-        """Migrar usuarios desde BD antigua"""
+        """Migrar usuarios desde BD antigua (sin cultivos)"""
         cursor_antigua = conn_antigua.cursor()
         cursor_nueva = conn_nueva.cursor()
-        
-        # Obtener información de columnas de la tabla usuarios antigua
-        cursor_antigua.execute("PRAGMA table_info(usuarios)")
-        columnas_antiguas = cursor_antigua.fetchall()
-        columnas_dict = {col[1]: col[0] for col in columnas_antiguas}  # {nombre: índice}
-        
-        print(f"📋 Columnas en tabla usuarios antigua: {', '.join(columnas_dict.keys())}")
         
         # Leer usuarios de BD antigua
         cursor_antigua.execute("SELECT * FROM usuarios")
@@ -120,116 +113,80 @@ class Migrador:
         
         for usuario in usuarios_antiguos:
             try:
-                # Extraer datos usando índices seguros
-                correo = usuario[columnas_dict.get('correo', 0)]
-                nombre = usuario[columnas_dict.get('nombre', 1)]
-                contrasena = usuario[columnas_dict.get('contrasena', 2)]
-                latitud = usuario[columnas_dict.get('latitud', 3)] if 'latitud' in columnas_dict else None
-                longitud = usuario[columnas_dict.get('longitud', 4)] if 'longitud' in columnas_dict else None
-                ciudad = usuario[columnas_dict.get('ciudad', 5)] if 'ciudad' in columnas_dict else None
-                region = usuario[columnas_dict.get('region', 6)] if 'region' in columnas_dict else None
+                # usuario = (correo, nombre, contrasena, lat, lon, ciudad, region, cultivos_json, created, updated)
+                correo = usuario[0]
+                nombre = usuario[1]
+                contrasena = usuario[2]
+                latitud = usuario[3]
+                longitud = usuario[4]
+                ciudad = usuario[5]
+                region = usuario[6]
+                # cultivos se migran por separado
+                created_at = usuario[8] if len(usuario) > 8 else datetime.now().isoformat()
+                updated_at = usuario[9] if len(usuario) > 9 else datetime.now().isoformat()
                 
-                # foto_perfil de BD antigua si existe
-                foto_perfil = usuario[columnas_dict['foto_perfil']] if 'foto_perfil' in columnas_dict else None
-                
-                # Timestamps
-                created_at = usuario[columnas_dict['created_at']] if 'created_at' in columnas_dict else datetime.now().isoformat()
-                updated_at = usuario[columnas_dict['updated_at']] if 'updated_at' in columnas_dict else datetime.now().isoformat()
-                
-                # Insertar usuario en nueva tabla
+                # Insertar usuario en nueva tabla (sin cultivos)
                 cursor_nueva.execute('''
                     INSERT OR REPLACE INTO usuarios 
                     (correo, nombre, contrasena, latitud, longitud, ciudad, region, foto_perfil, created_at, updated_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''', (
                     correo, nombre, contrasena, latitud, longitud, 
-                    ciudad, region, foto_perfil, created_at, updated_at
+                    ciudad, region, None, created_at, updated_at
                 ))
                 
                 self.usuarios_migrados += 1
                 print(f"  ✅ Usuario: {correo} ({nombre})")
                 
             except Exception as e:
-                error_msg = f"Error migrando usuario: {str(e)}"
+                error_msg = f"Error migrando usuario {correo}: {str(e)}"
                 self.errores.append(error_msg)
                 print(f"  ❌ {error_msg}")
         
         conn_nueva.commit()
     
+    # modificar funcion para migrar cultivos
     def migrar_cultivos(self, conn_antigua, conn_nueva):
-        """Migrar cultivos desde tabla antigua a nueva estructura con campos adicionales"""
+        """Migrar cultivos desde JSON a tabla separada"""
         cursor_antigua = conn_antigua.cursor()
         cursor_nueva = conn_nueva.cursor()
         
-        # Verificar si existe tabla cultivos en BD antigua
-        cursor_antigua.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='cultivos'")
-        if not cursor_antigua.fetchone():
-            print(f"\n🌾 No se encontró tabla 'cultivos' en BD antigua - omitiendo migración de cultivos")
-            return
+        # Leer cultivos desde BD antigua
+        cursor_antigua.execute("SELECT correo, cultivos FROM usuarios")
+        usuarios_con_cultivos = cursor_antigua.fetchall()
         
-        # Leer cultivos desde tabla antigua
-        cursor_antigua.execute("SELECT * FROM cultivos")
-        cultivos_antiguos = cursor_antigua.fetchall()
+        print(f"\n🌾 Procesando cultivos de {len(usuarios_con_cultivos)} usuarios...")
         
-        print(f"\n🌾 Migrando {len(cultivos_antiguos)} cultivos...")
-        
-        # Obtener nombres de columnas de la tabla antigua
-        cursor_antigua.execute("PRAGMA table_info(cultivos)")
-        columnas_antigas = [col[1] for col in cursor_antigua.fetchall()]
-        print(f"  📋 Columnas en BD antigua: {', '.join(columnas_antigas)}")
-        
-        for cultivo_antiguo in cultivos_antiguos:
+        for correo, cultivos_json in usuarios_con_cultivos:
             try:
-                # Mapear datos antiguos (asumiendo estructura básica)
-                if len(cultivo_antiguo) >= 6:  # Mínimo: id, usuario_correo, nombre_cultivo, hectareas, fecha_siembra, notas
-                    id_antiguo = cultivo_antiguo[0]
-                    usuario_correo = cultivo_antiguo[1] 
-                    nombre_cultivo = cultivo_antiguo[2]
-                    hectareas = cultivo_antiguo[3]
-                    fecha_siembra = cultivo_antiguo[4] if len(cultivo_antiguo) > 4 else None
-                    notas = cultivo_antiguo[5] if len(cultivo_antiguo) > 5 else None
-                    created_at = cultivo_antiguo[6] if len(cultivo_antiguo) > 6 else datetime.now().isoformat()
-                    
-                    # Insertar en nueva estructura con campos adicionales
-                    cursor_nueva.execute('''
-                        INSERT INTO cultivos 
-                        (usuario_correo, nombre_cultivo, hectareas, fecha_siembra, notas,
-                         etapa_planta, tipo_riego, ultimo_riego, frecuencia_riego, humedad_suelo, 
-                         textura_suelo, variedad_planta, estado_planta, estres_hidrico, 
-                         profundidad_radical, densidad_plantacion, tipo_sensor, eficiencia_riego, 
-                         caudal, ph_agua, acolchado, created_at)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    ''', (
-                        usuario_correo,
-                        nombre_cultivo,
-                        float(hectareas) if hectareas else 0.0,
-                        fecha_siembra,
-                        notas,
-                        # Valores por defecto para nuevos campos
-                        'No especificada',  # etapa_planta
-                        'No especificado',  # tipo_riego
-                        None,               # ultimo_riego
-                        'No especificada',  # frecuencia_riego
-                        'No medida',        # humedad_suelo
-                        'No analizada',     # textura_suelo
-                        'No especificada',  # variedad_planta
-                        'Activo',           # estado_planta
-                        'Normal',           # estres_hidrico
-                        0,                  # profundidad_radical
-                        0,                  # densidad_plantacion
-                        'No instalado',     # tipo_sensor
-                        0,                  # eficiencia_riego
-                        0,                  # caudal
-                        7,                  # ph_agua (neutro por defecto)
-                        'Sin acolchado',    # acolchado
-                        created_at
-                    ))
-                    
-                    self.cultivos_migrados += 1
-                    print(f"  ✅ Cultivo migrado: {nombre_cultivo} ({hectareas} ha) - Usuario: {usuario_correo}")
+                if not cultivos_json or cultivos_json == '{}':
+                    continue
                 
-            except Exception as e:
-                error_msg = f"Error migrando cultivo ID {id_antiguo}: {str(e)}"
+                cultivos = json.loads(cultivos_json)
+                
+                for nombre_cultivo, hectareas in cultivos.items():
+                    try:
+                        cursor_nueva.execute('''
+                            INSERT INTO cultivos 
+                            (usuario_correo, nombre_cultivo, hectareas, created_at)
+                            VALUES (?, ?, ?, ?)
+                        ''', (
+                            correo,
+                            nombre_cultivo,
+                            float(hectareas) if hectareas else 0.0,
+                            datetime.now().isoformat()
+                        ))
+                        
+                        self.cultivos_migrados += 1
+                        print(f"  ✅ Cultivo: {correo} → {nombre_cultivo} ({hectareas} ha)")
+                        
+                    except Exception as e:
+                        error_msg = f"Error con cultivo {nombre_cultivo} de {correo}: {str(e)}"
+                        self.errores.append(error_msg)
+                        print(f"  ❌ {error_msg}")
+                
+            except json.JSONDecodeError as e:
+                error_msg = f"JSON inválido en cultivos de {correo}: {str(e)}"
                 self.errores.append(error_msg)
                 print(f"  ❌ {error_msg}")
         
