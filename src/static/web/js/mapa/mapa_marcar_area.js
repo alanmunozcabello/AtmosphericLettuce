@@ -314,26 +314,39 @@ async function guardarArea() {
   const { correo, cultivoSeleccionado, cultivosData } = window.cultivosState;
 
   try {
-    const puntosParaGuardar = puntosMarcados.map((p) => ({
-      latitud: p.lat,
-      longitud: p.lon,
-    }));
+    const puntosParaGuardar = Array.from({ length: MAX_PUNTOS }, (_, index) => {
+      if (index < puntosMarcados.length) {
+        return {
+          latitud: puntosMarcados[index].lat,
+          longitud: puntosMarcados[index].lon,
+        };
+      } else {
+        return null; // rellenar con null los puntos faltantes para que el backend esté tranquilito
+      }
+    });
 
     const area = poligonoActual
       ? ol.sphere.getArea(poligonoActual.getGeometry(), { projection: 'EPSG:3857' })
       : 0;
-
+    
     const response = await fetch(
-      `/usuarios/${encodeURIComponent(correo)}/${encodeURIComponent(cultivoSeleccionado)}/area`,
-      {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          puntos: puntosParaGuardar,
-          area: area,
-        }),
-      }
-    );
+        `/usuarios/${encodeURIComponent(correo)}/${encodeURIComponent(cultivoSeleccionado)}/modificar_area_cultivo`,
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            cultivo: cultivoSeleccionado,
+            area: area,
+            puntos: puntosParaGuardar,
+          }),
+        }
+      );
+    
+    const data = await response.json();
+
+    if (data.error) {
+      throw new Error(data.error);
+    }
 
     if (!response.ok) throw new Error('Error en el servidor');
 

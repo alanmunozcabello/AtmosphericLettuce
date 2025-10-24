@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Datos del formulario mapeados:', datosParaBackend);
         
         // Enviar al backend
-        fetch(`/usuarios/${encodeURIComponent(correo)}/agregar_modificar`, {
+        fetch(`/usuarios/${encodeURIComponent(correo)}/cultivos/modificar_formulario_cultivo`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'

@@ -5,7 +5,7 @@ function inicializarEventosCRUD() {
 
   // Agregar/Modificar
   if (form) {
-    form.addEventListener('submit', agregarModificarCultivo);
+    form.addEventListener('submit', agregarCultivo);
   }
 
   // Eliminar
@@ -17,7 +17,7 @@ function inicializarEventosCRUD() {
 }
 
 // ========== AGREGAR/MODIFICAR CULTIVO ==========
-async function agregarModificarCultivo(e) {
+async function agregarCultivo(e) {
   e.preventDefault();
 
   const { correo, cultivosData } = window.cultivosState;
@@ -41,33 +41,15 @@ async function agregarModificarCultivo(e) {
     
     // ✅ AGREGAR/MODIFICAR: PATCH /usuarios/{correo}/agregar_modificar
     const response = await fetch(
-      `/usuarios/${encodeURIComponent(correo)}/agregar_modificar`,
+      `/usuarios/${encodeURIComponent(correo)}/agregar_cultivo`,
       {
-        method: 'PATCH',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           nombre_cultivo: nombre,
           hectareas: hectareas,
-          fecha_siembra: null,
-          notas: null,
-          etapa_planta: null,
-          tipo_riego: null,
-          ultimo_riego: null,
-          frecuencia_riego: null,
-          humedad_suelo: null,
-          textura_suelo: null,
-          variedad_planta: null,
-          estado_planta: null,
-          estres_hidrico: null,
-          profundidad_radical: null,
-          densidad_plantacion: null,
-          tipo_sensor: null,
-          eficiencia_riego: null,
-          caudal: null,
-          ph_agua: null,
-          acolchado: null
         }),
       }
     );
