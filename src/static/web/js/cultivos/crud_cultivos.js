@@ -36,43 +36,41 @@ async function agregarModificarCultivo(e) {
     // Verificar si el cultivo ya existe
     const cultivoExiste = cultivosData.hasOwnProperty(nombre);
     
-    let response;
-
-    if (cultivoExiste) {
-      // ✅ MODIFICAR: PATCH /usuarios/{correo}/cultivos/{cultivo}/modificar
-      console.log('📝 Modificando cultivo existente:', nombre);
-      
-      response = await fetch(
-        `/usuarios/${encodeURIComponent(correo)}/cultivos/${encodeURIComponent(nombre)}/modificar`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            nombre_cultivo: nombre,
-            hectareas: hectareas,
-          }),
-        }
-      );
-    } else {
-      // ✅ AGREGAR: POST /usuarios/{correo}/agregar_cultivo
-      console.log('➕ Agregando nuevo cultivo:', nombre);
-      
-      response = await fetch(
-        `/usuarios/${encodeURIComponent(correo)}/agregar_cultivo`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            nombre_cultivo: nombre,
-            hectareas: hectareas,
-          }),
-        }
-      );
-    }
+    const accionTexto = cultivoExiste ? 'Modificando' : 'Agregando';
+    console.log(`${accionTexto} cultivo:`, nombre);
+    
+    // ✅ AGREGAR/MODIFICAR: PATCH /usuarios/{correo}/agregar_modificar
+    const response = await fetch(
+      `/usuarios/${encodeURIComponent(correo)}/agregar_modificar`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nombre_cultivo: nombre,
+          hectareas: hectareas,
+          fecha_siembra: null,
+          notas: null,
+          etapa_planta: null,
+          tipo_riego: null,
+          ultimo_riego: null,
+          frecuencia_riego: null,
+          humedad_suelo: null,
+          textura_suelo: null,
+          variedad_planta: null,
+          estado_planta: null,
+          estres_hidrico: null,
+          profundidad_radical: null,
+          densidad_plantacion: null,
+          tipo_sensor: null,
+          eficiencia_riego: null,
+          caudal: null,
+          ph_agua: null,
+          acolchado: null
+        }),
+      }
+    );
 
     const data = await response.json();
 

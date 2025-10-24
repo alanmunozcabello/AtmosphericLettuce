@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from controllers.usuarios_controller import controller_obtener_todos_los_usuarios, controller_obtener_usuario, controller_registrar_usuario, controller_obtener_cultivos_usuario, controller_agregar_o_modificar_cultivo, controller_eliminar_cultivo, controller_iniciar_sesion, controller_modificar_usuario, controller_modificar_ubicacion_usuario, controller_modificar_region_ciudad_usuario, controller_eliminar_usuario
 from pydantic import BaseModel
+from typing import Optional
 
 router=APIRouter()
 
@@ -39,9 +40,57 @@ def ruta_registrar_usuario(usuario: UsuarioRegistro):
 def ruta_obtener_cultivos_usuario(correo):
     return controller_obtener_cultivos_usuario(correo)
 
-@router.patch("/usuarios/{correo}/{cultivo}/{hectareas}/agregar_modificar") #patch para modificar
-def ruta_agregar_o_modificar_cultivo(correo, cultivo, hectareas):
-    return controller_agregar_o_modificar_cultivo(correo, cultivo, hectareas)
+class CultivoDatos(BaseModel):
+    nombre_cultivo: str
+    hectareas: float
+    fecha_siembra: Optional[str] = None
+    notas: Optional[str] = None
+    etapa_planta: Optional[str] = None
+    tipo_riego: Optional[str] = None
+    ultimo_riego: Optional[str] = None  # datetime como string
+    frecuencia_riego: Optional[str] = None
+    humedad_suelo: Optional[str] = None
+    textura_suelo: Optional[str] = None
+    variedad_planta: Optional[str] = None
+    estado_planta: Optional[str] = None
+    estres_hidrico: Optional[int] = None  # boolean: 0=No, 1=Sí
+    profundidad_radical: Optional[int] = None
+    densidad_plantacion: Optional[int] = None
+    tipo_sensor: Optional[str] = None
+    eficiencia_riego: Optional[float] = None  # decimal
+    caudal: Optional[float] = None  # decimal
+    ph_agua: Optional[float] = None  # decimal
+    acolchado: Optional[int] = None  # boolean: 0=No, 1=Sí
+    
+    
+
+
+@router.patch("/usuarios/{correo}/agregar_modificar") #patch para modificar
+def ruta_agregar_o_modificar_cultivo(correo: str, cultivo: CultivoDatos):
+    return controller_agregar_o_modificar_cultivo(
+        correo, 
+        cultivo.nombre_cultivo, 
+        cultivo.hectareas,
+        cultivo.fecha_siembra,
+        cultivo.notas,
+        cultivo.etapa_planta,
+        cultivo.tipo_riego,
+        cultivo.ultimo_riego,
+        cultivo.frecuencia_riego,
+        cultivo.humedad_suelo,
+        cultivo.textura_suelo,
+        cultivo.variedad_planta,
+        cultivo.estado_planta,
+        cultivo.estres_hidrico,
+        cultivo.profundidad_radical,
+        cultivo.densidad_plantacion,
+        cultivo.tipo_sensor,
+        cultivo.eficiencia_riego,
+        cultivo.caudal,
+        cultivo.ph_agua,
+        cultivo.acolchado
+        
+    )
 
 @router.delete("/usuarios/{correo}/{cultivo}/eliminar") #delete para borrar
 def ruta_eliminar_cultivo(correo, cultivo):

@@ -64,6 +64,25 @@ class Migrador:
                 hectareas REAL NOT NULL,
                 fecha_siembra DATE,
                 notas TEXT,
+                
+                
+                etapa_planta TEXT,
+                tipo_riego TEXT,
+                ultimo_riego DATETIME,
+                frecuencia_riego TEXT,
+                humedad_suelo TEXT,
+                textura_suelo TEXT,
+                variedad_planta TEXT,
+                estado_planta TEXT,
+                estres_hidrico INTEGER DEFAULT 0,
+                profundidad_radical INTEGER,
+                densidad_plantacion INTEGER,
+                tipo_sensor TEXT,
+                eficiencia_riego REAL,
+                caudal REAL,
+                pH_agua REAL,
+                acolchado INTEGER DEFAULT 0,
+                
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 
                 FOREIGN KEY (usuario_correo) REFERENCES usuarios(correo) 
@@ -126,6 +145,7 @@ class Migrador:
         
         conn_nueva.commit()
     
+    # modificar funcion para migrar cultivos
     def migrar_cultivos(self, conn_antigua, conn_nueva):
         """Migrar cultivos desde JSON a tabla separada"""
         cursor_antigua = conn_antigua.cursor()

@@ -23,11 +23,20 @@ function renderizarLista() {
     li.innerHTML = `
       <span class="tick">✔</span>
       <span><strong>${nombre}</strong> — ${hectareas} ha</span>
+      <button class="btn-config" data-nombre="${nombre}" aria-label="Configurar">⚙️</button>
       <button class="btn-eliminar" data-nombre="${nombre}" aria-label="Eliminar">✕</button>
     `;
 
     li.addEventListener('click', (e) => {
-      if (!e.target.classList.contains('btn-eliminar')) {
+      // Si es botón de configuración, redirigir a formulario
+      if (e.target.classList.contains('btn-config')) {
+        const { correo } = window.cultivosState;
+        window.location.href = `formulario_plantas.html?cultivo=${encodeURIComponent(nombre)}&correo=${encodeURIComponent(correo)}`;
+        return;
+      }
+      
+      // Si no es botón de eliminar ni config, , seleccionar en mapa
+      if (!e.target.classList.contains('btn-eliminar') && !e.target.classList.contains('btn-config')) {
         if (typeof seleccionarCultivoMapa === 'function') {
           seleccionarCultivoMapa(nombre);
         }

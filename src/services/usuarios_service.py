@@ -132,7 +132,7 @@ def service_registrar_usuario(correo, nombre, contrasena):
     except Exception as e:
         return {"error": str(e)}
 
-def service_agregar_o_modificar_cultivo(correo, nombre_cultivo, hectareas):
+def service_agregar_o_modificar_cultivo(correo, nombre_cultivo, hectareas, fecha_siembra=None, notas= None, etapa_planta=None, tipo_riego=None, ultimo_riego=None, frecuencia_riego=None, humedad_suelo=None, textura_suelo=None, variedad_planta=None, estado_planta=None, estres_hidrico=None, profundidad_radical=None, densidad_plantacion=None, tipo_sensor=None, eficiencia_riego=None, caudal=None, ph_agua=None, acolchado=None):
     try:
         #Verificar que usuario existe
         if not service_existe_usuario(correo):
@@ -150,18 +150,43 @@ def service_agregar_o_modificar_cultivo(correo, nombre_cultivo, hectareas):
         cultivo_existente = cursor.fetchone()
         
         if cultivo_existente:
-            #Actualizar cultivo existente
+            #Actualizar cultivo existente (sin modificar hectareas)
             cursor.execute("""
                 UPDATE cultivos 
-                SET hectareas = ? 
+                SET fecha_siembra = ?, notas = ?,
+                    etapa_planta = ?, tipo_riego = ?, ultimo_riego = ?,
+                    frecuencia_riego = ?, humedad_suelo = ?, textura_suelo = ?,
+                    variedad_planta = ?, estado_planta = ?, estres_hidrico = ?,
+                    profundidad_radical = ?, densidad_plantacion = ?, tipo_sensor = ?,
+                    eficiencia_riego = ?, caudal = ?, ph_agua = ?, acolchado = ?
                 WHERE usuario_correo = ? AND nombre_cultivo = ?
-            """, (hectareas, correo, nombre_cultivo))
+            """, (
+                fecha_siembra, notas,
+                etapa_planta, tipo_riego, ultimo_riego, frecuencia_riego,
+                humedad_suelo, textura_suelo, variedad_planta, estado_planta,
+                estres_hidrico, profundidad_radical, densidad_plantacion,
+                tipo_sensor, eficiencia_riego, caudal, ph_agua, acolchado,
+                correo, nombre_cultivo
+            ))
             mensaje = f"Cultivo {nombre_cultivo} actualizado"
         else:
             cursor.execute("""
-                INSERT INTO cultivos (usuario_correo, nombre_cultivo, hectareas, created_at)
-                VALUES (?, ?, ?, ?)
-            """, (correo, nombre_cultivo, hectareas, datetime.now().isoformat()))
+    INSERT INTO cultivos (
+        usuario_correo, nombre_cultivo, hectareas, fecha_siembra, notas, 
+        etapa_planta, tipo_riego, ultimo_riego, frecuencia_riego,
+        humedad_suelo, textura_suelo, variedad_planta, estado_planta,
+        estres_hidrico, profundidad_radical, densidad_plantacion,
+        tipo_sensor, eficiencia_riego, caudal, ph_agua, acolchado,
+        created_at
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+""", (
+    correo, nombre_cultivo, hectareas, fecha_siembra, notas,
+    etapa_planta, tipo_riego, ultimo_riego, frecuencia_riego,
+    humedad_suelo, textura_suelo, variedad_planta, estado_planta,
+    estres_hidrico, profundidad_radical, densidad_plantacion,
+    tipo_sensor, eficiencia_riego, caudal, ph_agua, acolchado,
+    datetime.now().isoformat()))
             mensaje = f"Cultivo {nombre_cultivo} agregado"
         
         conexion.commit()
@@ -271,7 +296,12 @@ def service_obtener_cultivos_usuario(correo):
         cursor = conexion.cursor()
         
         cursor.execute("""
-            SELECT id, nombre_cultivo, hectareas, fecha_siembra, notas, created_at
+            SELECT id, nombre_cultivo, hectareas, fecha_siembra, notas,
+                Etapa_planta, Tipo_riego, Ultimo_riego, Frecuencia_Riego,
+                Humedad_Suelo, Textura_suelo, Variedad_planta, Estado_Planta,
+                Estres_Hidrico, Profundidad_radical, Densidad_plantacion,
+                Tipo_Sensor, Eficiencia_riego, Caudal, pH_agua, acolchado,
+                created_at
             FROM cultivos 
             WHERE usuario_correo = ?
             ORDER BY nombre_cultivo
@@ -288,8 +318,25 @@ def service_obtener_cultivos_usuario(correo):
                 "hectareas": row[2],
                 "fecha_siembra": row[3],
                 "notas": row[4],
-                "created_at": row[5]
+                "etapa_planta": row[5],
+                "tipo_riego": row[6],
+                "ultimo_riego": row[7],
+                "frecuencia_riego": row[8],
+                "humedad_suelo": row[9],
+                "textura_suelo": row[10],
+                "variedad_planta": row[11],
+                "estado_planta": row[12],
+                "estres_hidrico": row[13],
+                "profundidad_radical": row[14],
+                "densidad_plantacion": row[15],
+                "tipo_sensor": row[16],
+                "eficiencia_riego": row[17],
+                "caudal": row[18],
+                "ph_agua": row[19],
+                "acolchado": row[20],
+                "created_at": row[21]
             })
+                
         
         if not cultivos:
             return {"mensaje": "Usuario no posee cultivos"}
@@ -321,7 +368,7 @@ def service_iniciar_sesion(correo, contrasena):
 
 def service_modificar_region_ciudad_usuario(correo, region, ciudad):
     return service_modificar_usuario(correo, {
-        "region": region,   
+        "region": region,
         "ciudad": ciudad
     })
 
