@@ -23,8 +23,10 @@ function renderizarLista() {
     li.innerHTML = `
       <span class="tick">✔</span>
       <span><strong>${nombre}</strong> — ${hectareas} ha</span>
-      <button class="btn-config" data-nombre="${nombre}" aria-label="Configurar">⚙️</button>
-      <button class="btn-eliminar" data-nombre="${nombre}" aria-label="Eliminar">✕</button>
+      <div class="botones-grupo">
+        <button class="btn-config" data-nombre="${nombre}" aria-label="Configurar">⚙️</button>
+        <button class="btn-eliminar" data-nombre="${nombre}" aria-label="Eliminar">✕</button>
+      </div>
     `;
 
     li.addEventListener('click', (e) => {

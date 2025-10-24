@@ -193,9 +193,14 @@
   font-weight: 600;
 }
 
-.btn-config {
+.botones-grupo {
   margin-left: auto;
-  margin-right: 8px;
+  display: flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.btn-config {
   background: #3b82f6;
   color: white;
   border: none;
@@ -568,27 +573,4 @@
   .superficie-panel {
     max-height: 150px;
   }
-}
-
-.btn-config {
-  margin-left: auto;
-  margin-right: -60px; 
-  background: #3b82f6; /* Azul para distinguir */
-  color: white;
-  border: none;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s;
-}
-
-.btn-config:hover {
-  background: #2563eb; /* Azul más oscuro al hover */
-  transform: scale(1.1);
 }
