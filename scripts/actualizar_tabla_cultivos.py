@@ -48,7 +48,7 @@ def main():
             ("tipo_sensor", "TEXT"),
             ("eficiencia_riego", "REAL"),
             ("caudal", "REAL"),
-            ("pH_agua", "REAL"),
+            ("ph_agua", "REAL"),
             ("acolchado", "INTEGER", "0"),
         ]
         

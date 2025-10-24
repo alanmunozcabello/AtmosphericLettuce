@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Configurar botón regresar
         btnRegresar.addEventListener('click', function() {
-            window.location.href = `home.html?correo=${encodeURIComponent(correo)}`;
+            window.location.href = `gestor_cultivos.html?correo=${encodeURIComponent(correo)}`;
         });
     } else {
         // Si no viene de cultivos, ocultar botón regresar
@@ -74,8 +74,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Mapear los nombres de los campos del HTML a los nombres que espera el backend
         const datosParaBackend = {
-            nombre_cultivo: cultivo, // Ya validado que existe arriba
-            hectareas: 0, // Este valor debe venir del formulario si lo tienes
+            nombre_cultivo: cultivo,
+            hectareas: 0,
             fecha_siembra: null,
             notas: null,
             etapa_planta: formData.get('etapa') || null,
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Respuesta del servidor:', data);
             if (data.mensaje) {
                 alert(`✅ ${data.mensaje}`);
-                window.location.href = `home.html?correo=${encodeURIComponent(correo)}`;
+                window.location.href = `gestor_cultivos.html`;
             } else if (data.error) {
                 alert(`❌ Error: ${data.error}`);
             }
