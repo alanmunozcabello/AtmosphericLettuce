@@ -3,7 +3,7 @@ import sqlite3
 from services.security import hash_password_simple, verify_password
 from datetime import datetime
 
-DB_PATH = "data/usuarios.db" 
+DB_PATH = "data/DataBase.db" 
 
 def get_db_connection():
     conn = sqlite3.connect(DB_PATH)
@@ -19,17 +19,8 @@ def service_obtener_usuario_para_frontend(correo):
         if not usuario:
             conexion.close()
             return {"error": "Usuario no encontrado"}
-        cursor.execute("""
-            SELECT nombre_cultivo, hectareas 
-            FROM cultivos 
-            WHERE usuario_correo = ?
-            ORDER BY nombre_cultivo
-        """, (correo,))
-        cultivos_rows = cursor.fetchall()
         conexion.close()
-        cultivos = {}
-        for nombre_cultivo, hectareas in cultivos_rows:
-            cultivos[nombre_cultivo] = hectareas
+        cultivos = service_obtener_cultivos_usuario(correo)
         usuario_dict = {
             "nombre": usuario[1],
             "ubicacion": {
@@ -47,6 +38,7 @@ def service_obtener_usuario_para_frontend(correo):
     except Exception as e:
         return {"error": str(e)}
 
+# Útil para el FastAPI
 def service_leer_usuarios():
     try:
         conexion = get_db_connection()
@@ -85,7 +77,6 @@ def service_leer_usuarios():
         return {"error": str(e)}
 
 def service_existe_usuario(correo):
-    """Verificar si un usuario existe en la BD"""
     try:
         conexion = get_db_connection()
         cursor = conexion.cursor()
@@ -132,70 +123,174 @@ def service_registrar_usuario(correo, nombre, contrasena):
     except Exception as e:
         return {"error": str(e)}
 
-def service_agregar_o_modificar_cultivo(correo, nombre_cultivo, hectareas, fecha_siembra=None, notas= None, etapa_planta=None, tipo_riego=None, ultimo_riego=None, frecuencia_riego=None, humedad_suelo=None, textura_suelo=None, variedad_planta=None, estado_planta=None, estres_hidrico=None, profundidad_radical=None, densidad_plantacion=None, tipo_sensor=None, eficiencia_riego=None, caudal=None, ph_agua=None, acolchado=None):
+def service_agregar_cultivo(correo, nombre_cultivo, hectareas):
+    try:    
+        #Verificar que usuario existe
+        if not service_existe_usuario(correo):
+            return {"error": "Usuario no existe"}
+        conexion = get_db_connection()
+        cursor = conexion.cursor()
+
+        #Verificar si cultivo ya existe para este usuario
+        cursor.execute("""SELECT id FROM cultivos WHERE usuario_correo = ? AND nombre_cultivo = ?""", (correo, nombre_cultivo))
+        
+        if cursor.fetchone():
+            conexion.close()
+            return {"error": "Cultivo ya existe para este usuario"}
+
+        cursor.execute("""
+        INSERT INTO cultivos (
+            usuario_correo, nombre_cultivo, hectareas, fecha_siembra, notas, puntos,
+            etapa_planta, tipo_riego, ultimo_riego, frecuencia_riego,
+            humedad_suelo, textura_suelo, variedad_planta, estado_planta,
+            estres_hidrico, profundidad_radical, densidad_plantacion,
+            tipo_sensor, eficiencia_riego, caudal, ph_agua, acolchado,
+            created_at
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (
+        correo, nombre_cultivo, hectareas, None, None, None, None, None, None, None, None, None, None, 
+        None, None, None, None, None, None, None, None, None, datetime.now().isoformat()))
+        
+        conexion.commit()
+        conexion.close()
+        return {"mensaje": f"Cultivo {nombre_cultivo} agregado exitosamente"}
+    
+    except Exception as e:
+        return {"error": str(e)}
+    
+def service_modificar_formulario_cultivo(correo, datos_nuevos):
     try:
         #Verificar que usuario existe
         if not service_existe_usuario(correo):
             return {"error": "Usuario no existe"}
-        
         conexion = get_db_connection()
         cursor = conexion.cursor()
-        
-        #Verificar si cultivo ya existe para este usuario
-        cursor.execute("""
-            SELECT id FROM cultivos 
+        #Verificar si cultivo existe para este usuario
+        cursor.execute("""SELECT id FROM cultivos WHERE usuario_correo = ? AND nombre_cultivo = ?""", (correo, datos_nuevos["nombre_cultivo"]))
+        if not cursor.fetchone():
+            conexion.close()
+            return {"error": "Cultivo no encontrado para este usuario"}
+        campos_permitidos = [
+            "fecha_siembra", "notas", "etapa_planta", "tipo_riego",
+            "ultimo_riego", "frecuencia_riego", "humedad_suelo", "textura_suelo",
+            "variedad_planta", "estado_planta", "estres_hidrico", "profundidad_radical",
+            "densidad_plantacion", "tipo_sensor", "eficiencia_riego", "caudal", "ph_agua", "acolchado"
+        ]
+        campos_update = []
+        valores = []
+        for campo in campos_permitidos:
+            if campo in datos_nuevos:
+                campos_update.append(f"{campo} = ?")
+                valores.append(datos_nuevos[campo])
+        if not campos_update:
+            conexion.close()
+            return {"error": "No hay campos válidos para actualizar"}
+
+        cursor.execute(f"""
+            UPDATE cultivos
+            SET {', '.join(campos_update)}
             WHERE usuario_correo = ? AND nombre_cultivo = ?
-        """, (correo, nombre_cultivo))
-        
-        cultivo_existente = cursor.fetchone()
-        
-        if cultivo_existente:
-            #Actualizar cultivo existente (sin modificar hectareas)
-            cursor.execute("""
-                UPDATE cultivos 
-                SET fecha_siembra = ?, notas = ?,
-                    etapa_planta = ?, tipo_riego = ?, ultimo_riego = ?,
-                    frecuencia_riego = ?, humedad_suelo = ?, textura_suelo = ?,
-                    variedad_planta = ?, estado_planta = ?, estres_hidrico = ?,
-                    profundidad_radical = ?, densidad_plantacion = ?, tipo_sensor = ?,
-                    eficiencia_riego = ?, caudal = ?, ph_agua = ?, acolchado = ?
-                WHERE usuario_correo = ? AND nombre_cultivo = ?
-            """, (
-                fecha_siembra, notas,
-                etapa_planta, tipo_riego, ultimo_riego, frecuencia_riego,
-                humedad_suelo, textura_suelo, variedad_planta, estado_planta,
-                estres_hidrico, profundidad_radical, densidad_plantacion,
-                tipo_sensor, eficiencia_riego, caudal, ph_agua, acolchado,
-                correo, nombre_cultivo
-            ))
-            mensaje = f"Cultivo {nombre_cultivo} actualizado"
-        else:
-            cursor.execute("""
-    INSERT INTO cultivos (
-        usuario_correo, nombre_cultivo, hectareas, fecha_siembra, notas, 
-        etapa_planta, tipo_riego, ultimo_riego, frecuencia_riego,
-        humedad_suelo, textura_suelo, variedad_planta, estado_planta,
-        estres_hidrico, profundidad_radical, densidad_plantacion,
-        tipo_sensor, eficiencia_riego, caudal, ph_agua, acolchado,
-        created_at
-    )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-""", (
-    correo, nombre_cultivo, hectareas, fecha_siembra, notas,
-    etapa_planta, tipo_riego, ultimo_riego, frecuencia_riego,
-    humedad_suelo, textura_suelo, variedad_planta, estado_planta,
-    estres_hidrico, profundidad_radical, densidad_plantacion,
-    tipo_sensor, eficiencia_riego, caudal, ph_agua, acolchado,
-    datetime.now().isoformat()))
-            mensaje = f"Cultivo {nombre_cultivo} agregado"
-        
+        """, (*valores, correo, datos_nuevos["nombre_cultivo"]))
+
         conexion.commit()
         conexion.close()
-        
-        return {"mensaje": mensaje}
-        
+        return {"mensaje": f"Cultivo {datos_nuevos['nombre_cultivo']} modificado exitosamente"}
+
     except Exception as e:
         return {"error": str(e)}
+
+def service_modificar_area_cultivo(correo, area_cultivo_datos):
+    try:
+        #Verificar que usuario existe
+        if not service_existe_usuario(correo):
+            return {"error": "Usuario no existe"}
+        conexion = get_db_connection()
+        cursor = conexion.cursor()
+        #Verificar si cultivo existe para este usuario
+        cursor.execute("""SELECT id FROM cultivos WHERE usuario_correo = ? AND nombre_cultivo = ?""", (correo, area_cultivo_datos["cultivo"]))
+        if not cursor.fetchone():
+            conexion.close()
+            return {"error": "Cultivo no encontrado para este usuario"}
+        
+        puntos_json = json.dumps(area_cultivo_datos["puntos"])
+        
+        cursor.execute("""
+            UPDATE cultivos
+            SET hectareas = ?, puntos = ?
+            WHERE usuario_correo = ? AND nombre_cultivo = ?
+        """, (area_cultivo_datos["area"], puntos_json, correo, area_cultivo_datos["cultivo"]))
+
+        conexion.commit()
+        conexion.close()
+        return {"mensaje": f"Área del cultivo {area_cultivo_datos['cultivo']} modificada exitosamente"}
+
+    except Exception as e:
+        return {"error": str(e)}
+
+# def service_agregar_o_modificar_cultivo(correo, nombre_cultivo, hectareas, fecha_siembra=None, notas= None, etapa_planta=None, tipo_riego=None, ultimo_riego=None, frecuencia_riego=None, humedad_suelo=None, textura_suelo=None, variedad_planta=None, estado_planta=None, estres_hidrico=None, profundidad_radical=None, densidad_plantacion=None, tipo_sensor=None, eficiencia_riego=None, caudal=None, ph_agua=None, acolchado=None):
+#     try:
+#         #Verificar que usuario existe
+#         if not service_existe_usuario(correo):
+#             return {"error": "Usuario no existe"}
+        
+#         conexion = get_db_connection()
+#         cursor = conexion.cursor()
+        
+#         #Verificar si cultivo ya existe para este usuario
+#         cursor.execute("""
+#             SELECT id FROM cultivos 
+#             WHERE usuario_correo = ? AND nombre_cultivo = ?
+#         """, (correo, nombre_cultivo))
+        
+#         cultivo_existente = cursor.fetchone()
+        
+#         if cultivo_existente:
+#             #Actualizar cultivo existente (sin modificar hectareas)
+#             cursor.execute("""
+#                 UPDATE cultivos 
+#                 SET fecha_siembra = ?, notas = ?,
+#                     etapa_planta = ?, tipo_riego = ?, ultimo_riego = ?,
+#                     frecuencia_riego = ?, humedad_suelo = ?, textura_suelo = ?,
+#                     variedad_planta = ?, estado_planta = ?, estres_hidrico = ?,
+#                     profundidad_radical = ?, densidad_plantacion = ?, tipo_sensor = ?,
+#                     eficiencia_riego = ?, caudal = ?, ph_agua = ?, acolchado = ?
+#                 WHERE usuario_correo = ? AND nombre_cultivo = ?
+#             """, (
+#                 fecha_siembra, notas,
+#                 etapa_planta, tipo_riego, ultimo_riego, frecuencia_riego,
+#                 humedad_suelo, textura_suelo, variedad_planta, estado_planta,
+#                 estres_hidrico, profundidad_radical, densidad_plantacion,
+#                 tipo_sensor, eficiencia_riego, caudal, ph_agua, acolchado,
+#                 correo, nombre_cultivo
+#             ))
+#             mensaje = f"Cultivo {nombre_cultivo} actualizado"
+#         else:
+#             cursor.execute("""
+#     INSERT INTO cultivos (
+#         usuario_correo, nombre_cultivo, hectareas, fecha_siembra, notas, 
+#         etapa_planta, tipo_riego, ultimo_riego, frecuencia_riego,
+#         humedad_suelo, textura_suelo, variedad_planta, estado_planta,
+#         estres_hidrico, profundidad_radical, densidad_plantacion,
+#         tipo_sensor, eficiencia_riego, caudal, ph_agua, acolchado,
+#         created_at
+#     )
+#     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+# """, (
+#     correo, nombre_cultivo, hectareas, fecha_siembra, notas,
+#     etapa_planta, tipo_riego, ultimo_riego, frecuencia_riego,
+#     humedad_suelo, textura_suelo, variedad_planta, estado_planta,
+#     estres_hidrico, profundidad_radical, densidad_plantacion,
+#     tipo_sensor, eficiencia_riego, caudal, ph_agua, acolchado,
+#     datetime.now().isoformat()))
+#             mensaje = f"Cultivo {nombre_cultivo} agregado"
+        
+#         conexion.commit()
+#         conexion.close()
+        
+#         return {"mensaje": mensaje}
+        
+#     except Exception as e:
+#         return {"error": str(e)}
 
 def service_eliminar_cultivo(correo, nombre_cultivo):
     try:
@@ -296,7 +391,7 @@ def service_obtener_cultivos_usuario(correo):
         cursor = conexion.cursor()
         
         cursor.execute("""
-            SELECT id, nombre_cultivo, hectareas, fecha_siembra, notas,
+            SELECT id, nombre_cultivo, hectareas, fecha_siembra, notas, puntos,
                 Etapa_planta, Tipo_riego, Ultimo_riego, Frecuencia_Riego,
                 Humedad_Suelo, Textura_suelo, Variedad_planta, Estado_Planta,
                 Estres_Hidrico, Profundidad_radical, Densidad_plantacion,
@@ -316,25 +411,28 @@ def service_obtener_cultivos_usuario(correo):
                 "id": row[0],
                 "nombre": row[1],
                 "hectareas": row[2],
-                "fecha_siembra": row[3],
-                "notas": row[4],
-                "etapa_planta": row[5],
-                "tipo_riego": row[6],
-                "ultimo_riego": row[7],
-                "frecuencia_riego": row[8],
-                "humedad_suelo": row[9],
-                "textura_suelo": row[10],
-                "variedad_planta": row[11],
-                "estado_planta": row[12],
-                "estres_hidrico": row[13],
-                "profundidad_radical": row[14],
-                "densidad_plantacion": row[15],
-                "tipo_sensor": row[16],
-                "eficiencia_riego": row[17],
-                "caudal": row[18],
-                "ph_agua": row[19],
-                "acolchado": row[20],
-                "created_at": row[21]
+                "formulario": {
+                    "fecha_siembra": row[3],
+                    "notas": row[4],
+                    "etapa_planta": row[6],
+                    "tipo_riego": row[7],
+                    "ultimo_riego": row[8],
+                    "frecuencia_riego": row[9],
+                    "humedad_suelo": row[10],
+                    "textura_suelo": row[11],
+                    "variedad_planta": row[12],
+                    "estado_planta": row[13],
+                    "estres_hidrico": row[14],
+                    "profundidad_radical": row[15],
+                    "densidad_plantacion": row[16],
+                    "tipo_sensor": row[17],
+                    "eficiencia_riego": row[18],
+                    "caudal": row[19],
+                    "ph_agua": row[20],
+                    "acolchado": row[21],
+                    "created_at": row[22]
+                },
+                "puntos": json.loads(row[5]) if row[5] else [],
             })
                 
         

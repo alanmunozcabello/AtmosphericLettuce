@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from controllers.usuarios_controller import controller_obtener_todos_los_usuarios, controller_obtener_usuario, controller_registrar_usuario, controller_obtener_cultivos_usuario, controller_agregar_o_modificar_cultivo, controller_eliminar_cultivo, controller_iniciar_sesion, controller_modificar_usuario, controller_modificar_ubicacion_usuario, controller_modificar_region_ciudad_usuario, controller_eliminar_usuario
+from controllers.usuarios_controller import controller_obtener_todos_los_usuarios, controller_obtener_usuario, controller_registrar_usuario, controller_obtener_cultivos_usuario, controller_eliminar_cultivo, controller_iniciar_sesion, controller_modificar_usuario, controller_modificar_ubicacion_usuario, controller_modificar_region_ciudad_usuario, controller_eliminar_usuario, controller_agregar_cultivo, controller_modificar_formulario_cultivo, controller_modificar_area_cultivo
 from pydantic import BaseModel
 from typing import Optional
 
@@ -42,55 +42,75 @@ def ruta_obtener_cultivos_usuario(correo):
 
 class CultivoDatos(BaseModel):
     nombre_cultivo: str
-    hectareas: float
-    fecha_siembra: Optional[str] = None
-    notas: Optional[str] = None
-    etapa_planta: Optional[str] = None
-    tipo_riego: Optional[str] = None
-    ultimo_riego: Optional[str] = None  # datetime como string
-    frecuencia_riego: Optional[str] = None
-    humedad_suelo: Optional[str] = None
-    textura_suelo: Optional[str] = None
-    variedad_planta: Optional[str] = None
-    estado_planta: Optional[str] = None
-    estres_hidrico: Optional[int] = None  # boolean: 0=No, 1=Sí
-    profundidad_radical: Optional[int] = None
-    densidad_plantacion: Optional[int] = None
-    tipo_sensor: Optional[str] = None
-    eficiencia_riego: Optional[float] = None  # decimal
-    caudal: Optional[float] = None  # decimal
-    ph_agua: Optional[float] = None  # decimal
-    acolchado: Optional[int] = None  # boolean: 0=No, 1=Sí
-    
-    
+    hectareas: Optional[float]
+    fecha_siembra: Optional[str]
+    notas: Optional[str]
+    etapa_planta: Optional[str]
+    tipo_riego: Optional[str]
+    ultimo_riego: Optional[str]  # datetime como string
+    frecuencia_riego: Optional[str]
+    humedad_suelo: Optional[str]
+    textura_suelo: Optional[str]
+    variedad_planta: Optional[str]
+    estado_planta: Optional[str]
+    estres_hidrico: Optional[int] # boolean: 0=No, 1=Sí
+    profundidad_radical: Optional[int]
+    densidad_plantacion: Optional[int]
+    tipo_sensor: Optional[str]
+    eficiencia_riego: Optional[float]  # decimal
+    caudal: Optional[float]  # decimal
+    ph_agua: Optional[float]  # decimal
+    acolchado: Optional[int]  # boolean: 0=No, 1=Sí
+
+@router.post("/usuarios/{correo}/agregar_cultivo") #post para agregar
+def ruta_agregar_cultivo(correo: str, nombre_cultivo: str, hectareas: float):
+    return controller_agregar_cultivo(
+        correo, nombre_cultivo, hectareas)
+
+@router.patch("/usuarios/{correo}/cultivos/modificar_formulario_cultivo") #patch para modificar
+def ruta_modificar_formulario_cultivo(correo: str, cultivo_datos: CultivoDatos):
+    return controller_modificar_formulario_cultivo(correo, cultivo_datos)
+
+class PuntoCoordenada(BaseModel):
+    latitud: Optional[float]
+    longitud: Optional[float]
+
+class AreaCultivoDatos(BaseModel):
+    cultivo: str
+    area: float
+    puntos: list[Optional[PuntoCoordenada]]
+
+@router.patch("/usuarios/{correo}/modificar_area_cultivo") #patch para modificar
+def ruta_modificar_area_cultivo(correo: str, area_datos: AreaCultivoDatos):
+    return controller_modificar_area_cultivo(correo, area_datos)
 
 
-@router.patch("/usuarios/{correo}/agregar_modificar") #patch para modificar
-def ruta_agregar_o_modificar_cultivo(correo: str, cultivo: CultivoDatos):
-    return controller_agregar_o_modificar_cultivo(
-        correo, 
-        cultivo.nombre_cultivo, 
-        cultivo.hectareas,
-        cultivo.fecha_siembra,
-        cultivo.notas,
-        cultivo.etapa_planta,
-        cultivo.tipo_riego,
-        cultivo.ultimo_riego,
-        cultivo.frecuencia_riego,
-        cultivo.humedad_suelo,
-        cultivo.textura_suelo,
-        cultivo.variedad_planta,
-        cultivo.estado_planta,
-        cultivo.estres_hidrico,
-        cultivo.profundidad_radical,
-        cultivo.densidad_plantacion,
-        cultivo.tipo_sensor,
-        cultivo.eficiencia_riego,
-        cultivo.caudal,
-        cultivo.ph_agua,
-        cultivo.acolchado
+# @router.patch("/usuarios/{correo}/agregar_modificar") #patch para modificar
+# def ruta_agregar_o_modificar_cultivo(correo: str, cultivo: CultivoDatos):
+#     return controller_agregar_o_modificar_cultivo(
+#         correo, 
+#         cultivo.nombre_cultivo, 
+#         cultivo.hectareas,
+#         cultivo.fecha_siembra,
+#         cultivo.notas,
+#         cultivo.etapa_planta,
+#         cultivo.tipo_riego,
+#         cultivo.ultimo_riego,
+#         cultivo.frecuencia_riego,
+#         cultivo.humedad_suelo,
+#         cultivo.textura_suelo,
+#         cultivo.variedad_planta,
+#         cultivo.estado_planta,
+#         cultivo.estres_hidrico,
+#         cultivo.profundidad_radical,
+#         cultivo.densidad_plantacion,
+#         cultivo.tipo_sensor,
+#         cultivo.eficiencia_riego,
+#         cultivo.caudal,
+#         cultivo.ph_agua,
+#         cultivo.acolchado
         
-    )
+#     )
 
 @router.delete("/usuarios/{correo}/{cultivo}/eliminar") #delete para borrar
 def ruta_eliminar_cultivo(correo, cultivo):
