@@ -83,7 +83,8 @@ function hideLoader() {
 }
 
 document.getElementById("enviarBtn").addEventListener("click", async () => {
-    const texto = document.getElementById("textoInput").value.trim();
+    const textoInput = document.getElementById("textoInput");
+    const texto = textoInput.value.trim();
     // const inputArchivos = document.getElementById('fileInput');
 
     // Arreglo con el payload final
@@ -99,6 +100,12 @@ document.getElementById("enviarBtn").addEventListener("click", async () => {
         payload.texto = texto;
     }
     // console.log(inputArchivos.files[0].name);
+
+    textoInput.value = "";
+    // mostrar la pregunta del usuario
+    document.getElementById("chatBox").innerHTML += `
+        <p><b>Tú:</b> ${texto}</p>
+    `;
 
     if (archivosSeleccionados.length > 0) {
         console.log('Archivos seleccionados:');
@@ -137,13 +144,13 @@ document.getElementById("enviarBtn").addEventListener("click", async () => {
 
     const result = await respuesta.json();
     console.log(result.respuesta);
+    const formatted = marked.parse(result.respuesta);
 
     hideLoader(); // terminar animacion de carga
 
-    // mostrar respuesta
+    // mostrar respuesta del chatbot
     document.getElementById("chatBox").innerHTML += `
-        <p><b>Tú:</b> ${payload.texto}</p>
-        <p><b>Lechuguin:</b> ${result.respuesta}</p>
+        <p><b>Lechuguin:</b> ${formatted}</p>
     `;
 });
 
