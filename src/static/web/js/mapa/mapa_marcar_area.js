@@ -118,14 +118,19 @@ function inicializarMapaMarcarArea() {
   });
   mapSuperficie.addLayer(vectorLayer);
 
-  // Cargar polígono existente
+  // ✅ Cargar polígono existente (nuevo formato)
   const cultivoData = cultivosData[cultivoSeleccionado];
-  if (cultivoData && cultivoData.puntos && cultivoData.puntos.length >= 3) {
-    cultivoData.puntos.forEach((p) => {
-      const coord = ol.proj.fromLonLat([p.longitud || p.lon, p.latitud || p.lat]);
-      agregarPuntoSuperficie(coord, p.latitud || p.lat, p.longitud || p.lon);
-    });
-    actualizarPoligonoSuperficie();
+  if (cultivoData && cultivoData.puntos && cultivoData.puntos.length > 0) {
+    // Filtrar puntos null
+    const puntosValidos = cultivoData.puntos.filter(p => p !== null);
+    
+    if (puntosValidos.length >= 3) {
+      puntosValidos.forEach((p) => {
+        const coord = ol.proj.fromLonLat([p.longitud, p.latitud]);
+        agregarPuntoSuperficie(coord, p.latitud, p.longitud);
+      });
+      actualizarPoligonoSuperficie();
+    }
   }
 
   // Eventos
@@ -314,6 +319,7 @@ async function guardarArea() {
   const { correo, cultivoSeleccionado, cultivosData } = window.cultivosState;
 
   try {
+    // ✅ Crear array de 20 puntos
     const puntosParaGuardar = Array.from({ length: MAX_PUNTOS }, (_, index) => {
       if (index < puntosMarcados.length) {
         return {
@@ -321,7 +327,7 @@ async function guardarArea() {
           longitud: puntosMarcados[index].lon,
         };
       } else {
-        return null; // rellenar con null los puntos faltantes para que el backend esté tranquilito
+        return null;
       }
     });
 
@@ -329,18 +335,24 @@ async function guardarArea() {
       ? ol.sphere.getArea(poligonoActual.getGeometry(), { projection: 'EPSG:3857' })
       : 0;
     
+    console.log('📤 Enviando al backend:', {
+      cultivo: cultivoSeleccionado,
+      area: area,
+      puntos: puntosParaGuardar,
+    });
+
     const response = await fetch(
-        `/usuarios/${encodeURIComponent(correo)}/${encodeURIComponent(cultivoSeleccionado)}/modificar_area_cultivo`,
-        {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            cultivo: cultivoSeleccionado,
-            area: area,
-            puntos: puntosParaGuardar,
-          }),
-        }
-      );
+      `/usuarios/${encodeURIComponent(correo)}/cultivo/modificar_area_cultivo`,
+      {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          cultivo: cultivoSeleccionado,
+          area: area,
+          puntos: puntosParaGuardar,
+        }),
+      }
+    );
     
     const data = await response.json();
 
@@ -348,25 +360,22 @@ async function guardarArea() {
       throw new Error(data.error);
     }
 
-    if (!response.ok) throw new Error('Error en el servidor');
+    if (!response.ok) {
+      throw new Error(data.error || data.detail || 'Error en el servidor');
+    }
 
-    // Actualizar cache local
-    cultivosData[cultivoSeleccionado] = {
-      ...cultivosData[cultivoSeleccionado],
-      puntos: puntosParaGuardar,
-      area: area,
-    };
+    console.log('✅', data.mensaje || 'Área guardada');
 
     cerrarOverlayMarcar();
 
-    if (typeof window.recargarCultivos === 'function') {
-      await window.recargarCultivos();
-    }
+    // ✅ Recargar cultivos completos
+    await window.recargarCultivos?.();
 
     alert('✅ Área guardada correctamente');
     console.log('💾 Área guardada');
+    
   } catch (error) {
     console.error('❌ Error guardando área:', error);
-    alert('⚠️ Error al guardar');
+    alert(`⚠️ ${error.message}`);
   }
 }

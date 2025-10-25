@@ -80,7 +80,7 @@ class AreaCultivoDatos(BaseModel):
     area: float
     puntos: list[Optional[PuntoCoordenada]]
 
-@router.patch("/usuarios/{correo}/modificar_area_cultivo") #patch para modificar
+@router.patch("/usuarios/{correo}/cultivo/modificar_area_cultivo") #patch para modificar
 def ruta_modificar_area_cultivo(correo: str, area_datos: AreaCultivoDatos):
     return controller_modificar_area_cultivo(correo, area_datos)
 

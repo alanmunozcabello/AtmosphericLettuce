@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
   // URL base del backend FastAPI 
-  const API_BASE = 'http://localhost:8000';
   // Clave para guardar el perfil en localStorage
   const LS_KEY = 'perfilAL';
 
@@ -24,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
  
   // Envia un JSON con { nombre, correo, ciudad, region } al endpoint PUT /usuarios/{correo}/modificar
   const putUsuario = async (correoActual, body) => {
-    const url = `${API_BASE}/usuarios/${encodeURIComponent(correoActual)}/modificar`; 
+    const url = `/usuarios/${encodeURIComponent(correoActual)}/modificar`; 
 
     const res = await fetch(url, {
       method: 'PUT',                            

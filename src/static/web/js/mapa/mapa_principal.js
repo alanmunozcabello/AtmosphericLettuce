@@ -56,15 +56,25 @@ function renderizarMapaPrincipal() {
     const color = colores[index % colores.length];
     const puntos = Array.isArray(data.puntos) ? data.puntos : [];
 
-    if (puntos.length >= 3) {
-      const coordenadas = puntos.map(p =>
-        ol.proj.fromLonLat([p.longitud || p.lon, p.latitud || p.lat])
+    // ✅ Filtrar puntos null y sin coordenadas válidas
+    const puntosValidos = puntos.filter(p => 
+      p !== null && 
+      p.latitud != null && 
+      p.longitud != null &&
+      !isNaN(p.latitud) &&
+      !isNaN(p.longitud)
+    );
+
+    // ✅ Solo renderizar si hay al menos 3 puntos válidos
+    if (puntosValidos.length >= 3) {
+      const coordenadas = puntosValidos.map(p =>
+        ol.proj.fromLonLat([p.longitud, p.latitud])
       );
 
       const poligono = new ol.Feature({
         geometry: new ol.geom.Polygon([coordenadas]),
         cultivoNombre: nombre,
-        cultivoHectareas: typeof data === 'number' ? data : data.hectareas || 0,
+        cultivoHectareas: data.hectareas || 0,
         cultivoColor: color,
       });
 

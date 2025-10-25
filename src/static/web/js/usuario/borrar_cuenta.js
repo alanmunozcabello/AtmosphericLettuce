@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const API_BASE = 'http://localhost:8000';
   const correoUsuario = localStorage.getItem('correoUsuario');
 
   const btnDelete = document.getElementById('btn-delete');
@@ -22,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- Confirmar borrado ---
   btnConfirmar.addEventListener('click', async () => {
     try {
-      const res = await fetch(`${API_BASE}/usuarios/${encodeURIComponent(correoUsuario)}`, {
+      const res = await fetch(`/usuarios/${encodeURIComponent(correoUsuario)}`, {
         method: 'DELETE'
       });
 

@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
           cultivos: body.cultivos || {},
           foto_perfil: body.foto_perfil || ''
         };
-        console.log(usuarioCompleto.ubicacion);
+        console.log(usuarioCompleto.cultivos);
 
         localStorage.setItem('correoUsuario', vEmail);
         localStorage.setItem('usuario', JSON.stringify(usuarioCompleto)); // ✅ CACHE COMPLETO

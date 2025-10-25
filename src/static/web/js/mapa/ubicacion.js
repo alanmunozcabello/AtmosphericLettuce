@@ -192,39 +192,87 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Cerrar mapa con confirmar
       btnConfirmar.addEventListener('click', async () => {
-        //llamar a endpoints para modificar ubicacion del usuario
-        //1: "/usuarios/{correo}/ubicacion/region/{region}/{ciudad}/modificar"
-        //2: "/usuarios/{correo}/ubicacion/{lat}/{lon}/modificar"
-
-        try{
-            const respuesta = await fetch(`/usuarios/${correo}/ubicacion/${latMod}/${lonMod}/modificar`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-            });
-            if(!respuesta.ok){
-                console.log("ESTÁ MAL");
+        // Validar que se haya seleccionado una ubicación
+        if (!latMod || !lonMod) {
+          alert('⚠️ Selecciona una ubicación en el mapa primero');
+          return;
+        }
+      
+        try {
+          console.log('📤 Enviando ubicación al backend...');
+        
+          // 1. Actualizar coordenadas
+          const respuesta1 = await fetch(
+            `/usuarios/${encodeURIComponent(correo)}/ubicacion/${latMod}/${lonMod}/modificar`, 
+            {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
             }
-        }
-        catch (e) {
-            console.log(e);
-        }
-        try{
-            const respuesta = await fetch(`/usuarios/${correo}/ubicacion/region/${region}/${ciudad}/modificar`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-            });
-            if(!respuesta.ok){
-                console.log("ESTÁ MAL");
+          );
+        
+          if (!respuesta1.ok) {
+            const error1 = await respuesta1.json();
+            throw new Error(error1.error || 'Error actualizando coordenadas');
+          }
+        
+          console.log('✅ Coordenadas actualizadas');
+        
+          // 2. Actualizar región/ciudad
+          const respuesta2 = await fetch(
+            `/usuarios/${encodeURIComponent(correo)}/ubicacion/region/${encodeURIComponent(region)}/${encodeURIComponent(ciudad)}/modificar`, 
+            {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
             }
+          );
+        
+          if (!respuesta2.ok) {
+            const error2 = await respuesta2.json();
+            throw new Error(error2.error || 'Error actualizando región/ciudad');
+          }
+        
+          console.log('✅ Región/ciudad actualizadas');
+        
+          // ✅ 3. ACTUALIZAR CACHÉ DEL USUARIO
+          const usuarioActualizado = await obtenerUsuario(correo);
+          
+          if (usuarioActualizado) {
+            // Actualizar localStorage
+            localStorage.setItem('usuario', JSON.stringify(usuarioActualizado));
+            
+            // Actualizar window.homeState si existe (para home.html)
+            if (window.homeState) {
+              window.homeState.usuario = usuarioActualizado;
+              window.homeState.latitud = usuarioActualizado.ubicacion?.latitud || latMod;
+              window.homeState.longitud = usuarioActualizado.ubicacion?.longitud || lonMod;
+              console.log('✅ homeState actualizado');
+            }
+          
+            // Actualizar window.cultivosState si existe (para gestor_cultivos.html)
+            if (window.cultivosState) {
+              window.cultivosState.usuarioData = usuarioActualizado;
+              window.cultivosState.usuarioLatitud = usuarioActualizado.ubicacion?.latitud || latMod;
+              window.cultivosState.usuarioLongitud = usuarioActualizado.ubicacion?.longitud || lonMod;
+              console.log('✅ cultivosState actualizado');
+            }
+          
+            console.log('✅ Caché del usuario actualizada');
+          }
+        
+          // 4. Actualizar input visual
+          inputUbicacion.value = `${ciudad}, ${region}`;
+        
+          // 5. Cerrar overlay
+          mapaOverlay.style.display = 'none';
+          matarMapa();
+        
+          alert('✅ Ubicación actualizada correctamente');
+          console.log('✅ Ubicación confirmada y guardada');
+        
+        } catch (error) {
+          console.error('❌ Error actualizando ubicación:', error);
+          alert(`⚠️ Error: ${error.message}`);
         }
-        catch (e) {
-            console.log(e);
-        }
-
-        //actualizar cache!!!!!
-        console.log('✅ Ubicación confirmada');
-        mapaOverlay.style.display = 'none';
-        matarMapa();
       });
 
       // Cerrar mapa con cancelar

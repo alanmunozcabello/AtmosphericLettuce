@@ -14,7 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // ========== ESTADO GLOBAL COMPARTIDO ==========
   window.cultivosState = {
     correo: CORREO,
-    cultivosData: {},
+    usuarioData: null, // ✅ Guardar datos completos del usuario
+    cultivosData: {}, // ✅ Formato: { nombre: cultivoObj }
     cultivoSeleccionado: null,
     usuarioLatitud: -33.446,
     usuarioLongitud: -70.681,
@@ -29,12 +30,31 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('🌾 Inicializando gestor de cultivos...');
 
     try {
-      // 1. Obtener ubicación del usuario
+      // 1. Obtener datos del usuario
       const usuario = await obtenerUsuario(CORREO);
-      if (usuario && usuario.ubicacion) {
-        window.cultivosState.usuarioLatitud = usuario.ubicacion.latitud || usuario.ubicacion.lat || -33.446;
-        window.cultivosState.usuarioLongitud = usuario.ubicacion.longitud || usuario.ubicacion.lon || -70.681;
-        console.log('📍 Ubicación:', window.cultivosState.usuarioLatitud, window.cultivosState.usuarioLongitud);
+      
+      if (usuario) {
+        // ✅ Guardar datos completos
+        window.cultivosState.usuarioData = usuario;
+
+        // ✅ Actualizar ubicación con nuevo formato
+        if (usuario.ubicacion) {
+          window.cultivosState.usuarioLatitud = usuario.ubicacion.latitud || -33.446;
+          window.cultivosState.usuarioLongitud = usuario.ubicacion.longitud || -70.681;
+          console.log('📍 Ubicación:', 
+            window.cultivosState.usuarioLatitud, 
+            window.cultivosState.usuarioLongitud
+          );
+        }
+
+        // ✅ Convertir array de cultivos a objeto { nombre: cultivoObj }
+        if (Array.isArray(usuario.cultivos)) {
+          window.cultivosState.cultivosData = {};
+          usuario.cultivos.forEach(cultivo => {
+            window.cultivosState.cultivosData[cultivo.nombre] = cultivo;
+          });
+          console.log('✅ Cultivos cargados:', Object.keys(window.cultivosState.cultivosData).length);
+        }
       }
 
       // 2. Inicializar mapa principal
@@ -42,8 +62,18 @@ document.addEventListener('DOMContentLoaded', () => {
         inicializarMapaPrincipal();
       }
 
-      // 3. Cargar cultivos
-      await cargarCultivos();
+      // 3. Renderizar UI
+      if (typeof renderizarLista === 'function') {
+        renderizarLista();
+      }
+      
+      if (typeof renderizarMapaPrincipal === 'function') {
+        renderizarMapaPrincipal();
+      }
+      
+      if (typeof actualizarResumen === 'function') {
+        actualizarResumen();
+      }
 
       // 4. Inicializar eventos de CRUD
       if (typeof inicializarEventosCRUD === 'function') {
@@ -57,10 +87,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     } catch (error) {
       console.error('❌ Error en inicialización:', error);
+      const listaCultivos = document.getElementById('lista-cultivos');
+      if (listaCultivos) {
+        listaCultivos.innerHTML = '<li class="cultivo-item-loading">Error al cargar</li>';
+      }
     }
   }
 
-  // ========== CARGAR CULTIVOS ==========
+  // ========== CARGAR/RECARGAR CULTIVOS ==========
   async function cargarCultivos() {
     const listaCultivos = document.getElementById('lista-cultivos');
     if (listaCultivos) {
@@ -69,7 +103,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const usuario = await obtenerUsuario(CORREO);
-      window.cultivosState.cultivosData = usuario.cultivos || {};
+      
+      if (usuario) {
+        // ✅ Actualizar datos completos
+        window.cultivosState.usuarioData = usuario;
+
+        // ✅ Convertir array a objeto
+        if (Array.isArray(usuario.cultivos)) {
+          window.cultivosState.cultivosData = {};
+          usuario.cultivos.forEach(cultivo => {
+            window.cultivosState.cultivosData[cultivo.nombre] = cultivo;
+          });
+        }
+      }
       
       // Renderizar en UI
       if (typeof renderizarLista === 'function') {
@@ -84,9 +130,9 @@ document.addEventListener('DOMContentLoaded', () => {
         actualizarResumen();
       }
 
-      console.log('✅ Cultivos cargados:', Object.keys(window.cultivosState.cultivosData).length);
+      console.log('✅ Cultivos recargados:', Object.keys(window.cultivosState.cultivosData).length);
     } catch (error) {
-      console.error('❌ Error cargando cultivos:', error);
+      console.error('❌ Error recargando cultivos:', error);
       if (listaCultivos) {
         listaCultivos.innerHTML = '<li class="cultivo-item-loading">Error al cargar</li>';
       }

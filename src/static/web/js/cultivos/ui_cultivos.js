@@ -13,16 +13,23 @@ function renderizarLista() {
     return;
   }
 
-  entries.forEach(([nombre, data]) => {
-    const hectareas = typeof data === 'number' ? data : data.hectareas || 0;
+  entries.forEach(([nombre, cultivo]) => {
+    // ✅ Acceder a hectareas desde cultivo.hectareas
+    const hectareas = cultivo.hectareas || 0;
+    const puntos = cultivo.puntos || [];
+    const tienePuntos = puntos.length > 0 && puntos.some(p => p !== null);
     
     const li = document.createElement('li');
     li.className = 'item-cultivo';
     li.dataset.nombre = nombre;
+    li.dataset.cultivoId = cultivo.id; // ✅ Guardar ID del cultivo
     
     li.innerHTML = `
       <span class="tick">✔</span>
-      <span><strong>${nombre}</strong> — ${hectareas} ha</span>
+      <span>
+        <strong>${nombre}</strong> — ${hectareas} ha
+        ${tienePuntos ? ' 📍' : ''}
+      </span>
       <div class="botones-grupo">
         <button class="btn-config" data-nombre="${nombre}" aria-label="Configurar">⚙️</button>
         <button class="btn-eliminar" data-nombre="${nombre}" aria-label="Eliminar">✕</button>
@@ -37,7 +44,7 @@ function renderizarLista() {
         return;
       }
       
-      // Si no es botón de eliminar ni config, , seleccionar en mapa
+      // Si no es botón de eliminar ni config, seleccionar en mapa
       if (!e.target.classList.contains('btn-eliminar') && !e.target.classList.contains('btn-config')) {
         if (typeof seleccionarCultivoMapa === 'function') {
           seleccionarCultivoMapa(nombre);
@@ -47,6 +54,8 @@ function renderizarLista() {
 
     listaCultivos.appendChild(li);
   });
+
+  console.log('✅ Lista renderizada con', entries.length, 'cultivos');
 }
 
 // ========== ACTUALIZAR RESUMEN ==========
@@ -58,11 +67,13 @@ function actualizarResumen() {
   const total = Object.keys(cultivosData).length;
   let areaTotal = 0;
 
-  Object.values(cultivosData).forEach((data) => {
-    const hectareas = typeof data === 'number' ? data : data.hectareas || 0;
-    areaTotal += hectareas;
+  Object.values(cultivosData).forEach((cultivo) => {
+    // ✅ Acceder a hectareas desde cultivo.hectareas
+    areaTotal += cultivo.hectareas || 0;
   });
 
   if (totalCultivosEl) totalCultivosEl.textContent = total;
   if (areaTotalEl) areaTotalEl.textContent = `${areaTotal.toFixed(2)} ha`;
+
+  console.log('✅ Resumen actualizado:', total, 'cultivos,', areaTotal.toFixed(2), 'ha');
 }

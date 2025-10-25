@@ -112,7 +112,6 @@ function invalidarCacheClima() {
 
 // ✅ FUNCIONES PRINCIPALES CON CACHE
 async function obtenerClimaDia() {
-  const API_BASE = 'http://localhost:8000';
   try {
     // 1. Intentar cache primero
     const climaCache = obtenerClimaCacheDia();
@@ -160,7 +159,6 @@ async function obtenerClimaDia() {
 }
 
 async function obtenerClimaSemana() {
-  const API_BASE = 'http://localhost:8000';
   try {
     // 1. Intentar cache primero
     const climaCache = obtenerClimaCacheSemana();
@@ -208,7 +206,6 @@ async function obtenerClimaSemana() {
 }
 
 async function obtenerClimaHora() {
-  const API_BASE = 'http://localhost:8000';
   try {
     // Para clima por horas no usamos cache porque cambia muy frecuentemente
     const CORREO = localStorage.getItem('correoUsuario');

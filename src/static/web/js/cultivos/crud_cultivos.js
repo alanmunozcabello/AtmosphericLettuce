@@ -3,12 +3,10 @@ function inicializarEventosCRUD() {
   const form = document.getElementById('form-cultivo');
   const listaCultivos = document.getElementById('lista-cultivos');
 
-  // Agregar/Modificar
   if (form) {
     form.addEventListener('submit', agregarCultivo);
   }
 
-  // Eliminar
   if (listaCultivos) {
     listaCultivos.addEventListener('click', eliminarCultivo);
   }
@@ -33,20 +31,17 @@ async function agregarCultivo(e) {
   }
 
   try {
-    // Verificar si el cultivo ya existe
+    // ✅ Verificar si ya existe
     const cultivoExiste = cultivosData.hasOwnProperty(nombre);
     
     const accionTexto = cultivoExiste ? 'Modificando' : 'Agregando';
     console.log(`${accionTexto} cultivo:`, nombre);
     
-    // ✅ AGREGAR/MODIFICAR: PATCH /usuarios/{correo}/agregar_modificar
     const response = await fetch(
       `/usuarios/${encodeURIComponent(correo)}/agregar_cultivo`,
       {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nombre_cultivo: nombre,
           hectareas: hectareas,
@@ -56,28 +51,18 @@ async function agregarCultivo(e) {
 
     const data = await response.json();
 
-    if(data.error){
-        throw new Error(data.error);
+    if (data.error) {
+      throw new Error(data.error);
     }
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.detail || 'Error en el servidor');
+      throw new Error(data.error || data.detail || 'Error en el servidor');
     }
 
-    // Actualizar cache local
-    const usuarioActual = JSON.parse(localStorage.getItem('usuario') || '{}');
-    actualizarCacheUsuario({
-      cultivos: {
-        ...usuarioActual.cultivos,
-        [nombre]: hectareas,
-      },
-    });
+    console.log('✅', data.mensaje || 'Cultivo guardado');
 
-    // Recargar vista
-    if (typeof window.recargarCultivos === 'function') {
-      await window.recargarCultivos();
-    }
+    // ✅ Recargar cultivos completos
+    await window.recargarCultivos?.();
 
     // Limpiar formulario
     inputCultivo.value = '';
@@ -85,11 +70,11 @@ async function agregarCultivo(e) {
     inputCultivo.focus();
 
     const accion = cultivoExiste ? 'modificado' : 'agregado';
-    console.log(`✅ Cultivo ${accion}:`, nombre);
+    alert(`✅ Cultivo ${accion} correctamente`);
     
   } catch (error) {
     console.error('❌ Error guardando cultivo:', error);
-    alert(`⚠️ Error: ${error.message}`);
+    alert(`⚠️ ${error.message}`);
   }
 }
 
@@ -104,7 +89,6 @@ async function eliminarCultivo(e) {
   if (!confirm(`¿Eliminar "${nombre}"?`)) return;
 
   try {
-    // ✅ ELIMINAR: DELETE /usuarios/{correo}/{cultivo}/eliminar
     const response = await fetch(
       `/usuarios/${encodeURIComponent(correo)}/${encodeURIComponent(nombre)}/eliminar`,
       { method: 'DELETE' }
@@ -112,31 +96,23 @@ async function eliminarCultivo(e) {
 
     const data = await response.json();
 
-    if(data.error){
-        throw new Error(data.error);
+    if (data.error) {
+      throw new Error(data.error);
     }
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.detail || 'Error en el servidor');
+      throw new Error(data.error || data.detail || 'Error en el servidor');
     }
 
-    // Actualizar cache local
-    const usuarioActual = JSON.parse(localStorage.getItem('usuario') || '{}');
-    const cultivosActualizados = { ...usuarioActual.cultivos };
-    delete cultivosActualizados[nombre];
+    console.log('✅', data.mensaje || 'Cultivo eliminado');
 
-    actualizarCacheUsuario({ cultivos: cultivosActualizados });
+    // ✅ Recargar cultivos completos
+    await window.recargarCultivos?.();
 
-    // Recargar vista
-    if (typeof window.recargarCultivos === 'function') {
-      await window.recargarCultivos();
-    }
-
-    console.log('🗑️ Cultivo eliminado:', nombre);
+    alert('✅ Cultivo eliminado correctamente');
     
   } catch (error) {
     console.error('❌ Error eliminando cultivo:', error);
-    alert(`⚠️ Error: ${error.message}`);
+    alert(`⚠️ ${error.message}`);
   }
 }
