@@ -265,6 +265,16 @@ document.addEventListener('DOMContentLoaded', () => {
           // 5. Cerrar overlay
           mapaOverlay.style.display = 'none';
           matarMapa();
+
+          // detectar en que pagina se llamó
+          const paginaActual = window.location.pathname;
+
+          // si es desde el perfil se recarga la pestaña
+          if (paginaActual.includes('perfil.html')) {
+            console.log('🔄 Recargando perfil.html...');
+            alert('✅ Ubicación actualizada correctamente');
+            window.location.reload();
+          }
         
           alert('✅ Ubicación actualizada correctamente');
           console.log('✅ Ubicación confirmada y guardada');
