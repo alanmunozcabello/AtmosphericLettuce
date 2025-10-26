@@ -4,17 +4,19 @@ function inicializarEventosCRUD() {
   const listaCultivos = document.getElementById('lista-cultivos');
 
   if (form) {
+    form.removeEventListener('submit', agregarCultivo);
     form.addEventListener('submit', agregarCultivo);
   }
 
   if (listaCultivos) {
-    listaCultivos.addEventListener('click', eliminarCultivo);
+    listaCultivos.removeEventListener('click', manejarClickLista);
+    listaCultivos.addEventListener('click', manejarClickLista);
   }
 
   console.log('✅ Eventos CRUD inicializados');
 }
 
-// ========== AGREGAR/MODIFICAR CULTIVO ==========
+// ========== AGREGAR CULTIVO ==========
 async function agregarCultivo(e) {
   e.preventDefault();
 
@@ -61,8 +63,16 @@ async function agregarCultivo(e) {
 
     console.log('✅', data.mensaje || 'Cultivo guardado');
 
-    // ✅ Recargar cultivos completos
-    await window.recargarCultivos?.();
+    if (window.invalidarCacheUsuario) {
+      window.invalidarCacheUsuario();
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    // ✅ Recargar cultivos
+    if (window.recargarCultivos) {
+      await window.recargarCultivos();
+    }
 
     // Limpiar formulario
     inputCultivo.value = '';
@@ -83,7 +93,7 @@ async function eliminarCultivo(e) {
   const btn = e.target.closest('.btn-eliminar');
   if (!btn) return;
 
-  const { correo } = window.cultivosState;
+  const { correo, cultivoSeleccionado } = window.cultivosState;
   const nombre = btn.dataset.nombre;
 
   if (!confirm(`¿Eliminar "${nombre}"?`)) return;
@@ -104,15 +114,63 @@ async function eliminarCultivo(e) {
       throw new Error(data.error || data.detail || 'Error en el servidor');
     }
 
-    console.log('✅', data.mensaje || 'Cultivo eliminado');
+    console.log('✅', data.mensaje || 'Cultivo eliminado del servidor');
 
-    // ✅ Recargar cultivos completos
-    await window.recargarCultivos?.();
+    // si estaba seleccionado se limpia al seleccion
+    if (cultivoSeleccionado === nombre) {
+      window.cultivosState.cultivoSeleccionado = null;
+      console.log('🔄 Cultivo seleccionado limpiado');
+      
+      // limpiar seleccion de la lista
+      document.querySelectorAll('.item-cultivo').forEach(item => {
+        item.classList.remove('seleccionado');
+      });
+    }
+
+    // invalidar cache
+    if (window.invalidarCacheUsuario) {
+      window.invalidarCacheUsuario();
+    }
+    
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    // recargar cultivos
+    if (window.recargarCultivos) {
+      console.log('🔄 Recargando datos...');
+      await window.recargarCultivos();
+      console.log('🔍 Cultivos después:', Object.keys(window.cultivosState.cultivosData));
+    }
 
     alert('✅ Cultivo eliminado correctamente');
     
   } catch (error) {
     console.error('❌ Error eliminando cultivo:', error);
     alert(`⚠️ ${error.message}`);
+  }
+}
+
+// funcion modular para manejar lso clicks de la lista
+function manejarClickLista(e) {
+  // Eliminar
+  if (e.target.classList.contains('btn-eliminar')) {
+    eliminarCultivo(e);
+    return;
+  }
+
+  // Configurar
+  if (e.target.classList.contains('btn-config')) {
+    const nombre = e.target.dataset.nombre;
+    const { correo } = window.cultivosState;
+    window.location.href = `formulario_plantas.html?cultivo=${encodeURIComponent(nombre)}&correo=${encodeURIComponent(correo)}`;
+    return;
+  }
+
+  // Seleccionar cultivo
+  const item = e.target.closest('.item-cultivo');
+  if (item && !e.target.classList.contains('btn-eliminar') && !e.target.classList.contains('btn-config')) {
+    const nombre = item.dataset.nombre;
+    if (typeof seleccionarCultivoMapa === 'function') {
+      seleccionarCultivoMapa(nombre);
+    }
   }
 }

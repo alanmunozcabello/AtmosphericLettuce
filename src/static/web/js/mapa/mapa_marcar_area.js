@@ -40,9 +40,9 @@ function inicializarEventosMarcarArea() {
 
 // ========== ABRIR OVERLAY ==========
 function abrirOverlayMarcar() {
-  const { cultivoSeleccionado } = window.cultivosState;
+  const { cultivoSeleccionado, cultivosData } = window.cultivosState;
 
-  if (!cultivoSeleccionado) {
+  if (!cultivoSeleccionado || !cultivosData[cultivoSeleccionado]) {
     alert('⚠️ Selecciona un cultivo primero');
     return;
   }
@@ -59,6 +59,9 @@ function abrirOverlayMarcar() {
 
 // ========== CERRAR OVERLAY ==========
 function cerrarOverlayMarcar() {
+  // limpiar cultivo seleccionado
+  window.cultivosState.cultivoSeleccionado = null;
+
   const overlay = document.getElementById('overlay-marcar-area');
   if (overlay) {
     overlay.style.display = 'none';
@@ -89,11 +92,37 @@ function inicializarMapaMarcarArea() {
   // Limpiar estado
   puntosMarcados = [];
   poligonoActual = null;
-  actualizarInterfazMarcar();
 
   // Destruir mapa anterior
   if (mapSuperficie) {
     mapSuperficie.setTarget(null);
+  }
+
+  const cultivoData = cultivosData[cultivoSeleccionado];
+  let centroLat = usuarioLatitud;
+  let centroLon = usuarioLongitud;
+
+  // ✅ Cargar puntos existentes ANTES de crear el mapa
+  let puntosExistentes = [];
+  if (cultivoData && cultivoData.puntos && cultivoData.puntos.length > 0) {
+    puntosExistentes = cultivoData.puntos.filter(p => 
+      p !== null && 
+      p.latitud != null && 
+      p.longitud != null &&
+      !isNaN(p.latitud) &&
+      !isNaN(p.longitud)
+    );
+
+    // Calcular centro si hay puntos válidos
+    if (puntosExistentes.length > 0) {
+      const sumLat = puntosExistentes.reduce((sum, p) => sum + p.latitud, 0);
+      const sumLon = puntosExistentes.reduce((sum, p) => sum + p.longitud, 0);
+      
+      centroLat = sumLat / puntosExistentes.length;
+      centroLon = sumLon / puntosExistentes.length;
+      
+      console.log('📍 Centrando en cultivo existente:', centroLat.toFixed(6), centroLon.toFixed(6));
+    }
   }
 
   // Crear mapa
@@ -105,7 +134,7 @@ function inicializarMapaMarcarArea() {
       }),
     ],
     view: new ol.View({
-      center: ol.proj.fromLonLat([usuarioLongitud, usuarioLatitud]),
+      center: ol.proj.fromLonLat([centroLon, centroLat]),
       zoom: 18,
     }),
   });
@@ -118,25 +147,21 @@ function inicializarMapaMarcarArea() {
   });
   mapSuperficie.addLayer(vectorLayer);
 
-  // ✅ Cargar polígono existente (nuevo formato)
-  const cultivoData = cultivosData[cultivoSeleccionado];
-  if (cultivoData && cultivoData.puntos && cultivoData.puntos.length > 0) {
-    // Filtrar puntos null
-    const puntosValidos = cultivoData.puntos.filter(p => p !== null);
-    
-    if (puntosValidos.length >= 3) {
-      puntosValidos.forEach((p) => {
-        const coord = ol.proj.fromLonLat([p.longitud, p.latitud]);
-        agregarPuntoSuperficie(coord, p.latitud, p.longitud);
-      });
-      actualizarPoligonoSuperficie();
-    }
+  // cargar polígono existente y agregar puntos al array puntosMarcados
+  if (puntosExistentes.length >= 3) {
+    puntosExistentes.forEach((p) => {
+      const coord = ol.proj.fromLonLat([p.longitud, p.latitud]);
+      agregarPuntoSuperficie(coord, p.latitud, p.longitud);
+    });
+    actualizarPoligonoSuperficie();
   }
+
+  actualizarInterfazMarcar();
 
   // Eventos
   mapSuperficie.on('click', manejarClicMapaSuperficie);
 
-  console.log('✅ Mapa de marcar área listo');
+  console.log('✅ Mapa de marcar área listo con', puntosMarcados.length, 'puntos');
 }
 
 // ========== MANEJADOR DE CLIC ==========
@@ -201,13 +226,11 @@ function calcularAreaSuperficie() {
   const geometria = poligonoActual.getGeometry();
   const areaMetros = ol.sphere.getArea(geometria, { projection: 'EPSG:3857' });
 
+  const areaHectareas = areaMetros / 10000;
+
   const areaSuperficie = document.getElementById('area-superficie');
   if (areaSuperficie) {
-    if (areaMetros < 10000) {
-      areaSuperficie.textContent = `${Math.round(areaMetros)} m²`;
-    } else {
-      areaSuperficie.textContent = `${(areaMetros / 10000).toFixed(2)} ha`;
-    }
+    areaSuperficie.textContent = `${areaHectareas.toFixed(2)} ha`;
   }
 }
 
@@ -318,6 +341,12 @@ async function guardarArea() {
 
   const { correo, cultivoSeleccionado, cultivosData } = window.cultivosState;
 
+  if (!cultivosData[cultivoSeleccionado]) {
+    alert('⚠️ El cultivo seleccionado ya no existe');
+    cerrarOverlayMarcar();
+    return;
+  }
+
   try {
     // ✅ Crear array de 20 puntos
     const puntosParaGuardar = Array.from({ length: MAX_PUNTOS }, (_, index) => {
@@ -331,13 +360,15 @@ async function guardarArea() {
       }
     });
 
-    const area = poligonoActual
+    const areaMetros = poligonoActual
       ? ol.sphere.getArea(poligonoActual.getGeometry(), { projection: 'EPSG:3857' })
       : 0;
     
+    const areaHectareas = (areaMetros / 10000).toFixed(2); // ✅ Convertir m^2 a hectáreas
+    
     console.log('📤 Enviando al backend:', {
       cultivo: cultivoSeleccionado,
-      area: area,
+      area: areaHectareas,
       puntos: puntosParaGuardar,
     });
 
@@ -348,7 +379,7 @@ async function guardarArea() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           cultivo: cultivoSeleccionado,
-          area: area,
+          area: areaHectareas,
           puntos: puntosParaGuardar,
         }),
       }
@@ -373,6 +404,8 @@ async function guardarArea() {
 
     alert('✅ Área guardada correctamente');
     console.log('💾 Área guardada');
+
+    renderizarMapaPrincipal();
     
   } catch (error) {
     console.error('❌ Error guardando área:', error);

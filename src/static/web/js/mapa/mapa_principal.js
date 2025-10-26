@@ -107,6 +107,20 @@ function crearEstiloPoligono(color, seleccionado) {
 
 // ========== SELECCIONAR CULTIVO ==========
 function seleccionarCultivoMapa(nombre) {
+  const { cultivosData } = window.cultivosState;
+
+  if (!cultivosData[nombre]) {
+    console.warn('⚠️ Cultivo no encontrado:', nombre);
+    alert('⚠️ El cultivo seleccionado ya no existe');
+    window.cultivosState.cultivoSeleccionado = null;
+    
+    // Limpiar selección visual
+    document.querySelectorAll('.item-cultivo').forEach(item => {
+      item.classList.remove('seleccionado');
+    });
+    return;
+  }
+
   window.cultivosState.cultivoSeleccionado = nombre;
 
   // Actualizar estilos
@@ -165,7 +179,7 @@ function manejarClickMapa(evt) {
     popup.innerHTML = `
       <button class="btn-cerrar-popup">✕</button>
       <div class="popup-nombre">${nombre}</div>
-      <div class="popup-hectareas">📏 ${hectareas} ha</div>
+      <div class="popup-hectareas">📏 ${hectareas.toFixed(2)} ha</div>
     `;
 
     const overlay = new ol.Overlay({

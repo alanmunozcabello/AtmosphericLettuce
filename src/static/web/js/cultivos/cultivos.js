@@ -1,3 +1,8 @@
+window.recargarCultivos = async function() {
+  console.log('⚠️ recargarCultivos llamado antes de inicializar');
+  return Promise.resolve();
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   // ========== VERIFICAR SESIÓN ==========
   const CORREO = new URLSearchParams(location.search).get('correo')
@@ -105,10 +110,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const usuario = await obtenerUsuario(CORREO);
       
       if (usuario) {
-        // ✅ Actualizar datos completos
         window.cultivosState.usuarioData = usuario;
 
-        // ✅ Convertir array a objeto
+        // ✅ LIMPIAR ANTES DE ACTUALIZAR
+        window.cultivosState.cultivosData = {};
+
         if (Array.isArray(usuario.cultivos)) {
           window.cultivosState.cultivosData = {};
           usuario.cultivos.forEach(cultivo => {
@@ -132,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       console.log('✅ Cultivos recargados:', Object.keys(window.cultivosState.cultivosData).length);
     } catch (error) {
-      console.error('❌ Error recargando cultivos:', error);
+      console.error('❌ Error en cargarCultivos:', error);
       if (listaCultivos) {
         listaCultivos.innerHTML = '<li class="cultivo-item-loading">Error al cargar</li>';
       }

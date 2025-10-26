@@ -14,7 +14,6 @@ function renderizarLista() {
   }
 
   entries.forEach(([nombre, cultivo]) => {
-    // ✅ Acceder a hectareas desde cultivo.hectareas
     const hectareas = cultivo.hectareas || 0;
     const puntos = cultivo.puntos || [];
     const tienePuntos = puntos.length > 0 && puntos.some(p => p !== null);
@@ -27,7 +26,7 @@ function renderizarLista() {
     li.innerHTML = `
       <span class="tick">✔</span>
       <span>
-        <strong>${nombre}</strong> — ${hectareas} ha
+        <strong>${nombre}</strong> — ${hectareas.toFixed(2)} ha
         ${tienePuntos ? ' 📍' : ''}
       </span>
       <div class="botones-grupo">
@@ -36,26 +35,13 @@ function renderizarLista() {
       </div>
     `;
 
-    li.addEventListener('click', (e) => {
-      // Si es botón de configuración, redirigir a formulario
-      if (e.target.classList.contains('btn-config')) {
-        const { correo } = window.cultivosState;
-        window.location.href = `formulario_plantas.html?cultivo=${encodeURIComponent(nombre)}&correo=${encodeURIComponent(correo)}`;
-        return;
-      }
-      
-      // Si no es botón de eliminar ni config, seleccionar en mapa
-      if (!e.target.classList.contains('btn-eliminar') && !e.target.classList.contains('btn-config')) {
-        if (typeof seleccionarCultivoMapa === 'function') {
-          seleccionarCultivoMapa(nombre);
-        }
-      }
-    });
+    // ❌ REMOVER ESTO (ahora se maneja con event delegation)
+    // li.addEventListener('click', (e) => { ... });
 
     listaCultivos.appendChild(li);
   });
 
-  console.log('✅ Lista renderizada con', entries.length, 'cultivos');
+  console.log(`✅ === FIN renderizarLista === ${entries.length} cultivos en DOM`);
 }
 
 // ========== ACTUALIZAR RESUMEN ==========

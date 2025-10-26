@@ -62,10 +62,14 @@ class CultivoDatos(BaseModel):
     ph_agua: Optional[float]  # decimal
     acolchado: Optional[int]  # boolean: 0=No, 1=Sí
 
+class CultivoCreate(BaseModel):
+    nombre_cultivo: str
+    hectareas: int
+
 @router.post("/usuarios/{correo}/agregar_cultivo") #post para agregar
-def ruta_agregar_cultivo(correo: str, nombre_cultivo: str, hectareas: float):
+def ruta_agregar_cultivo(correo: str, cultivo: CultivoCreate):
     return controller_agregar_cultivo(
-        correo, nombre_cultivo, hectareas)
+        correo, cultivo.nombre_cultivo, cultivo.hectareas)
 
 @router.patch("/usuarios/{correo}/cultivos/modificar_formulario_cultivo") #patch para modificar
 def ruta_modificar_formulario_cultivo(correo: str, cultivo_datos: CultivoDatos):
