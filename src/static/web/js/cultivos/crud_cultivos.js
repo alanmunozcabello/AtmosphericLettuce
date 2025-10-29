@@ -63,8 +63,8 @@ async function agregarCultivo(e) {
 
     console.log('✅', data.mensaje || 'Cultivo guardado');
 
-    if (window.invalidarCacheUsuario) {
-      window.invalidarCacheUsuario();
+    if (window.invalidarCache) {
+      window.invalidarCache();
     }
 
     await new Promise(resolve => setTimeout(resolve, 100));
@@ -128,8 +128,8 @@ async function eliminarCultivo(e) {
     }
 
     // invalidar cache
-    if (window.invalidarCacheUsuario) {
-      window.invalidarCacheUsuario();
+    if (window.invalidarCache) {
+      window.invalidarCache();
     }
     
     await new Promise(resolve => setTimeout(resolve, 100));
