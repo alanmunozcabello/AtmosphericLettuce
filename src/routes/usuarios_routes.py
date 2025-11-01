@@ -143,6 +143,6 @@ def ruta_modificar_region_ciudad_usuario(correo, region, ciudad):
 def ruta_eliminar_usuario(correo):
     return controller_eliminar_usuario(correo)
 
-@router.post("/usuarios/{correo}/modificar_notificaciones/{activar}")
-def ruta_modificar_notificaciones_usuario(correo,notificaciones):
-    return controller_modificar_notificaciones_usuario(correo,notificaciones)
+@router.patch("/usuarios/{correo}/modificar_notificaciones/{notificaciones}")
+def ruta_modificar_notificaciones_usuario(correo, notificaciones: bool):
+    return controller_modificar_notificaciones_usuario(correo, notificaciones)

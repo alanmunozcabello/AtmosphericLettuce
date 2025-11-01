@@ -549,8 +549,9 @@ def service_validar_imagen_base64(imagen_base64):
     
 
 
-def service_modificar_notificaciones_usuario(correo,notificaciones):
-    if (service_existe_usuario(correo)):
-        return service_modificar_usuario(correo,{"notificaciones":notificaciones})
-    else:
-        print("❌ Usuario no existe")
+def service_modificar_notificaciones_usuario(correo, notificaciones):
+    """Activa o desactiva las notificaciones por correo de un usuario"""
+    if not service_existe_usuario(correo):
+        return {"error": "Usuario no existe"}
+    
+    return service_modificar_usuario(correo, {"notificaciones": notificaciones})
