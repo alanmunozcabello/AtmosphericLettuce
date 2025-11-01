@@ -17,6 +17,7 @@ Dependencias principales del proyecto:
 - reportlab PyPDF2
 - --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
 - Jinja2
+- apscheduler
 
 ## Instalación rápida (Windows)
 

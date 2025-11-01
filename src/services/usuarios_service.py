@@ -30,7 +30,8 @@ def service_obtener_usuario_para_frontend(correo):
                 "region": usuario[6] if usuario[6] else ""
             },
             "cultivos": cultivos,
-            "foto_perfil": usuario[7] 
+            "foto_perfil": usuario[7],
+            "notificaciones": bool(usuario[10]) if len(usuario) > 10 and usuario[10] is not None else True
         }
         
         return {"id": correo, **usuario_dict}
@@ -67,7 +68,8 @@ def service_leer_usuarios():
                     "region": usuario_row[6] if usuario_row[6] else ""
                 },
                 "cultivos": cultivos,
-                "foto_perfil": usuario_row[7]
+                "foto_perfil": usuario_row[7],
+                "notificaciones": bool(usuario_row[10]) if len(usuario_row) > 10 and usuario_row[10] is not None else True
             }
             usuarios_db[correo] = usuario_dict
         conexion.close()
@@ -100,8 +102,8 @@ def service_registrar_usuario(correo, nombre, contrasena):
 
         cursor.execute("""
             INSERT INTO usuarios 
-            (correo, nombre, contrasena, latitud, longitud, ciudad, region, foto_perfil, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (correo, nombre, contrasena, latitud, longitud, ciudad, region, foto_perfil, created_at, updated_at, notificaciones)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             correo,
             nombre,
@@ -112,7 +114,8 @@ def service_registrar_usuario(correo, nombre, contrasena):
             None,
             None,
             datetime.now().isoformat(),
-            datetime.now().isoformat()
+            datetime.now().isoformat(),
+            True
         ))
 
         conexion.commit()
@@ -145,11 +148,11 @@ def service_agregar_cultivo(correo, nombre_cultivo, hectareas):
             humedad_suelo, textura_suelo, variedad_planta, estado_planta,
             estres_hidrico, profundidad_radical, densidad_plantacion,
             tipo_sensor, eficiencia_riego, caudal, ph_agua, acolchado,
-            created_at
+            consejos_ia, created_at
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (
         correo, nombre_cultivo, hectareas, None, None, None, None, None, None, None, None, None, None, 
-        None, None, None, None, None, None, None, None, None, datetime.now().isoformat()))
+        None, None, None, None, None, None, None, None, None, "Aquí están los consejos de la IA", datetime.now().isoformat()))
         
         conexion.commit()
         conexion.close()
@@ -174,7 +177,8 @@ def service_modificar_formulario_cultivo(correo, datos_nuevos):
             "fecha_siembra", "notas", "etapa_planta", "tipo_riego",
             "ultimo_riego", "frecuencia_riego", "humedad_suelo", "textura_suelo",
             "variedad_planta", "estado_planta", "estres_hidrico", "profundidad_radical",
-            "densidad_plantacion", "tipo_sensor", "eficiencia_riego", "caudal", "ph_agua", "acolchado"
+            "densidad_plantacion", "tipo_sensor", "eficiencia_riego", "caudal", "ph_agua", "acolchado",
+            "consejos_ia"
         ]
         campos_update = []
         valores = []
@@ -328,7 +332,7 @@ def service_modificar_usuario(correo, datos_nuevos):
         
         conexion = get_db_connection()
         cursor = conexion.cursor()
-        campos_permitidos = ["nombre", "latitud", "longitud", "ciudad", "region", "foto_perfil"]
+        campos_permitidos = ["nombre", "latitud", "longitud", "ciudad", "region", "foto_perfil", "notificaciones"]
         campos_update = []
         valores = []
         
@@ -396,7 +400,7 @@ def service_obtener_cultivos_usuario(correo):
                 Humedad_Suelo, Textura_suelo, Variedad_planta, Estado_Planta,
                 Estres_Hidrico, Profundidad_radical, Densidad_plantacion,
                 Tipo_Sensor, Eficiencia_riego, Caudal, pH_agua, acolchado,
-                created_at
+                consejos_ia, created_at
             FROM cultivos 
             WHERE usuario_correo = ?
             ORDER BY nombre_cultivo
@@ -430,7 +434,8 @@ def service_obtener_cultivos_usuario(correo):
                     "caudal": row[19],
                     "ph_agua": row[20],
                     "acolchado": row[21],
-                    "created_at": row[22]
+                    "consejos_ia": row[22] if row[22] else "Aquí están los consejos de la IA",
+                    "created_at": row[23]
                 },
                 "puntos": json.loads(row[5]) if row[5] else [],
             })
