@@ -3,6 +3,9 @@ from routes import  notificaciones_routes, usuarios_routes, clima_routes, chat_r
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
+from tasks.scheduler import start_scheduler
+
+
 
 app = FastAPI()
 app.add_middleware(
@@ -22,9 +25,15 @@ app.include_router(notificaciones_routes.router)
 # # Montar carpeta de archivos estáticos
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# iniciar scheduler de tareas
+@app.on_event("startup")
+def startup_event():
+    start_scheduler() 
+
 #iniciar servidor: python -m uvicorn app:app --reload
 #iniciar servidor LAN publico: python -m uvicorn app:app --host 0.0.0.0 --port 8000
 #para abrir el chatbot una vez el servidor esté andando: http://127.0.0.1:8000/static/chat_bot/chat_bot.html
 
 #Migrar datos (actualizar): python scripts\migrar_a_sqlite.py
 #Consulta directa: python scripts\consultas_sqlite.py --query "SELECT * FROM usuarios WHERE ciudad IS NOT NULL"
+
