@@ -64,6 +64,7 @@ src/
 │   ├── usuarios_controller.py     # Gestión de usuarios
 │   ├── chat_controllers.py        # Lógica del chatbot
 │   ├── clima_controller.py        # Control del clima
+│   ├── modificadora_notificaciones.py
 │   └── notificaciones_controller.py
 │
 ├── routes/            # Rutas y endpoints de la API
@@ -78,10 +79,16 @@ src/
 │   ├── clima_service.py
 │   ├── plant_service.py
 │   ├── ai_services.py
+│   ├── modificadora_service.py
+│   ├── notificaciones_service.py
 │   └── security.py
 │
 ├── data/             # Archivos de datos
 │   └── database.db   # Base de datos SQLite
+│
+├── tasks/            # Tareas programadas
+│   ├── enviar_correos_tasks.py   # Tareas de envío de correos
+│   └── scheduler.py              # Programador de tareas
 │
 └── static/           # Frontend
     └── web/
