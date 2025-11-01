@@ -85,9 +85,22 @@
   - ` `
 ## 📌 Semana 9
 - Migracion a SQL Lite con el CRUD completo
-- `Solo pueden ingresar usuaruios que se encuentren dentro de la base de datos.`
+- `Solo pueden ingresar usuarios que se encuentren dentro de la base de datos.`
 - `Se pueden registar usuarios y estos de guardan dentro de la base de datos.`
 - `Se pueden agregar y eliminar cultivos con la cantidad de hectareas que el usuario le defina. `
 - `El usuario puede editar su informacion(nombre,cuidad,region) y estos datos se actualizan dentro de la base de datos.`
 - `El usuario puede cerrar seson siendo redirigido al login. `
 - `El usuario puede eliminar su cuenta y esta tambien se borra de forma permanete dentro de la base de datos.` 
+
+## 📌 Semana 10
+- Exponer API Rest 
+- `Se documentaron los endpoints de tanto de la API interna como los de las API externas.`
+- `Se demostro que todos nuestros endpoints de las API internas funcionaban correctamente.`
+- `La documentacion de los endpoints se realizo en el archivo endpoints.md donde se encuentra detallado cada uno.`
+
+## 📌 Semana 11
+- Integracion de API externas con el backend 
+- `Es funcional el chatbot al cual se le puede enviar mensajes,fotos,archivos pdf, el chatbot se demora alrededor de 3 a 5 segundos en dar una respuesta en base a la pregunta del usuario.`
+- `Se configuro el tema de las notificaciones las cuales le llegan semanalmente a los usuarios, en donde pueden encontran informacion del clima de los 7 dias de la semana.`
+- `La API del clima muestra la informacion real del clima basado en la ubicacion del usuario.`
+- `El usuario a traves de la barra de busqueda puede ingresar la ubicacion que el quiera ver.`
