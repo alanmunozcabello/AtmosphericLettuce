@@ -546,3 +546,11 @@ def service_validar_imagen_base64(imagen_base64):
         
     except Exception as e:
         return {"valida": False, "error": str(e)}
+    
+
+
+def service_modificar_notificaciones_usuario(correo,notificaciones):
+    if (service_existe_usuario(correo)):
+        return service_modificar_usuario(correo,{"notificaciones":notificaciones})
+    else:
+        print("❌ Usuario no existe")

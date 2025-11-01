@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from controllers.usuarios_controller import controller_obtener_todos_los_usuarios, controller_obtener_usuario, controller_registrar_usuario, controller_obtener_cultivos_usuario, controller_eliminar_cultivo, controller_iniciar_sesion, controller_modificar_usuario, controller_modificar_ubicacion_usuario, controller_modificar_region_ciudad_usuario, controller_eliminar_usuario, controller_agregar_cultivo, controller_modificar_formulario_cultivo, controller_modificar_area_cultivo
+from controllers.usuarios_controller import controller_obtener_todos_los_usuarios, controller_obtener_usuario, controller_registrar_usuario, controller_obtener_cultivos_usuario, controller_eliminar_cultivo, controller_iniciar_sesion, controller_modificar_usuario, controller_modificar_ubicacion_usuario, controller_modificar_region_ciudad_usuario, controller_eliminar_usuario, controller_agregar_cultivo, controller_modificar_formulario_cultivo, controller_modificar_area_cultivo,controller_modificar_notificaciones_usuario
 from pydantic import BaseModel
 from typing import Optional
 
@@ -142,3 +142,7 @@ def ruta_modificar_region_ciudad_usuario(correo, region, ciudad):
 @router.delete("/usuarios/{correo}")
 def ruta_eliminar_usuario(correo):
     return controller_eliminar_usuario(correo)
+
+@router.post("/usuarios/{correo}/modificar_notificaciones/{activar}")
+def ruta_modificar_notificaciones_usuario(correo,notificaciones):
+    return controller_modificar_notificaciones_usuario(correo,notificaciones)
