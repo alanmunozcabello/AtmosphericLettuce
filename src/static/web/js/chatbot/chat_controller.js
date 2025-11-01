@@ -113,7 +113,7 @@ document.getElementById("enviarBtn").addEventListener("click", async () => {
             // const archivo=inputArchivos.file[i];//<-- deberia iterar bien sobre los elementos
             console.log(archivo.name, archivo.type); // Muestra el nombre de cada archivo
             // Caso 2: hay archivo  
-            if(archivo.type==="image/png"){
+            if(archivo.type==="image/png" || archivo.type==="image/jpeg"){
                 const imagen_base64 =  await leerArchivoBase64(archivo);
                 // console.log("Imagen en base64:", imagen_base64);
                 payload.imagen.push(imagen_base64); // se añade al payload la imagen en base64
