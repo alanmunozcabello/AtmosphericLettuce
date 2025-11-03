@@ -22,6 +22,7 @@ Las principales dependencias incluyen:
 - Requests para llamadas HTTP
 - Google API Client para servicios de Google
 - Argon2 para encriptación de contraseñas
+- Apscheduler para el automata
 
 ### 🔐 Configuración del Archivo .env
 

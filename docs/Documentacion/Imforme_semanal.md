@@ -104,3 +104,4 @@
 - `Se configuro el tema de las notificaciones las cuales le llegan semanalmente a los usuarios, en donde pueden encontran informacion del clima de los 7 dias de la semana.`
 - `La API del clima muestra la informacion real del clima basado en la ubicacion del usuario.`
 - `El usuario a traves de la barra de busqueda puede ingresar la ubicacion que el quiera ver.`
+- `Se implemento el manejo de el manejo de errores de las API externas.`
