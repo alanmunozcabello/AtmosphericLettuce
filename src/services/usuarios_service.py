@@ -555,3 +555,50 @@ def service_modificar_notificaciones_usuario(correo, notificaciones):
         return {"error": "Usuario no existe"}
     
     return service_modificar_usuario(correo, {"notificaciones": notificaciones})
+
+
+def service_obtener_info_cultivo(correo, nombre_cultivo):
+    """Obtiene toda la información completa de un cultivo específico"""
+    try:
+        conexion = get_db_connection()
+        cursor = conexion.cursor()
+        cursor.execute("""
+            SELECT * 
+            FROM cultivos 
+            WHERE usuario_correo = ? AND nombre_cultivo = ?
+        """, (correo, nombre_cultivo))
+        
+        cultivo_row = cursor.fetchone()
+        conexion.close()
+        
+        if not cultivo_row:
+            return {"error": "Cultivo no encontrado"}
+        
+        # Crear diccionario con toda la información del cultivo
+        cultivo_info = {
+            "id": cultivo_row[0],
+            "usuario_correo": cultivo_row[1],
+            "nombre_cultivo": cultivo_row[2],
+            "hectareas": cultivo_row[3],
+            "fecha_siembra": cultivo_row[4],
+            "notas": cultivo_row[5],
+            "puntos": cultivo_row[6],
+            "etapa_planta": cultivo_row[7],
+            "tipo_riego": cultivo_row[8],
+            "ultimo_riego": cultivo_row[9],
+            "frecuencia_riego": cultivo_row[10],
+            "humedad_suelo": cultivo_row[11],
+            "textura_suelo": cultivo_row[12],
+            "variedad_planta": cultivo_row[13],
+            "estado_planta": cultivo_row[14],
+            "estres_hidrico": cultivo_row[15],
+            "profundidad_radical": cultivo_row[16],
+            "densidad_plantacion": cultivo_row[17],
+            "tipo_sensor": cultivo_row[18],
+            "consejos_ia": cultivo_row[19] if len(cultivo_row) > 19 else None
+        }
+        
+        return cultivo_info
+        
+    except Exception as e:
+        return {"error": f"Error al obtener información del cultivo: {str(e)}"}

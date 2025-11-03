@@ -1,19 +1,35 @@
-from services.usuarios_service import service_leer_usuarios
+from services.usuarios_service import service_leer_usuarios, service_obtener_info_cultivo
 from services.notificaciones_service import enviar_archivo
 from services.modificadora_service import modificar_html
 from services.clima_service import clima_semana_service
+from services.ai_services import deepseek_para_correos
 
 
 
 def enviar_correos_a_todos():
   usuarios_data = service_leer_usuarios()
+  
   for correo in usuarios_data.keys():
-    try: 
-        usuario=usuarios_data[correo]
-        clima=clima_semana_service(usuario["ubicacion"]["latitud"],usuario["ubicacion"]["longitud"])
-        modificar_html(correo,usuario,clima,"")
-        enviar_archivo(correo,"services/Archivos_HTML/salida.html")
-    except Exception as e:
-        print(f"Error al procesar el correo {correo}: {e}")
-        continue    
+    usuario=usuarios_data[correo]
+    if usuarios_data[correo]["notificaciones"]== True:
+      if not len(usuarios_data[correo]["cultivos"])==0:
+        try: 
+            clima=clima_semana_service(usuario["ubicacion"]["latitud"],usuario["ubicacion"]["longitud"])
+            
+            # Obtener el nombre del primer cultivo
+            primer_cultivo_nombre = list(usuario["cultivos"].keys())[0]
+            
+            # Obtener TODA la información del primer cultivo usando el nuevo método
+            info_primer_cultivo = service_obtener_info_cultivo(correo, primer_cultivo_nombre)
+            
+            consejo=deepseek_para_correos(info_primer_cultivo)
+            modificar_html(correo,usuario,clima,consejo)
+            enviar_archivo(correo,"services/Archivos_HTML/salida.html")
+        except Exception as e:
+            print(f"Error al procesar el correo {correo}: {e}")
+            continue 
+      else: 
+        print(f"{correo} sin cultivos")
+    else: 
+      print(f"{correo} notificaciones desactivadas")    
     
