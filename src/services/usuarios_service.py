@@ -231,73 +231,10 @@ def service_modificar_area_cultivo(correo, area_cultivo_datos):
     except Exception as e:
         return {"error": str(e)}
 
-# def service_agregar_o_modificar_cultivo(correo, nombre_cultivo, hectareas, fecha_siembra=None, notas= None, etapa_planta=None, tipo_riego=None, ultimo_riego=None, frecuencia_riego=None, humedad_suelo=None, textura_suelo=None, variedad_planta=None, estado_planta=None, estres_hidrico=None, profundidad_radical=None, densidad_plantacion=None, tipo_sensor=None, eficiencia_riego=None, caudal=None, ph_agua=None, acolchado=None):
-#     try:
-#         #Verificar que usuario existe
-#         if not service_existe_usuario(correo):
-#             return {"error": "Usuario no existe"}
-        
-#         conexion = get_db_connection()
-#         cursor = conexion.cursor()
-        
-#         #Verificar si cultivo ya existe para este usuario
-#         cursor.execute("""
-#             SELECT id FROM cultivos 
-#             WHERE usuario_correo = ? AND nombre_cultivo = ?
-#         """, (correo, nombre_cultivo))
-        
-#         cultivo_existente = cursor.fetchone()
-        
-#         if cultivo_existente:
-#             #Actualizar cultivo existente (sin modificar hectareas)
-#             cursor.execute("""
-#                 UPDATE cultivos 
-#                 SET fecha_siembra = ?, notas = ?,
-#                     etapa_planta = ?, tipo_riego = ?, ultimo_riego = ?,
-#                     frecuencia_riego = ?, humedad_suelo = ?, textura_suelo = ?,
-#                     variedad_planta = ?, estado_planta = ?, estres_hidrico = ?,
-#                     profundidad_radical = ?, densidad_plantacion = ?, tipo_sensor = ?,
-#                     eficiencia_riego = ?, caudal = ?, ph_agua = ?, acolchado = ?
-#                 WHERE usuario_correo = ? AND nombre_cultivo = ?
-#             """, (
-#                 fecha_siembra, notas,
-#                 etapa_planta, tipo_riego, ultimo_riego, frecuencia_riego,
-#                 humedad_suelo, textura_suelo, variedad_planta, estado_planta,
-#                 estres_hidrico, profundidad_radical, densidad_plantacion,
-#                 tipo_sensor, eficiencia_riego, caudal, ph_agua, acolchado,
-#                 correo, nombre_cultivo
-#             ))
-#             mensaje = f"Cultivo {nombre_cultivo} actualizado"
-#         else:
-#             cursor.execute("""
-#     INSERT INTO cultivos (
-#         usuario_correo, nombre_cultivo, hectareas, fecha_siembra, notas, 
-#         etapa_planta, tipo_riego, ultimo_riego, frecuencia_riego,
-#         humedad_suelo, textura_suelo, variedad_planta, estado_planta,
-#         estres_hidrico, profundidad_radical, densidad_plantacion,
-#         tipo_sensor, eficiencia_riego, caudal, ph_agua, acolchado,
-#         created_at
-#     )
-#     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-# """, (
-#     correo, nombre_cultivo, hectareas, fecha_siembra, notas,
-#     etapa_planta, tipo_riego, ultimo_riego, frecuencia_riego,
-#     humedad_suelo, textura_suelo, variedad_planta, estado_planta,
-#     estres_hidrico, profundidad_radical, densidad_plantacion,
-#     tipo_sensor, eficiencia_riego, caudal, ph_agua, acolchado,
-#     datetime.now().isoformat()))
-#             mensaje = f"Cultivo {nombre_cultivo} agregado"
-        
-#         conexion.commit()
-#         conexion.close()
-        
-#         return {"mensaje": mensaje}
-        
-#     except Exception as e:
-#         return {"error": str(e)}
-
 def service_eliminar_cultivo(correo, nombre_cultivo):
     try:
+        if not service_existe_usuario(correo):
+            return {"error": "Usuario no existe"}
         conexion = get_db_connection()
         cursor = conexion.cursor()
         
@@ -560,6 +497,8 @@ def service_modificar_notificaciones_usuario(correo, notificaciones):
 def service_obtener_info_cultivo(correo, nombre_cultivo):
     """Obtiene toda la información completa de un cultivo específico"""
     try:
+        if not service_existe_usuario(correo):
+            return {"error": "Usuario no existe"}
         conexion = get_db_connection()
         cursor = conexion.cursor()
         cursor.execute("""

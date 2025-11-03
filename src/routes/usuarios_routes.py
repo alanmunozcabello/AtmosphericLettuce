@@ -88,34 +88,6 @@ class AreaCultivoDatos(BaseModel):
 def ruta_modificar_area_cultivo(correo: str, area_datos: AreaCultivoDatos):
     return controller_modificar_area_cultivo(correo, area_datos)
 
-
-# @router.patch("/usuarios/{correo}/agregar_modificar") #patch para modificar
-# def ruta_agregar_o_modificar_cultivo(correo: str, cultivo: CultivoDatos):
-#     return controller_agregar_o_modificar_cultivo(
-#         correo, 
-#         cultivo.nombre_cultivo, 
-#         cultivo.hectareas,
-#         cultivo.fecha_siembra,
-#         cultivo.notas,
-#         cultivo.etapa_planta,
-#         cultivo.tipo_riego,
-#         cultivo.ultimo_riego,
-#         cultivo.frecuencia_riego,
-#         cultivo.humedad_suelo,
-#         cultivo.textura_suelo,
-#         cultivo.variedad_planta,
-#         cultivo.estado_planta,
-#         cultivo.estres_hidrico,
-#         cultivo.profundidad_radical,
-#         cultivo.densidad_plantacion,
-#         cultivo.tipo_sensor,
-#         cultivo.eficiencia_riego,
-#         cultivo.caudal,
-#         cultivo.ph_agua,
-#         cultivo.acolchado
-        
-#     )
-
 @router.delete("/usuarios/{correo}/{cultivo}/eliminar") #delete para borrar
 def ruta_eliminar_cultivo(correo, cultivo):
     return controller_eliminar_cultivo(correo, cultivo)
