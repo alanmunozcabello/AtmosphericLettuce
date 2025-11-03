@@ -145,7 +145,12 @@ async function obtenerClimaDia() {
       return null;
     }
 
-    const clima = await respuesta.json();
+    const resp = await respuesta.json();
+    if(!resp.success){
+      return;
+    }
+
+    const clima = resp.data;
     console.log('✅ Clima del día obtenido:', clima);
 
     // 4. Guardar en cache
@@ -192,7 +197,12 @@ async function obtenerClimaSemana() {
       return null;
     }
 
-    const clima = await respuesta.json();
+    const resp = await respuesta.json();
+    if(!resp.success){
+      return;
+    }
+
+    const clima = resp.data;
     console.log('✅ Clima semanal obtenido:', clima);
 
     // 4. Guardar en cache
@@ -231,8 +241,15 @@ async function obtenerClimaHora() {
       return null;
     }
 
-    const clima = await respuesta.json();
+    const resp = await respuesta.json();
+    if(!resp.success){
+      return;
+    }
+
+    const clima = resp.data;
     console.log('✅ Clima por horas obtenido:', clima);
+
+    //de moemnto no se guarda porque no se usa
 
     return clima;
   } catch (error) {

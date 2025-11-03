@@ -143,8 +143,11 @@ document.getElementById("enviarBtn").addEventListener("click", async () => {
     });
 
     const result = await respuesta.json();
-    console.log(result.respuesta);
-    const formatted = marked.parse(result.respuesta);
+    let formatted = "Hubo un error, intente nuevamente más tarde."; // estado inicial como error
+
+    if(result.success == undefined && typeof result.respuesta === 'string'){ //por algun motivo solo cuando hay error existe success
+      formatted = marked.parse(result.respuesta);
+    }
 
     hideLoader(); // terminar animacion de carga
 
