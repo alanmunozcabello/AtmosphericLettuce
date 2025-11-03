@@ -8,7 +8,7 @@ import os
 
 load_dotenv()
 API_KEY=os.getenv("DEEPSEEK_API_KEY")
-TIMEOUT = (10, 60)  # 10s para conectar, 60s para leer respuesta
+TIMEOUT = (60, 60)  # 60s para conectar, 60s para leer respuesta
 
 def preguntar_mistral(contexto):
     if not API_KEY:

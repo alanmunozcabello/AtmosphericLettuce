@@ -8,7 +8,7 @@ import os
 
 load_dotenv()
 API_KEY=os.getenv("CROPHEALTH_API_KEY")
-TIMEOUT = (10, 30)
+TIMEOUT = (60, 60)
 
 def filtrar_informacion(respuesta):
     try:
