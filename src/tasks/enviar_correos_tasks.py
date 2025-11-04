@@ -14,7 +14,10 @@ def enviar_correos_a_todos():
     if usuarios_data[correo]["notificaciones"]== True:
       if not len(usuarios_data[correo]["cultivos"])==0:
         try: 
-            clima=clima_semana_service(usuario["ubicacion"]["latitud"],usuario["ubicacion"]["longitud"])
+            clima_response=clima_semana_service(usuario["ubicacion"]["latitud"],usuario["ubicacion"]["longitud"])
+            
+            # Extraer solo los datos del clima (sin el wrapper de success)
+            clima = clima_response.get("data", {}) if clima_response.get("success") else {}
             
             # Obtener el nombre del primer cultivo
             primer_cultivo_nombre = list(usuario["cultivos"].keys())[0]

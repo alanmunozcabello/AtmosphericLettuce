@@ -16,8 +16,8 @@ except ImportError:
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
-# Ruta al archivo de credenciales descargado
-CREDENTIALS_FILE = Path.home() / "Downloads" / "client_secret_157306603315-dpegd30un454t8h04aodjk93erlgrt7b.apps.googleusercontent.com.json"
+# Ruta al archivo de credenciales descargado (nueva versión)
+CREDENTIALS_FILE = Path.home() / "Downloads" / "client_secret_2_157306603315-dpegd30un454t8h04aodjk93erlgrt7b.apps.googleusercontent.com.json"
 
 def actualizar_env(key, value):
     """Actualiza una variable en el archivo .env"""
