@@ -16,3 +16,4 @@ def verify_password(hash, password):
         return False
     if ph.check_needs_rehash(hash):
         new_hash = ph.hash(password)
+        
