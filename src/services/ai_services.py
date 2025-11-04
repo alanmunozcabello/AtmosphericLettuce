@@ -8,12 +8,26 @@ import os
 
 load_dotenv()
 API_KEY=os.getenv("DEEPSEEK_API_KEY")
+TIMEOUT = (60, 60)  # 60s para conectar, 60s para leer respuesta
 
 def preguntar_mistral(contexto):
+    if not API_KEY:
+        return {"success": False, 
+                "error_type": "api_key_missing", 
+                "error_message": "API key no configurada en .env",
+                "status_code": 500, 
+                "user_message": "Servicio no disponible temporalmente"}
+    if not contexto:
+        return {"success": False, 
+                "error_type": "invalid_context", 
+                "error_message": "Contexto vacío o inválido",
+                "status_code": 400, 
+                "user_message": "Por favor proporciona una pregunta válida."
+                }
+
     url = "https://api.deepseek.com/chat/completions"
     mensaje_usuario = json.dumps(contexto, ensure_ascii=False)
 
-    #sk-b38d6962ace645718f7acbc10e463312
     headers={
         "Authorization": f"Bearer {API_KEY}", #API
         "Content-Type": "application/json" #requerido 
@@ -46,18 +60,148 @@ def preguntar_mistral(contexto):
 
     print(payload) #debugging
     try:
-        respuesta=requests.post(url, headers=headers, data=json.dumps(payload)) #hacer request
+        respuesta = requests.post(url, headers=headers, data=json.dumps(payload), timeout=TIMEOUT) #hacer request
 
-        if respuesta.status_code==200: #si funcionó ta bien
-            respuesta=respuesta.json() #transformar a fromato lejible y manejable
-            print(respuesta)
-            return respuesta["choices"][0]["message"]["content"] #mostrar respuesta, esas cosas no se que son :p
-        else: #si falló semuestra el error
-            # print("error aquí") #debugging
-            print(respuesta)
-            return {"error": respuesta.text} #si da error y no se entiende o no s epuede manipular cambiar .text -> .json()
-    except Exception as e: #manejo de errores "potente"
-        return {"error": f"Error en preguntar_mistral: {str(e)}"}
+        if respuesta.status_code == 200: #si funcionó ta bien
+            try:
+                respuesta_json = respuesta.json()
+            except json.JSONDecodeError:
+                return {
+                    "success": False,
+                    "error_type": "json_decode_error",
+                    "error_message": "Respuesta 200 no es JSON válido",
+                    "status_code": 500,
+                    "user_message": "Error al procesar respuesta del servidor"
+                }
+            
+            choices = respuesta_json.get("choices", [])
+            if not choices:
+                return {
+                    "success": False,
+                    "error_type": "invalid_response",
+                    "error_message": "Respuesta sin campo 'choices'",
+                    "status_code": 500,
+                    "user_message": "Error al procesar la respuesta del servidor."
+                }
+        
+            message = choices[0].get("message", {})
+            content = message.get("content", "")
+        
+            if not content:
+                return {
+                    "success": False,
+                    "error_type": "empty_response",
+                    "error_message": "Respuesta sin contenido",
+                    "status_code": 500,
+                    "user_message": "La IA no generó una respuesta. Intenta reformular tu pregunta."
+                }
+            
+            return content
+        
+        elif respuesta.status_code == 401: #error de api key
+            try:
+                error_detail = respuesta.json().get("error", {}).get("message", "")
+            except:
+                error_detail = respuesta.text
+            
+            print(error_detail)
+            return {
+                "success": False,
+                "error_type": "invalid_api_key",
+                "error_message": f"La clave de API no es válida: {error_detail}",
+                "status_code": 401,
+                "user_message": "Servicio no disponible temporalmente"
+                }
+        
+        elif respuesta.status_code == 429: #error de rate limit
+            try:
+                error_detail = respuesta.json().get("error", {}).get("message", "")
+            except:
+                error_detail = respuesta.text
+            
+            print(error_detail)
+            return {
+                "success": False,
+                "error_type": "rate_limit_exceeded",
+                "error_message": f"Demasiadas peticiones, intenta en unos minutos: {error_detail}",
+                "status_code": 429,
+                "user_message": "Has excedido el límite de peticiones, por favor intenta más tarde.",
+            }
+        
+        elif 400 <= respuesta.status_code < 500: #otros errores del cliente
+            try:
+                error_detail = respuesta.json().get("error", {}).get("message", "")
+            except:
+                error_detail = respuesta.text
+            
+            print(error_detail)
+            return {
+                "success": False,
+                "error_type": "client_error",
+                "error_message": f"Error en la petición: {error_detail}",
+                "status_code": respuesta.status_code,
+                "user_message": "Error en la petición, verifica los datos enviados.",
+            }
+        
+        elif 500 <= respuesta.status_code < 600: #errores del servidor
+            try:
+                error_detail = respuesta.json().get("error", {}).get("message", "")
+            except:
+                error_detail = respuesta.text
+            
+            print(error_detail)
+            return {
+                "success": False,
+                "error_type": "server_error",
+                "error_message": f"Error del servidor de DeepSeek, intenta más tarde: {error_detail}",
+                "status_code": respuesta.status_code,
+                "user_message": "Error en el servidor, por favor intenta más tarde.",
+            }
+        
+        else:
+            return {
+                "success": False,
+                "error_type": "unknown_error",
+                "error_message": "Error desconocido",
+                "status_code": respuesta.status_code,
+                "user_message": "Ocurrió un error, por favor intenta más tarde.",
+            }
+        
+    except requests.exceptions.Timeout:
+        return {
+            "success": False,
+            "error_type": "timeout",
+            "error_message": f"Timeout después de {TIMEOUT[1]}s",
+            "status_code": 504,
+            "user_message": "La consulta tardó demasiado. Verifica tu conexión e intenta de nuevo."
+        }
+
+    except requests.exceptions.ConnectionError as e:
+        return {
+            "success": False,
+            "error_type": "connection_error",
+            "error_message": f"Error de conexión: {str(e)}",
+            "status_code": 503,
+            "user_message": "No se pudo conectar al servicio. Verifica tu conexión a internet."
+        }
+
+    except requests.exceptions.RequestException as e:
+        return {
+            "success": False,
+            "error_type": "network_error",
+            "error_message": f"Error de red: {str(e)}",
+            "status_code": 500,
+            "user_message": "Error de red. Por favor intenta de nuevo."
+        }
+
+    except Exception as e:
+        return {
+            "success": False,
+            "error_type": "unexpected_error",
+            "error_message": f"Error inesperado: {str(e)}",
+            "status_code": 500,
+            "user_message": "Ocurrió un error inesperado. Por favor intenta más tarde."
+        }
 
 
 

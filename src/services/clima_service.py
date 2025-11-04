@@ -8,7 +8,7 @@ import datetime
 
 load_dotenv()
 API_KEY=os.getenv("OPENWEATHER_API_KEY")
-TIMEOUT = (10, 30)
+TIMEOUT = (60, 60)
 
 def filtrar_informacion_semana(respuesta): #la idea de esta funcion es filtrar la respuesta de la api para obtener solo la info que nos importa
     try:
