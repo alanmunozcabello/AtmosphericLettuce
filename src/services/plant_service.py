@@ -1,13 +1,14 @@
-import requests
-import base64
 import json
+import requests
 from dotenv import load_dotenv
 import os
-# prueba de respuesta de la API
-# OBS: funciona bien, se demoró aproximadamente 3 segundos, pero logró identificar correctamente la afección de la lechuga
+
+# Prueba de respuesta de la API
+# OBS: funciona bien, se demoró aproximadamente 3 segundos,
+# pero logró identificar correctamente la afección de la lechuga
 
 load_dotenv()
-API_KEY=os.getenv("CROPHEALTH_API_KEY")
+API_KEY = os.getenv("CROPHEALTH_API_KEY")
 TIMEOUT = (60, 60)
 
 def filtrar_informacion(respuesta):
@@ -67,26 +68,36 @@ def filtrar_informacion(respuesta):
             "status_code": 500
         }
 
-def preguntar_enfermedad(imagen):#la imágen viene en formato Base64 -> String desde el frontend
+def preguntar_enfermedad(imagen):
+    """
+    Procesa una imagen para identificar enfermedades en plantas.
+    La imagen debe venir en formato Base64 -> String desde el frontend.
+    """
     if not API_KEY:
-        return {"success": False, 
-                "error_type": "api_key_missing", 
-                "error_message": "API key no configurada en .env",
-                "status_code": 500
+        return {
+            "success": False,
+            "error_type": "api_key_missing",
+            "error_message": "API key no configurada en .env",
+            "status_code": 500
         }
     
-    url = "https://crop.kindwise.com/api/v1/identification" #end point
-
-    headers={'Api-Key': API_KEY, #API
-            'Content-Type': 'application/json'} #requerido por crop.health
+    url = "https://crop.kindwise.com/api/v1/identification"  # Endpoint API
+    
+    headers = {
+        'Api-Key': API_KEY,  # Token de autenticación
+        'Content-Type': 'application/json'  # Requerido por crop.health
+    }
+    # Lista de imágenes en Base64 (debe ser una lista aunque sea una sola imagen)
     payload = {
-        "images": [imagen],  #lista de imágenes en Base64 (debe ser una lista aunque sea una sola imágen)
+        "images": [imagen]
     }
 
     try:
-        respuesta = requests.post(url, headers=headers, json=payload, timeout=TIMEOUT) #se hace la request
+        # Realizar la petición al API
+        respuesta = requests.post(url, headers=headers, json=payload, timeout=TIMEOUT)
 
-        if respuesta.status_code==201: #si la respuesta es exitosa se muestra/maneja, tal parece que el code:200 para estos tipos tambien es de error xd
+        # Código 201 indica éxito, 200 podría indicar error en este API
+        if respuesta.status_code == 201:
             
             try:
                 respuesta_json = respuesta.json()
@@ -113,10 +124,10 @@ def preguntar_enfermedad(imagen):#la imágen viene en formato Base64 -> String d
                     "error_message": f"Error al filtrar información: {str(e)}",
                     "status_code": 500
                 }
-        elif respuesta.status_code == 401: #error de api key
+        elif respuesta.status_code == 401:  # Error de API key
             try:
                 error_detail = respuesta.json().get("error", {}).get("message", "")
-            except:
+            except json.JSONDecodeError:
                 error_detail = respuesta.text
             
             print(error_detail)
@@ -125,12 +136,12 @@ def preguntar_enfermedad(imagen):#la imágen viene en formato Base64 -> String d
                 "error_type": "invalid_api_key",
                 "error_message": f"La clave de API no es válida: {error_detail}",
                 "status_code": 401
-                }
+            }
         
-        elif respuesta.status_code == 429: #error de rate limit
+        elif respuesta.status_code == 429:  # Error de rate limit
             try:
                 error_detail = respuesta.json().get("error", {}).get("message", "")
-            except:
+            except json.JSONDecodeError:
                 error_detail = respuesta.text
             
             print(error_detail)
@@ -208,7 +219,6 @@ def preguntar_enfermedad(imagen):#la imágen viene en formato Base64 -> String d
         }
 
 
-# llamada de prueba unicamente, luego se llamará desde las capas
-# sin el __name__ == "__main__" no funcionaba
-# if __name__=="__main__":
-#     print(preguntar_enfermedad()) #PASS
+# Llamadas de prueba, solo para desarrollo
+# if __name__ == "__main__":
+#     print(preguntar_enfermedad())  # PASS

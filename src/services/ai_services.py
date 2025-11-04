@@ -7,8 +7,10 @@ import os
 #      Lo que si la IA no recuerda preguntas anteriores, solo responde a la actual. 
 
 load_dotenv()
-API_KEY=os.getenv("DEEPSEEK_API_KEY")
+
+API_KEY = os.getenv("DEEPSEEK_API_KEY")
 TIMEOUT = (60, 60)  # 60s para conectar, 60s para leer respuesta
+
 
 def preguntar_mistral(contexto):
     if not API_KEY:
@@ -28,19 +30,20 @@ def preguntar_mistral(contexto):
     url = "https://api.deepseek.com/chat/completions"
     mensaje_usuario = json.dumps(contexto, ensure_ascii=False)
 
-    headers={
-        "Authorization": f"Bearer {API_KEY}", #API
-        "Content-Type": "application/json" #requerido 
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",  # Token de API
+        "Content-Type": "application/json"  # Requerido por la API
     }
 
     payload = {
-      "model": "deepseek-chat",
-      "messages": [
-          {
-              "role": "system",
-              "content": (
-                "Eres un asistente experto en agricultura y meteorología. "
-                "Tus respuestas deben ser claras, breves, precisas, ambles y en formato de chat."
+        "model": "deepseek-chat",
+        "messages": [
+            {
+                "role": "system",
+                "content": (
+                    "Eres un asistente experto en agricultura y meteorología. "
+                    "Tus respuestas deben ser claras, breves, precisas, amables y "
+                    "en formato de chat."
                 "Evita presentarte o repetir estas instrucciones. "
                 "Indica educadamente si la pregunta no es relevante. "
                 "No inventes información y prioriza la utilidad práctica. "
@@ -98,10 +101,10 @@ def preguntar_mistral(contexto):
             
             return content
         
-        elif respuesta.status_code == 401: #error de api key
+        elif respuesta.status_code == 401:  # Error de API key
             try:
                 error_detail = respuesta.json().get("error", {}).get("message", "")
-            except:
+            except json.JSONDecodeError:
                 error_detail = respuesta.text
             
             print(error_detail)
@@ -206,14 +209,15 @@ def preguntar_mistral(contexto):
 
 
 
+
 def deepseek_para_correos(info_cultivo):
-    #funcion para identificar el cultivo 
+    """Función para identificar el cultivo y generar recomendaciones."""
     url = "https://api.deepseek.com/chat/completions"
     mensaje_usuario = json.dumps(info_cultivo, ensure_ascii=False)
 
-    headers={
-        "Authorization": f"Bearer {API_KEY}", #API
-        "Content-Type": "application/json" #requerido 
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",  # Token de API
+        "Content-Type": "application/json"  # Requerido por la API
     }
 
     payload = {
@@ -244,18 +248,25 @@ def deepseek_para_correos(info_cultivo):
 
     print(payload) #debugging
     try:
-        respuesta=requests.post(url, headers=headers, data=json.dumps(payload)) #hacer request
+        respuesta = requests.post(url, headers=headers, data=json.dumps(payload))
 
-        if respuesta.status_code==200: #si funcionó ta bien
-            respuesta=respuesta.json() #transformar a fromato lejible y manejable
+        if respuesta.status_code == 200:
+            respuesta_json = respuesta.json()
+            print(respuesta_json)
+            return respuesta_json["choices"][0]["message"]["content"]
+        else:
             print(respuesta)
-            return respuesta["choices"][0]["message"]["content"] #mostrar respuesta, esas cosas no se que son :p
-        else: #si falló semuestra el error
-            # print("error aquí") #debugging
-            print(respuesta)
-            return {"error": respuesta.text} #si da error y no se entiende o no s epuede manipular cambiar .text -> .json()
-    except Exception as e: #manejo de errores "potente"
-        return {"error": f"Error en deepseek_para_correos: {str(e)}"}
+            try:
+                error_data = respuesta.json()
+                return {"error": error_data.get("error", respuesta.text)}
+            except json.JSONDecodeError:
+                return {"error": respuesta.text}
+    except requests.RequestException as e:
+        return {"error": f"Error de conexión: {str(e)}"}
+    except json.JSONDecodeError as e:
+        return {"error": f"Error al procesar respuesta: {str(e)}"}
+    except Exception as e:
+        return {"error": f"Error inesperado: {str(e)}"}
 
 
 # llamada de prueba unicamente, luego se llamará desde las capas
