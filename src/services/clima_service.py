@@ -1,16 +1,19 @@
 import json
 import requests
-from dotenv import load_dotenv
 import os
 import datetime
-# prueba de respuesta de la API
-# OBS: funciona bien, dependiendo de la cantidad de infromacion se desmora entre 0.2 y 1.5 segundos
+from dotenv import load_dotenv
+
+# Prueba de respuesta de la API
+# OBS: funciona bien, dependiendo de la cantidad de información se demora entre 0.2 y 1.5 segundos
 
 load_dotenv()
-API_KEY=os.getenv("OPENWEATHER_API_KEY")
+API_KEY = os.getenv("OPENWEATHER_API_KEY")
 TIMEOUT = (60, 60)
 
-def filtrar_informacion_semana(respuesta): #la idea de esta funcion es filtrar la respuesta de la api para obtener solo la info que nos importa
+
+def filtrar_informacion_semana(respuesta):
+    """Filtra la respuesta de la API para obtener solo la info relevante."""
     try:
         respuesta_formateada = {}
         
@@ -223,10 +226,11 @@ def filtrar_informacion_hora(respuesta):
         }
 
 def procesar_status_code_error(respuesta):
-    if respuesta.status_code == 401: #error de autenticación
+    """Procesa los códigos de error HTTP y retorna respuestas formateadas."""
+    if respuesta.status_code == 401:  # Error de autenticación
         try:
             error_detail = respuesta.json().get("error", {}).get("message", "")
-        except:
+        except json.JSONDecodeError:
             error_detail = respuesta.text
         
         print(error_detail)
@@ -235,11 +239,11 @@ def procesar_status_code_error(respuesta):
             "error_type": "invalid_api_key",
             "error_message": f"La clave de API no es válida: {error_detail}",
             "status_code": 401
-            }
-    elif respuesta.status_code == 429: #error de rate limit
+        }
+    elif respuesta.status_code == 429:  # Error de rate limit
         try:
             error_detail = respuesta.json().get("error", {}).get("message", "")
-        except:
+        except json.JSONDecodeError:
             error_detail = respuesta.text
         
         print(error_detail)
@@ -283,7 +287,8 @@ def procesar_status_code_error(respuesta):
             "status_code": respuesta.status_code
         }
 
-def clima_hora_service(lat, lon): #da clima hora a hora de 4 dias
+def clima_hora_service(lat, lon):
+    """Obtiene el pronóstico del clima hora a hora para los próximos 4 días."""
     if not API_KEY:
         return {
             "success": False,
@@ -300,8 +305,9 @@ def clima_hora_service(lat, lon): #da clima hora a hora de 4 dias
             "status_code": 400
         }
     
-    url= f"https://pro.openweathermap.org/data/2.5/forecast/hourly?lat={lat}&lon={lon}&appid={API_KEY}"#url de donde se sacará la información del clima
-           #aquí despues hay que cambiar la latitud y longitud, eso debe venir del frontend o ser procesada la dirección inicial en el backend
+    # URL base para obtener la información del clima por hora
+    url = (f"https://pro.openweathermap.org/data/2.5/forecast/hourly?"
+           f"lat={lat}&lon={lon}&appid={API_KEY}")
 
     try:
         respuesta = requests.get(url, timeout=TIMEOUT) #se hace la request
@@ -503,20 +509,19 @@ def clima_semana_service(lat, lon):
             "status_code": 500
         }
 
-# llamada de prueba unicamente, luego se llamará desde las capas
-# sin el __name__ == "__main__" no funcionaba
+# Pruebas unitarias del módulo
 # if __name__ == "__main__":
-    ##pruebas de datos es bruto de la api
-    # print(clima_hora_service("-35.083414", "-71.082620")) #PASS
-    # print(clima_hoy_service("-35", "-71")) #PASS
-    # print(clima_semana_service("0", "0")) #PASS
-
-##pruebas de datos filtrados de la api
-    # respuesta=clima_semana_service(0,0)
-    # print(filtrar_informacion_semana(respuesta))
-
-    # respuesta=clima_hora_service(0,0)
-    # print(filtrar_informacion_hora(respuesta))
-
-    # respuesta=clima_hoy_service(0,0)
-    # print(filtrar_informacion_dia(respuesta))
+#     # Pruebas de datos en bruto de la API
+#     print(clima_hora_service("-35.083414", "-71.082620"))  # PASS
+#     print(clima_hoy_service("-35", "-71"))  # PASS
+#     print(clima_semana_service("0", "0"))  # PASS
+#
+#     # Pruebas de datos filtrados de la API
+#     respuesta = clima_semana_service(0, 0)
+#     print(filtrar_informacion_semana(respuesta))
+#
+#     respuesta = clima_hora_service(0, 0)
+#     print(filtrar_informacion_hora(respuesta))
+#
+#     respuesta = clima_hoy_service(0, 0)
+#     print(filtrar_informacion_dia(respuesta))
