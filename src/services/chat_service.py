@@ -1,46 +1,49 @@
 import fitz
-import json
 import base64
 import os
 from services.plant_service import preguntar_enfermedad
 from services.ai_services import preguntar_mistral
 
-#pseudo implementación de la gestión del chat. NO IMPLEMENTACIÓN COMPLETA!!!!!
-def pdf_to_txt(pdf): #función en deshuso, el pdf ya viene en base64 desde el frontend
+
+# Pseudo implementación de la gestión del chat. NO IMPLEMENTACIÓN COMPLETA!!!!!
+
+
+def pdf_to_txt(pdf):  # Función en desuso, el PDF ya viene en base64 desde el frontend
     pdf = fitz.open("Proyecto_pdf.pdf")
-    with open("transcripcion.txt", "w", encoding="utf-8") as transcripcion: 
+    with open("transcripcion.txt", "w", encoding="utf-8") as transcripcion:
         for pagina in pdf:
-            transcripcion.write(pagina.get_text()+'\n')
-        return transcripcion #retorna algo sin sentido de mientras
+            transcripcion.write(pagina.get_text() + '\n')
+        return transcripcion  # Retorna objeto temporal
     pdf.close()
 
-def procesar_consulta(payload):  # debería ser un diccionario
-    contexto = []  # este arreglo de diccionarios se le pasará a ai_service
-    if payload.get("texto"): #si el payload tiene la clave "texto" se añade al contexto
+def procesar_consulta(payload):  # Recibe un diccionario con el contenido a procesar
+    contexto = []  # Lista de diccionarios para enviar a ai_service
+    
+    if payload.get("texto"):  # Procesar texto si existe en el payload
         contexto.append({"mensaje usuario": payload["texto"]})
 
-    if payload.get("imagen"): #una ves esté listo volver a esto (implementar soporte para multiples imágenes)------------------------------
+    if payload.get("imagen"):  # Procesar imágenes múltiples
         for imagen in payload["imagen"]:
-            contexto.append({"json":preguntar_enfermedad(imagen)})
+            contexto.append({"json": preguntar_enfermedad(imagen)})
 
-    if payload.get("pdf"): #una ves esté listo volver a esto (implementar soporte para multiples pdf (un for simple y cambiar linea 15 en el script de base64 -> [base64]))
-        
+    if payload.get("pdf"):  # Procesar PDFs múltiples
         for pdf_64 in payload["pdf"]:
-            # pdf_64 = payload["pdf"]
-            pdf_decodificado = base64.b64decode(pdf_64) #decodificar el pdf en base64
+            # Decodificar el PDF desde base64
+            pdf_decodificado = base64.b64decode(pdf_64)
 
-            with open("temp.pdf", "wb") as f: #pdf temporal
+            # Guardar PDF temporal
+            with open("temp.pdf", "wb") as f:
                 f.write(pdf_decodificado)
 
-            doc = fitz.open("temp.pdf") #extraer contenido del pdf con fitz
+            # Extraer contenido del PDF
+            doc = fitz.open("temp.pdf")
             texto = ""
             for pagina in doc:
                 texto += pagina.get_text() + "\n"
             doc.close()
-            os.remove("temp.pdf") #matar el pdf temporal
-
+            
+            # Eliminar archivo temporal
+            os.remove("temp.pdf")
             contexto.append({"contenido pdf": texto})
 
-    # print(contexto) #para debugear
-
-    return preguntar_mistral(contexto)  # retornar la respuesta del chatbot al frontend
+    return preguntar_mistral(contexto)  # Retornar respuesta del chatbot

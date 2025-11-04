@@ -1,12 +1,14 @@
-import os
 from argon2 import PasswordHasher
-from argon2.exceptions import VerifyMismatchError, InvalidHash
+from argon2.exceptions import VerifyMismatchError
+
 
 # Configuración razonable por defecto, ajustar si hace falta
 ph = PasswordHasher(time_cost=2, memory_cost=65536, parallelism=2, hash_len=32)
 
+
 def hash_password_simple(password: str) -> str:
     return ph.hash(password)
+
 
 def verify_password(hash, password):
     try:
@@ -15,4 +17,4 @@ def verify_password(hash, password):
     except VerifyMismatchError:
         return False
     if ph.check_needs_rehash(hash):
-        new_hash = ph.hash(password)
+        return ph.hash(password)

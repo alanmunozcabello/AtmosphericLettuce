@@ -4,12 +4,9 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 from pathlib import Path
-import json
-import datetime
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from dotenv import load_dotenv
@@ -35,15 +32,17 @@ def obtener_credenciales_gmail():
         client_id = os.getenv("GMAIL_CLIENT_ID")
         client_secret = os.getenv("GMAIL_CLIENT_SECRET")
         refresh_token = os.getenv("GMAIL_REFRESH_TOKEN")
-        token_uri = os.getenv("GMAIL_TOKEN_URI", "https://oauth2.googleapis.com/token")
-        
+        token_uri = os.getenv(
+            "GMAIL_TOKEN_URI", "https://oauth2.googleapis.com/token"
+        )
+
         if not all([client_id, client_secret, refresh_token]):
-            print(f"❌ Faltan variables de entorno de Gmail")
+            print("❌ Faltan variables de entorno de Gmail")
             print(f"CLIENT_ID: {'✅' if client_id else '❌'}")
             print(f"CLIENT_SECRET: {'✅' if client_secret else '❌'}")
             print(f"REFRESH_TOKEN: {'✅' if refresh_token else '❌'}")
             return None
-        
+
         # Crear credenciales desde variables de entorno
         token_info = {
             "token": os.getenv("GMAIL_ACCESS_TOKEN"),
@@ -53,9 +52,9 @@ def obtener_credenciales_gmail():
             "client_secret": client_secret,
             "scopes": SCOPES,
         }
-        
+
         creds = Credentials.from_authorized_user_info(token_info, SCOPES)
-        
+
         # Renovar token SIEMPRE (por si acaso está expirado)
         if creds and creds.refresh_token:
             print("🔄 Refrescando token de Gmail...")
@@ -65,9 +64,9 @@ def obtener_credenciales_gmail():
             except Exception as refresh_error:
                 print(f"❌ Error al refrescar token: {refresh_error}")
                 return None
-            
+
         return creds
-        
+
     except Exception as e:
         print(f"❌ Error al obtener credenciales de Gmail: {e}")
         import traceback
@@ -76,14 +75,17 @@ def obtener_credenciales_gmail():
 
 
 def enviar_archivo(destinatario, archivo_path):
-    """Envía un correo a 'destinatario' con un archivo adjunto o HTML según su extensión."""
-    
+    """Envía un correo con archivo adjunto o HTML según extensión."""
+
     # Obtener credenciales desde variables de entorno
     creds = obtener_credenciales_gmail()
-    
+
     if not creds:
         print("❌ No se pudieron obtener las credenciales de Gmail")
-        return {"error": "Error de autenticación de Gmail. Verifica las credenciales en .env"}
+        return {
+            "error": "Error de autenticación de Gmail. "
+                     "Verifica las credenciales en .env"
+        }
 
     try:
         service = build('gmail', 'v1', credentials=creds)
@@ -95,8 +97,15 @@ def enviar_archivo(destinatario, archivo_path):
         # Caso especial: enviar código de verificación (sin archivo)
         if archivo_path is None:
             codigo = random.randint(100000, 999999)
-            message['subject'] = "Código de verificación - AtmosphericLettuce"
-            message.attach(MIMEText(f"Hola,\n\nTu código de verificación es: {codigo}\n\nSaludos.", 'plain'))
+            message['subject'] = (
+                "Código de verificación - AtmosphericLettuce"
+            )
+            texto = (
+                f"Hola,\n\n"
+                f"Tu código de verificación es: {codigo}\n\n"
+                f"Saludos."
+            )
+            message.attach(MIMEText(texto, 'plain'))
             print(f"📧 Enviando código {codigo} a {destinatario}")
         
         else:
@@ -123,7 +132,13 @@ def enviar_archivo(destinatario, archivo_path):
                     f'attachment; filename={archivo_path.name}',
                 )
                 message.attach(part)
-                message.attach(MIMEText("Hola,\n\nTe envío el documento solicitado de AtmosphericLettuce.\n\nSaludos.", 'plain'))
+                texto_pdf = (
+                    "Hola,\n\n"
+                    "Te envío el documento solicitado de "
+                    "AtmosphericLettuce.\n\n"
+                    "Saludos."
+                )
+                message.attach(MIMEText(texto_pdf, 'plain'))
                 print(f"📎 Adjuntando PDF: {archivo_path.name}")
 
             elif archivo_path.suffix.lower() == ".html":
@@ -139,13 +154,24 @@ def enviar_archivo(destinatario, archivo_path):
                 return {"error": error_msg}
 
         # Enviar correo
-        encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
+        encoded_message = base64.urlsafe_b64encode(
+            message.as_bytes()
+        ).decode()
         create_message = {'raw': encoded_message}
-        send_message = service.users().messages().send(userId="me", body=create_message).execute()
-        
-        success_msg = f"Correo enviado exitosamente. ID: {send_message['id']}"
+        send_message = (
+            service.users().messages()
+            .send(userId="me", body=create_message)
+            .execute()
+        )
+
+        success_msg = (
+            f"Correo enviado exitosamente. ID: {send_message['id']}"
+        )
         print(f"✅ {success_msg}")
-        return {"mensaje": success_msg, "message_id": send_message['id']}
+        return {
+            "mensaje": success_msg,
+            "message_id": send_message['id']
+        }
 
     except HttpError as error:
         error_msg = f"Error HTTP de Gmail: {error}"
@@ -164,32 +190,39 @@ def verificar_conexion_gmail():
     """Verifica que la conexión con Gmail API funcione correctamente."""
     try:
         creds = obtener_credenciales_gmail()
-        
+
         if not creds:
-            return {"error": "No se pudieron obtener credenciales", "estado": "❌ Falló"}
-        
+            return {
+                "error": "No se pudieron obtener credenciales",
+                "estado": "❌ Falló"
+            }
+
         # Intentar construir el servicio
-        service = build('gmail', 'v1', credentials=creds)
-        
-        # Simplemente verificar que las credenciales funcionan intentando enviar un mensaje de prueba vacío
-        # No lo enviamos realmente, solo verificamos que tenemos los permisos correctos
-        
+        build('gmail', 'v1', credentials=creds)
+
+        # Simplemente verificar que las credenciales funcionan
+        # No enviamos realmente, solo verificamos permisos
+
         return {
             "estado": "✅ Conectado",
             "mensaje": "Credenciales de Gmail configuradas correctamente",
             "scopes": "gmail.send"
         }
-        
+
     except HttpError as error:
         return {
             "estado": "❌ Error HTTP",
             "error": str(error),
-            "mensaje": "Verifica que la API esté habilitada en Google Cloud Console"
+            "mensaje": (
+                "Verifica que la API esté habilitada en "
+                "Google Cloud Console"
+            )
         }
-    
+
     except Exception as e:
         return {
             "estado": "❌ Error",
             "error": str(e),
             "mensaje": "Error al conectar con Gmail"
         }
+
