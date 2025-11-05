@@ -37,3 +37,11 @@ def startup_event():
 # Migrar datos: python scripts\migracion_sqlite.py
 # Consulta directa:
 #     python scripts\consultas_sqlite.py --query "SELECT * FROM usuarios WHERE ciudad IS NOT NULL"
+#pruebas unitarias 
+    """ todos los tets: pytest ../tests/ -v    
+        para ver los print durante la ejecucion: pytest ../tests/ -v -s
+        todos los tests de routes: pytest ../tests/routes/ -v
+        todos los tests de controllers: pytest ../tests/controllers/ -v
+        todos los tests de services: pytest ../tests/services/ -v
+        
+    """
