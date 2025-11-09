@@ -1,0 +1,33 @@
+{
+  "name": "atmosphericlettuce",
+  "version": "1.0.0",
+  "description": "**Equipo:** *Lechuga* 🥬  \r **Integrantes:**  \r - 👨‍💻 Nicolás Urbina\r - 🛠️ Cristian Aliaga\r - 🎨 Alan Muñoz\r - 📑 John Rojas",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "devDependencies": {
+    "standard": "^17.1.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alanmunozcabello/AtmosphericLettuce.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alanmunozcabello/AtmosphericLettuce/issues"
+  },
+  "homepage": "https://github.com/alanmunozcabello/AtmosphericLettuce#readme",
+  "standard": {
+    "rules": {
+      "prefer-const": "off",
+      "no-undef": "off"
+    }
+  }
+}
