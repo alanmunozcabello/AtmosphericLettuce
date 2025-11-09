@@ -1,215 +1,215 @@
 // ========== VARIABLES DEL MAPA PRINCIPAL ==========
-let mapPrincipal = null;
-let vectorSourcePrincipal = null;
+let mapPrincipal = null
+let vectorSourcePrincipal = null
 
 // ========== INICIALIZAR MAPA PRINCIPAL ==========
-function inicializarMapaPrincipal() {
-  const { usuarioLatitud, usuarioLongitud } = window.cultivosState;
+function inicializarMapaPrincipal () {
+  const { usuarioLatitud, usuarioLongitud } = window.cultivosState
 
   mapPrincipal = new ol.Map({
     target: 'map-gestor',
     layers: [
       new ol.layer.Tile({
-        source: new ol.source.OSM(),
-      }),
+        source: new ol.source.OSM()
+      })
     ],
     view: new ol.View({
       center: ol.proj.fromLonLat([usuarioLongitud, usuarioLatitud]),
-      zoom: 16,
-    }),
-  });
+      zoom: 16
+    })
+  })
 
   // Capa para polígonos
-  vectorSourcePrincipal = new ol.source.Vector();
+  vectorSourcePrincipal = new ol.source.Vector()
   const vectorLayer = new ol.layer.Vector({
-    source: vectorSourcePrincipal,
-  });
-  mapPrincipal.addLayer(vectorLayer);
+    source: vectorSourcePrincipal
+  })
+  mapPrincipal.addLayer(vectorLayer)
 
   // Eventos
-  mapPrincipal.on('pointermove', manejarHoverMapa);
-  mapPrincipal.on('click', manejarClickMapa);
+  mapPrincipal.on('pointermove', manejarHoverMapa)
+  mapPrincipal.on('click', manejarClickMapa)
 
   // Botón centrar vista
-  const btnCentrar = document.getElementById('btn-centrar-vista');
+  const btnCentrar = document.getElementById('btn-centrar-vista')
   if (btnCentrar) {
-    btnCentrar.addEventListener('click', centrarVistaMapa);
+    btnCentrar.addEventListener('click', centrarVistaMapa)
   }
 
-  console.log('✅ Mapa principal creado');
+  console.log('✅ Mapa principal creado')
 }
 
 // ========== RENDERIZAR CULTIVOS EN MAPA ==========
-function renderizarMapaPrincipal() {
-  if (!vectorSourcePrincipal) return;
+function renderizarMapaPrincipal () {
+  if (!vectorSourcePrincipal) return
 
-  vectorSourcePrincipal.clear();
+  vectorSourcePrincipal.clear()
 
-  const { cultivosData, colores } = window.cultivosState;
-  const entries = Object.entries(cultivosData);
-  
-  if (entries.length === 0) return;
+  const { cultivosData, colores } = window.cultivosState
+  const entries = Object.entries(cultivosData)
 
-  const bounds = [];
+  if (entries.length === 0) return
+
+  const bounds = []
 
   entries.forEach(([nombre, data], index) => {
-    const color = colores[index % colores.length];
-    const puntos = Array.isArray(data.puntos) ? data.puntos : [];
+    const color = colores[index % colores.length]
+    const puntos = Array.isArray(data.puntos) ? data.puntos : []
 
     // ✅ Filtrar puntos null y sin coordenadas válidas
-    const puntosValidos = puntos.filter(p => 
-      p !== null && 
-      p.latitud != null && 
+    const puntosValidos = puntos.filter(p =>
+      p !== null &&
+      p.latitud != null &&
       p.longitud != null &&
       !isNaN(p.latitud) &&
       !isNaN(p.longitud)
-    );
+    )
 
     // ✅ Solo renderizar si hay al menos 3 puntos válidos
     if (puntosValidos.length >= 3) {
       const coordenadas = puntosValidos.map(p =>
         ol.proj.fromLonLat([p.longitud, p.latitud])
-      );
+      )
 
       const poligono = new ol.Feature({
         geometry: new ol.geom.Polygon([coordenadas]),
         cultivoNombre: nombre,
         cultivoHectareas: data.hectareas || 0,
-        cultivoColor: color,
-      });
+        cultivoColor: color
+      })
 
-      poligono.setStyle(crearEstiloPoligono(color, false));
-      vectorSourcePrincipal.addFeature(poligono);
+      poligono.setStyle(crearEstiloPoligono(color, false))
+      vectorSourcePrincipal.addFeature(poligono)
 
-      coordenadas.forEach(coord => bounds.push(coord));
+      coordenadas.forEach(coord => bounds.push(coord))
     }
-  });
+  })
 
   // Centrar en todos los cultivos
   if (bounds.length > 0) {
-    const extent = ol.extent.boundingExtent(bounds);
-    mapPrincipal.getView().fit(extent, { padding: [50, 50, 50, 400], maxZoom: 18 });
+    const extent = ol.extent.boundingExtent(bounds)
+    mapPrincipal.getView().fit(extent, { padding: [50, 50, 50, 400], maxZoom: 18 })
   }
 }
 
 // ========== ESTILO POLÍGONO ==========
-function crearEstiloPoligono(color, seleccionado) {
+function crearEstiloPoligono (color, seleccionado) {
   return new ol.style.Style({
     stroke: new ol.style.Stroke({
       color: color,
-      width: seleccionado ? 4 : 2,
+      width: seleccionado ? 4 : 2
     }),
     fill: new ol.style.Fill({
-      color: color + (seleccionado ? '40' : '20'),
-    }),
-  });
+      color: color + (seleccionado ? '40' : '20')
+    })
+  })
 }
 
 // ========== SELECCIONAR CULTIVO ==========
-function seleccionarCultivoMapa(nombre) {
-  const { cultivosData } = window.cultivosState;
+function seleccionarCultivoMapa (nombre) {
+  const { cultivosData } = window.cultivosState
 
   if (!cultivosData[nombre]) {
-    console.warn('⚠️ Cultivo no encontrado:', nombre);
-    alert('⚠️ El cultivo seleccionado ya no existe');
-    window.cultivosState.cultivoSeleccionado = null;
-    
+    console.warn('⚠️ Cultivo no encontrado:', nombre)
+    alert('⚠️ El cultivo seleccionado ya no existe')
+    window.cultivosState.cultivoSeleccionado = null
+
     // Limpiar selección visual
     document.querySelectorAll('.item-cultivo').forEach(item => {
-      item.classList.remove('seleccionado');
-    });
-    return;
+      item.classList.remove('seleccionado')
+    })
+    return
   }
 
-  window.cultivosState.cultivoSeleccionado = nombre;
+  window.cultivosState.cultivoSeleccionado = nombre
 
   // Actualizar estilos
   if (vectorSourcePrincipal) {
     vectorSourcePrincipal.getFeatures().forEach((feature) => {
-      const esteNombre = feature.get('cultivoNombre');
-      const color = feature.get('cultivoColor');
-      feature.setStyle(crearEstiloPoligono(color, esteNombre === nombre));
-    });
+      const esteNombre = feature.get('cultivoNombre')
+      const color = feature.get('cultivoColor')
+      feature.setStyle(crearEstiloPoligono(color, esteNombre === nombre))
+    })
   }
 
   // Actualizar lista
   document.querySelectorAll('.item-cultivo').forEach((item) => {
     if (item.dataset.nombre === nombre) {
-      item.classList.add('active');
+      item.classList.add('active')
     } else {
-      item.classList.remove('active');
+      item.classList.remove('active')
     }
-  });
+  })
 
   // Centrar en el cultivo
-  const feature = vectorSourcePrincipal.getFeatures().find(f => f.get('cultivoNombre') === nombre);
+  const feature = vectorSourcePrincipal.getFeatures().find(f => f.get('cultivoNombre') === nombre)
   if (feature) {
-    const extent = feature.getGeometry().getExtent();
-    mapPrincipal.getView().fit(extent, { padding: [50, 50, 50, 400], maxZoom: 19 });
+    const extent = feature.getGeometry().getExtent()
+    mapPrincipal.getView().fit(extent, { padding: [50, 50, 50, 400], maxZoom: 19 })
   }
 
-  console.log('🎯 Cultivo seleccionado:', nombre);
+  console.log('🎯 Cultivo seleccionado:', nombre)
 }
 
 // ========== HOVER ==========
-function manejarHoverMapa(evt) {
-  const feature = mapPrincipal.forEachFeatureAtPixel(evt.pixel, (f) => f);
+function manejarHoverMapa (evt) {
+  const feature = mapPrincipal.forEachFeatureAtPixel(evt.pixel, (f) => f)
 
   if (feature && feature.get('cultivoNombre')) {
-    mapPrincipal.getTargetElement().style.cursor = 'pointer';
+    mapPrincipal.getTargetElement().style.cursor = 'pointer'
   } else {
-    mapPrincipal.getTargetElement().style.cursor = '';
+    mapPrincipal.getTargetElement().style.cursor = ''
   }
 }
 
 // ========== CLICK (POPUP) ==========
-function manejarClickMapa(evt) {
+function manejarClickMapa (evt) {
   // Eliminar popups previos
-  document.querySelectorAll('.ol-popup-cultivo').forEach(p => p.remove());
+  document.querySelectorAll('.ol-popup-cultivo').forEach(p => p.remove())
 
-  const feature = mapPrincipal.forEachFeatureAtPixel(evt.pixel, (f) => f);
+  const feature = mapPrincipal.forEachFeatureAtPixel(evt.pixel, (f) => f)
 
   if (feature && feature.get('cultivoNombre')) {
-    const nombre = feature.get('cultivoNombre');
-    const hectareas = feature.get('cultivoHectareas');
+    const nombre = feature.get('cultivoNombre')
+    const hectareas = feature.get('cultivoHectareas')
 
     // Crear popup
-    const popup = document.createElement('div');
-    popup.className = 'ol-popup-cultivo';
+    const popup = document.createElement('div')
+    popup.className = 'ol-popup-cultivo'
     popup.innerHTML = `
       <button class="btn-cerrar-popup">✕</button>
       <div class="popup-nombre">${nombre}</div>
       <div class="popup-hectareas">📏 ${hectareas.toFixed(2)} ha</div>
-    `;
+    `
 
     const overlay = new ol.Overlay({
       element: popup,
       positioning: 'bottom-center',
       offset: [0, -10],
-      stopEvent: false,
-    });
+      stopEvent: false
+    })
 
-    mapPrincipal.addOverlay(overlay);
-    overlay.setPosition(evt.coordinate);
+    mapPrincipal.addOverlay(overlay)
+    overlay.setPosition(evt.coordinate)
 
     popup.querySelector('.btn-cerrar-popup').addEventListener('click', () => {
-      mapPrincipal.removeOverlay(overlay);
-    });
+      mapPrincipal.removeOverlay(overlay)
+    })
 
-    seleccionarCultivoMapa(nombre);
+    seleccionarCultivoMapa(nombre)
   }
 }
 
 // ========== CENTRAR VISTA ==========
-function centrarVistaMapa() {
-  const { usuarioLatitud, usuarioLongitud } = window.cultivosState;
-  
+function centrarVistaMapa () {
+  const { usuarioLatitud, usuarioLongitud } = window.cultivosState
+
   mapPrincipal.getView().animate({
     center: ol.proj.fromLonLat([usuarioLongitud, usuarioLatitud]),
     zoom: 16,
-    duration: 500,
-  });
+    duration: 500
+  })
 }
 
 // Exponer funciones globales
-window.seleccionarCultivoMapa = seleccionarCultivoMapa;
+window.seleccionarCultivoMapa = seleccionarCultivoMapa
