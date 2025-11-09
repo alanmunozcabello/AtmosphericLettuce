@@ -5,8 +5,11 @@ __pycache__
 *.pyo
 *.pyd
 .vscode/
+package-lock.json
+package.json
 
 venv/
+node_modules/
 
 client_secret*.json
 scripts/client_secret*.json
