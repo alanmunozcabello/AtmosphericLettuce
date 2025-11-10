@@ -5,10 +5,12 @@ from services.plant_service import preguntar_enfermedad
 from services.ai_services import preguntar_mistral
 
 
-# Pseudo implementación de la gestión del chat. NO IMPLEMENTACIÓN COMPLETA!!!!!
+# Pseudo implementación de la gestión del chat.
+# NO IMPLEMENTACIÓN COMPLETA!!!!!
 
 
-def pdf_to_txt(pdf):  # Función en desuso, el PDF ya viene en base64 desde el frontend
+def pdf_to_txt(pdf):
+    # Función en desuso, el PDF ya viene en base64 desde el frontend
     pdf = fitz.open("Proyecto_pdf.pdf")
     with open("transcripcion.txt", "w", encoding="utf-8") as transcripcion:
         for pagina in pdf:
@@ -16,9 +18,11 @@ def pdf_to_txt(pdf):  # Función en desuso, el PDF ya viene en base64 desde el f
         return transcripcion  # Retorna objeto temporal
     pdf.close()
 
-def procesar_consulta(payload):  # Recibe un diccionario con el contenido a procesar
+
+def procesar_consulta(payload):
+    # Recibe un diccionario con el contenido a procesar
     contexto = []  # Lista de diccionarios para enviar a ai_service
-    
+
     if payload.get("texto"):  # Procesar texto si existe en el payload
         contexto.append({"mensaje usuario": payload["texto"]})
 
@@ -41,7 +45,7 @@ def procesar_consulta(payload):  # Recibe un diccionario con el contenido a proc
             for pagina in doc:
                 texto += pagina.get_text() + "\n"
             doc.close()
-            
+
             # Eliminar archivo temporal
             os.remove("temp.pdf")
             contexto.append({"contenido pdf": texto})

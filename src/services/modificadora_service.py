@@ -25,4 +25,3 @@ def modificar_html(correo, usuariop1, clima_, consejos):
 
     print("✅ HTML generado en salida.html")
 # ---------------------------------------------------
-

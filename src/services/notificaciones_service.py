@@ -93,7 +93,7 @@ def enviar_archivo(destinatario, archivo_path):
         message = MIMEMultipart()
         message['to'] = destinatario
         message['from'] = 'me'  # Gmail usa 'me' como remitente autenticado
-        
+
         # Caso especial: enviar código de verificación (sin archivo)
         if archivo_path is None:
             codigo = random.randint(100000, 999999)
@@ -107,19 +107,19 @@ def enviar_archivo(destinatario, archivo_path):
             )
             message.attach(MIMEText(texto, 'plain'))
             print(f"📧 Enviando código {codigo} a {destinatario}")
-        
+
         else:
             # Procesar archivo
             archivo_path = Path(archivo_path)
-            
+
             # Validar que el archivo exista
             if not archivo_path.exists():
                 error_msg = f"No se encontró el archivo en {archivo_path}"
                 print(f"❌ {error_msg}")
                 return {"error": error_msg}
-                
+
             message['subject'] = f"Notificación - {archivo_path.name}"
-            
+
             # Detectar tipo de archivo
             if archivo_path.suffix.lower() == ".pdf":
                 # Adjuntar PDF
@@ -147,9 +147,12 @@ def enviar_archivo(destinatario, archivo_path):
                     cuerpo_html = f.read()
                 message.attach(MIMEText(cuerpo_html, 'html'))
                 print(f"📄 Enviando HTML: {archivo_path.name}")
-            
+
             else:
-                error_msg = f"Tipo de archivo no soportado: {archivo_path.suffix}"
+                error_msg = (
+                    f"Tipo de archivo no soportado: "
+                    f"{archivo_path.suffix}"
+                )
                 print(f"❌ {error_msg}")
                 return {"error": error_msg}
 
@@ -177,7 +180,7 @@ def enviar_archivo(destinatario, archivo_path):
         error_msg = f"Error HTTP de Gmail: {error}"
         print(f"❌ {error_msg}")
         return {"error": error_msg}
-    
+
     except Exception as e:
         error_msg = f"Error inesperado: {str(e)}"
         print(f"❌ {error_msg}")
@@ -225,4 +228,3 @@ def verificar_conexion_gmail():
             "error": str(e),
             "mensaje": "Error al conectar con Gmail"
         }
-
