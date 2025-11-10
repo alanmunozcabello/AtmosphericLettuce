@@ -23,6 +23,7 @@ Las principales dependencias incluyen:
 - Google API Client para servicios de Google
 - Argon2 para encriptación de contraseñas
 - Apscheduler para el automata
+- Pytest pytest-asyncio httpx para las pruebas unitarias
 
 ### 🔐 Configuración del Archivo .env
 

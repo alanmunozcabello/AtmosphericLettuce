@@ -105,3 +105,11 @@
 - `La API del clima muestra la informacion real del clima basado en la ubicacion del usuario.`
 - `El usuario a traves de la barra de busqueda puede ingresar la ubicacion que el quiera ver.`
 - `Se implemento el manejo de el manejo de errores de las API externas.`
+
+## 📌 Semana 12
+- Implementacion de las pruebas unitarias
+- `Se aplico linter al proyecto tanto al backend como al frontend.`
+- `Se corrigieron todos los errores que arrojo el linter.`
+- `Los endpoints estan completos tanto los endpoints de las API internas como los de las API externas.`
+- `Se hicieron pruebas unitarias a las carpetas de controllers, services y routes.`
+- `Se aplico la libreria Pytest para las pruebas unitarias.`
