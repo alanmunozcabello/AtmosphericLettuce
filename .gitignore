@@ -6,7 +6,6 @@ __pycache__
 *.pyd
 .vscode/
 package-lock.json
-package.json
 
 venv/
 node_modules/
