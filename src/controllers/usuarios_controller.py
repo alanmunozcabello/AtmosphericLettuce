@@ -28,7 +28,8 @@ def controller_obtener_usuario(correo):
 
 def controller_registrar_usuario(correo, nombre, contrasena):
     # guardar un nuevo usario -> llama al servicio
-    # si nombre, contraseña y correo son minimamente validos se llama al servicio
+    # si nombre, contraseña y correo son minimamente validos se
+    # llama al servicio
     # estructura minima de correo con expresiones regulares
     if (nombre.strip() != "" and contrasena.strip() != "" and
             re.match(r"[^@]+@[^@]+\.[^@]+", correo)):

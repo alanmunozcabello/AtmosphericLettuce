@@ -34,4 +34,3 @@ def start_scheduler():
     )
     print("🕓 Scheduler iniciado: se ejecutará todos los lunes a las 8:00 AM")
     scheduler.start()"""
-

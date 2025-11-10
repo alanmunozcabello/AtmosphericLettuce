@@ -14,4 +14,3 @@ def controller_enviar_codigo(correo):
 
 def controller_verificar_gmail():
     return verificar_conexion_gmail()
-

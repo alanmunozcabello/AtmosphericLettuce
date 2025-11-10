@@ -11,14 +11,15 @@ load_dotenv()
 API_KEY = os.getenv("CROPHEALTH_API_KEY")
 TIMEOUT = (60, 60)
 
+
 def filtrar_informacion(respuesta):
     try:
         result = respuesta.get("result", {})
-        
+
         # Validar is_plant
         is_plant = result.get("is_plant", {})
         es_planta = is_plant.get("binary", False)
-        
+
         # Validar crop
         crop = result.get("crop", {})
         crop_suggestions = crop.get("suggestions", [])
@@ -29,11 +30,13 @@ def filtrar_informacion(respuesta):
                 "error_message": "No se detectó información de cultivo",
                 "status_code": 500
             }
-        
+
         planta = crop_suggestions[0].get("name", "Desconocido")
-        planta_cientifico = crop_suggestions[0].get("scientific_name", "Desconocido")
+        nombre_cientifico = crop_suggestions[0].get(
+            "scientific_name", "Desconocido"
+        )
         planta_probabilidad = crop_suggestions[0].get("probability", 0.0)
-        
+
         # Validar disease
         disease = result.get("disease", {})
         disease_suggestions = disease.get("suggestions", [])
@@ -44,22 +47,26 @@ def filtrar_informacion(respuesta):
                 "error_message": "No se detectó información de enfermedad",
                 "status_code": 500
             }
-        
+
         enfermedad = disease_suggestions[0].get("name", "Desconocido")
-        enfermedad_probabilidad = disease_suggestions[0].get("probability", 0.0)
-        enfermedad_cientifico = disease_suggestions[0].get("scientific_name", "Desconocido")
-        
+        enfermedad_probabilidad = disease_suggestions[0].get(
+            "probability", 0.0
+        )
+        nombre_cientifico_enfermedad = disease_suggestions[0].get(
+            "scientific_name", "Desconocido"
+        )
+
         return {
             "success": True,
             "es_planta": es_planta,
             "nombre_planta": planta,
-            "nombre_cientifico_planta": planta_cientifico,
+            "nombre_cientifico_planta": nombre_cientifico,
             "planta_probabilidad": planta_probabilidad,
             "nombre_enfermedad": enfermedad,
-            "nombre_cientifico_enfermedad": enfermedad_cientifico,
+            "nombre_cientifico_enfermedad": nombre_cientifico_enfermedad,
             "enfermedad_probabilidad": enfermedad_probabilidad
         }
-        
+
     except Exception as e:
         return {
             "success": False,
@@ -67,6 +74,7 @@ def filtrar_informacion(respuesta):
             "error_message": f"Error al procesar respuesta de API: {str(e)}",
             "status_code": 500
         }
+
 
 def preguntar_enfermedad(imagen):
     """
@@ -80,27 +88,30 @@ def preguntar_enfermedad(imagen):
             "error_message": "API key no configurada en .env",
             "status_code": 500
         }
-    
-    url = "https://crop.kindwise.com/api/v1/identification"  # Endpoint API
-    
+
+    url = "https://crop.kindwise.com/api/v1/identification"
+
     headers = {
         'Api-Key': API_KEY,  # Token de autenticación
         'Content-Type': 'application/json'  # Requerido por crop.health
     }
-    # Lista de imágenes en Base64 (debe ser una lista aunque sea una sola imagen)
+    # Lista de imágenes en Base64
+    # (debe ser una lista aunque sea una sola imagen)
     payload = {
         "images": [imagen]
     }
 
     try:
         # Realizar la petición al API
-        respuesta = requests.post(url, headers=headers, json=payload, timeout=TIMEOUT)
+        response = requests.post(
+            url, headers=headers, json=payload, timeout=TIMEOUT
+        )
 
         # Código 201 indica éxito, 200 podría indicar error en este API
-        if respuesta.status_code == 201:
-            
+        if response.status_code == 201:
+
             try:
-                respuesta_json = respuesta.json()
+                respuesta_json = response.json()
             except json.JSONDecodeError:
                 return {
                     "success": False,
@@ -111,11 +122,11 @@ def preguntar_enfermedad(imagen):
 
             try:
                 respuesta_filtrada = filtrar_informacion(respuesta_json)
-                
+
                 # Verificar si el filtrado falló
                 if not respuesta_filtrada.get("success", True):
                     return respuesta_filtrada
-                    
+
                 return respuesta_filtrada
             except Exception as e:
                 return {
@@ -124,67 +135,84 @@ def preguntar_enfermedad(imagen):
                     "error_message": f"Error al filtrar información: {str(e)}",
                     "status_code": 500
                 }
-        elif respuesta.status_code == 401:  # Error de API key
+        elif response.status_code == 401:  # Error de API key
             try:
-                error_detail = respuesta.json().get("error", {}).get("message", "")
+                error_detail = response.json().get("error", {}).get(
+                    "message", ""
+                )
             except json.JSONDecodeError:
-                error_detail = respuesta.text
-            
+                error_detail = response.text
+
             print(error_detail)
             return {
                 "success": False,
                 "error_type": "invalid_api_key",
-                "error_message": f"La clave de API no es válida: {error_detail}",
+                "error_message": (
+                    f"La clave de API no es válida: {error_detail}"
+                ),
                 "status_code": 401
             }
-        
-        elif respuesta.status_code == 429:  # Error de rate limit
+
+        elif response.status_code == 429:  # Error de rate limit
             try:
-                error_detail = respuesta.json().get("error", {}).get("message", "")
+                error_detail = response.json().get("error", {}).get(
+                    "message", ""
+                )
             except json.JSONDecodeError:
-                error_detail = respuesta.text
-            
+                error_detail = response.text
+
             print(error_detail)
             return {
                 "success": False,
                 "error_type": "rate_limit_exceeded",
-                "error_message": f"Demasiadas peticiones, intenta en unos minutos: {error_detail}",
+                "error_message": (
+                    f"Demasiadas peticiones, intenta en unos minutos: "
+                    f"{error_detail}"
+                ),
                 "status_code": 429
             }
-        
-        elif 400 <= respuesta.status_code < 500: #otros errores del cliente
+
+        # otros errores del cliente
+        elif 400 <= response.status_code < 500:
             try:
-                error_detail = respuesta.json().get("error", {}).get("message", "")
-            except:
-                error_detail = respuesta.text
-            
+                error_detail = response.json().get("error", {}).get(
+                    "message", ""
+                )
+            except Exception:
+                error_detail = response.text
+
             print(error_detail)
             return {
                 "success": False,
                 "error_type": "client_error",
                 "error_message": f"Error en la petición: {error_detail}",
-                "status_code": respuesta.status_code
+                "status_code": response.status_code
             }
-        
-        elif 500 <= respuesta.status_code < 600: #errores del servidor
+
+        # errores del servidor
+        elif 500 <= response.status_code < 600:
             try:
-                error_detail = respuesta.json().get("error", {}).get("message", "")
-            except:
-                error_detail = respuesta.text
-            
+                error_detail = response.json().get("error", {}).get(
+                    "message", ""
+                )
+            except Exception:
+                error_detail = response.text
+
             print(error_detail)
             return {
                 "success": False,
                 "error_type": "server_error",
-                "error_message": f"Error del servidor de CropHealth: {error_detail}",
-                "status_code": respuesta.status_code
+                "error_message": (
+                    f"Error del servidor de CropHealth: {error_detail}"
+                ),
+                "status_code": response.status_code
             }
         else:
             return {
                 "success": False,
                 "error_type": "unknown_error",
                 "error_message": "Error desconocido",
-                "status_code": respuesta.status_code
+                "status_code": response.status_code
             }
     except requests.exceptions.Timeout:
         return {
