@@ -3,7 +3,7 @@ from routes import (notificaciones_routes, usuarios_routes, clima_routes,
                     chat_routes)
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-# from tasks.scheduler import start_scheduler
+from tasks.scheduler import start_scheduler
 
 
 app = FastAPI()
@@ -25,9 +25,9 @@ app.include_router(notificaciones_routes.router)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Iniciar scheduler de tareas
-# @app.on_event("startup")
-# def startup_event():
-#     start_scheduler()
+@app.on_event("startup")
+def startup_event():
+    start_scheduler()
 
 
 # Comandos útiles:

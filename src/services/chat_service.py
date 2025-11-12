@@ -3,6 +3,7 @@ import base64
 import os
 from services.plant_service import preguntar_enfermedad
 from services.ai_services import preguntar_mistral
+from services.usuarios_service import service_obtener_info_cultivo
 
 
 # Pseudo implementación de la gestión del chat.
@@ -30,6 +31,13 @@ def procesar_consulta(payload):
         for imagen in payload["imagen"]:
             contexto.append({"json": preguntar_enfermedad(imagen)})
 
+    if payload.get("correo") is not None and payload.get("cultivo") is not None:
+        info_cultivo = service_obtener_info_cultivo(
+            payload.get("correo"),
+            payload.get("cultivo")
+            ) 
+        contexto.append({"info_cultivo": info_cultivo})
+    
     if payload.get("pdf"):  # Procesar PDFs múltiples
         for pdf_64 in payload["pdf"]:
             # Decodificar el PDF desde base64

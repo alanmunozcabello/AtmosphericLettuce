@@ -15,7 +15,7 @@ def modificar_html(correo, usuariop1, clima_, consejos):
         usuario=usuariop1,
         usuario_correo=correo,
         clima=clima_,
-        consejo=consejos
+        consejos=consejos
     )
 
     # Guardar el HTML resultante
