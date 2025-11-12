@@ -545,6 +545,3 @@ def clima_semana_service(lat, lon):
             "error_message": f"Error inesperado: {str(e)}",
             "status_code": 500
         }
-
-
-def clima_dia_anterios
