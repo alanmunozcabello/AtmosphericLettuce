@@ -1,0 +1,18 @@
+En la carpeta processed irán los datos listos para entrenar a la IA tanto en healty como en diseased.
+
+En raw la info por ser procesada y catalogada en carpetas [0-n] para después hacer las comparaciones sobre las respuestas de la IA en el entrenamiento.
+
+Cultivos en el dataset:
+Apple
+Bell_pepper
+Blueberry
+Cherry
+Grape
+Peach
+Potato
+Raspberry
+Soybean
+Strawberry
+Tomato
+Squash*
+Corn 

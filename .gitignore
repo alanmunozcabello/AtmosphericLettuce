@@ -1,0 +1,5 @@
+data/processed/dataset_dividido
+data/processed/dataset_original
+data/raw
+
+.env
