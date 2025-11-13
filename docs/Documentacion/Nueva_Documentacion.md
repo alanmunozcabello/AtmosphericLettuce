@@ -1,4 +1,4 @@
-# 🌿 AtmosphericLettuce — Documentación Técnica
+# 🌱 AtmosphericLettuce — Documentación Técnica
 
 ## 📦 Configuración del Entorno
 
