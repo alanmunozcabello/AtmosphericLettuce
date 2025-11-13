@@ -37,27 +37,28 @@ def procesar_consulta(payload):
         info_cultivo = service_obtener_info_cultivo(
             payload.get("correo"),
             payload.get("cultivo")
-            ) 
+        ) 
         contexto.append({"info_cultivo": info_cultivo})
+
         if info_cultivo.get("puntos"):
-                            puntos = json.loads(info_cultivo["puntos"])
-                            primer_punto = next((p for p in puntos if p is not None), None)
-                            
-                            if primer_punto:
-                                # Obtener clima para ESTE cultivo específico
-                                clima_response = clima_semana_service(
-                                    primer_punto["latitud"],
-                                    primer_punto["longitud"]
-                                )
-                                clima_cultivo = (clima_response.get("data", {})
-                                        if clima_response.get("success") else {})
-                            contexto.append({"clima_cultivo": clima_cultivo})
-                                
+            puntos = json.loads(info_cultivo["puntos"])
+            primer_punto = next((p for p in puntos if p is not None), None)
+            if primer_punto:
+                latitud = primer_punto["latitud"]
+                longitud = primer_punto["longitud"]
+            else:
+                usuario = service_obtener_usuario_para_frontend(payload.get("correo"))
+                latitud = usuario.get("latitud")
+                longitud = usuario.get("longitud")
         else:
             usuario = service_obtener_usuario_para_frontend(payload.get("correo"))
-            clima_response = clima_semana_service(usuario.get("latitud"), usuario.get("longitud"))   
+            latitud = usuario.get("latitud")
+            longitud = usuario.get("longitud")
+        clima_response = clima_semana_service(latitud, longitud)
+        clima_cultivo = (clima_response.get("data", {})
+                if clima_response.get("success") else {})
         contexto.append({"clima_cultivo": clima_cultivo})
-    
+
     if payload.get("pdf"):  # Procesar PDFs múltiples
         for pdf_64 in payload["pdf"]:
             # Decodificar el PDF desde base64
