@@ -3,7 +3,9 @@ import base64
 import os
 from services.plant_service import preguntar_enfermedad
 from services.ai_services import preguntar_mistral
-from services.usuarios_service import service_obtener_info_cultivo
+from services.usuarios_service import service_obtener_info_cultivo, service_obtener_usuario_para_frontend
+from services.clima_service import clima_semana_service
+import json
 
 
 # Pseudo implementación de la gestión del chat.
@@ -37,6 +39,24 @@ def procesar_consulta(payload):
             payload.get("cultivo")
             ) 
         contexto.append({"info_cultivo": info_cultivo})
+        if info_cultivo.get("puntos"):
+                            puntos = json.loads(info_cultivo["puntos"])
+                            primer_punto = next((p for p in puntos if p is not None), None)
+                            
+                            if primer_punto:
+                                # Obtener clima para ESTE cultivo específico
+                                clima_response = clima_semana_service(
+                                    primer_punto["latitud"],
+                                    primer_punto["longitud"]
+                                )
+                                clima_cultivo = (clima_response.get("data", {})
+                                        if clima_response.get("success") else {})
+                            contexto.append({"clima_cultivo": clima_cultivo})
+                                
+        else:
+            usuario = service_obtener_usuario_para_frontend(payload.get("correo"))
+            clima_response = clima_semana_service(usuario.get("latitud"), usuario.get("longitud"))   
+        contexto.append({"clima_cultivo": clima_cultivo})
     
     if payload.get("pdf"):  # Procesar PDFs múltiples
         for pdf_64 in payload["pdf"]:

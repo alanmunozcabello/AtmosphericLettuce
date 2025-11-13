@@ -333,6 +333,8 @@ def deepseek_para_correos(info_cultivo):
                     "Si no estás seguro de una respuesta, indícalo "
                     "claramente y sugiere fuentes donde se pueda "
                     "encontrar más información. "
+                    "Recibirar la informacion del cultivo y el clima semanal "
+                    "correspondiente al cultivo. "
                 )
             },
             {
