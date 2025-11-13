@@ -9,12 +9,52 @@ document.addEventListener('DOMContentLoaded', function () {
   const infoCultivo = document.getElementById('infoCultivo')
   const nombreCultivo = document.getElementById('nombreCultivo')
   const tituloGeneral = document.getElementById('tituloGeneral')
+  const barra = document.getElementById("barraProgreso");
+  const texto = document.getElementById("textoProgreso");
   let adicionalesVisible = false
 
   // Obtener parámetros de la URL
   const urlParams = new URLSearchParams(window.location.search)
   const cultivo = urlParams.get('cultivo')
   const correo = urlParams.get('correo')
+
+  function actualizarProgreso() {
+      // Selecciona TODOS los campos (visibles e invisibles)
+      // Excluye campos opcionales como "otro_riego"
+      const todosCampos = Array.from(document.querySelectorAll("input, select, textarea"))
+        .filter(el => el.id !== 'otro_riego' && el.id !== 'btnRegresar'); // Excluir campos opcionales y botones
+
+      let total = 0;
+      let completados = 0;
+      const radioGroups = new Set();
+
+      todosCampos.forEach(el => {
+        if (el.type === "radio") {
+          if (!radioGroups.has(el.name)) {
+            radioGroups.add(el.name);
+            total++;
+            const checked = document.querySelector(`input[name="${el.name}"]:checked`);
+            if (checked) completados++;
+          }
+        } else {
+          total++;
+          if (el.value.trim() !== "") completados++;
+        }
+      });
+
+      const progreso = total > 0 ? Math.round((completados / total) * 100) : 0;
+      barra.style.width = `${progreso}%`;
+      texto.textContent = `${progreso}%`;
+    }
+
+    // --- Escuchar cambios en los campos ---
+    document.addEventListener("input", actualizarProgreso);
+    document.addEventListener("change", actualizarProgreso);
+
+    // --- Detectar cuando se abre/cierra "Datos adicionales" ---
+    // No se recalcula aquí porque ya contamos todos los campos (visibles e invisibles)
+
+    actualizarProgreso(); // cálculo inicial
 
   // Si viene de la página de cultivos, mostrar información específica
   if (cultivo && correo) {
