@@ -58,6 +58,11 @@ function mostrarClimaEnHome (datosClima) {
   const tempMin = document.querySelector('.clima-card .min')
   const iconoClima = document.querySelector('.clima-card .icono-clima')
 
+  const humedad = document.querySelector('.detalles .info-detalles .humedad')
+  const viento = document.querySelector('.detalles .info-detalles .viento')
+  const sensacion = document.querySelector('.detalles .info-detalles .sensacion')
+
+
   if (temperatura) {
     temperatura.textContent = `${Math.round(datosClima.temp || 0)}°C`
   }
@@ -77,6 +82,18 @@ function mostrarClimaEnHome (datosClima) {
   if (iconoClima) {
     const icono = obtenerIconoClima(datosClima.estado || '')
     iconoClima.textContent = icono
+  }
+
+  if(humedad){
+    humedad.textContent = `${datosClima.humidity || 0}%`  // Humedad
+  }
+
+  if(viento){
+    viento.textContent = `${Math.round(datosClima.wind_kmh || 0)} km/h`  // Viento
+  }
+  
+  if(sensacion){
+    sensacion.textContent = `${Math.round(datosClima.sence || 0)}°C`  // Sensación térmica
   }
 
   console.log('✅ Clima actualizado en home')
