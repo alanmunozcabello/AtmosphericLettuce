@@ -85,6 +85,7 @@ function hideLoader () {
 document.getElementById('enviarBtn').addEventListener('click', async () => {
   const textoInput = document.getElementById('textoInput')
   const texto = textoInput.value.trim()
+  const cultivoSeleccionado = document.getElementById("cultivoSelect").value;
   // const inputArchivos = document.getElementById('fileInput');
 
   // Arreglo con el payload final
@@ -125,6 +126,10 @@ document.getElementById('enviarBtn').addEventListener('click', async () => {
     }
   }
 
+  if(cultivoSeleccionado !== '(Sin cultivo)'){
+    payload.cultivo = cultivoSeleccionado || null
+  }
+
   // Si no hay nada, no enviamos
   if (!payload.texto && payload.pdf.length === 0 && payload.imagen.length === 0) {
     alert('Escribe algo o sube un archivo')
@@ -142,6 +147,7 @@ document.getElementById('enviarBtn').addEventListener('click', async () => {
   })
 
   const result = await respuesta.json()
+  console.log(result)
   let formatted = 'Hubo un error, intente nuevamente más tarde.' // estado inicial como error
 
   if (result.success === undefined && typeof result.respuesta === 'string') { // por algun motivo solo cuando hay error existe success
