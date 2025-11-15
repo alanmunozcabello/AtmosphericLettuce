@@ -18,17 +18,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const pass2 = document.getElementById('confirm-password') // input: confirmar contraseña
   const btn = document.getElementById('btn-register') // botón: Crear cuenta
 
+  let arr = [nombre, email, pass, pass2]
   // Al escribir en cualquier input, quita la clase 'invalid' para limpiar estado de error
-    [nombre, email, pass, pass2].forEach(inp => {
+    arr.forEach(inp => {
       inp.addEventListener('input', () => inp.classList.remove('invalid'))
     })
 
   // Maneja el submit del formulario (crear cuenta)
   form.addEventListener('submit', async (e) => {
-    e.preventDefault() // evita la recarga de la página por el submit HTML
+    e.preventDefault(); // evita la recarga de la página por el submit HTML
 
     // Limpia estados de error previos
-      [nombre, email, pass, pass2].forEach(i => i.classList.remove('invalid'))
+      arr.forEach(i => i.classList.remove('invalid'))
 
     // Flags/valores actuales del formulario
     let ok = true
