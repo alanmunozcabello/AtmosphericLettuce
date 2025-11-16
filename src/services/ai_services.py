@@ -1,4 +1,4 @@
-import requests
+﻿import requests
 import json
 from dotenv import load_dotenv
 import os
@@ -315,7 +315,7 @@ def deepseek_para_correos(info_cultivo):
                     "No inventes información y prioriza la utilidad "
                     "práctica. "
                     "No renvies la informacion del cultivo que recibes"
-                    "si es necesario menconarla por alguna recomenacion" 
+                    "si es necesario menconarla por alguna recomenacion"
                     "puedes hacerlo."
                     "Puedes recibir múltiples diagnósticos en un solo "
                     "mensaje. Estos pueden ser de plantas diferentes; "

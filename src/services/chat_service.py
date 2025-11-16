@@ -3,7 +3,10 @@ import base64
 import os
 from services.plant_service import preguntar_enfermedad
 from services.ai_services import preguntar_mistral
-from services.usuarios_service import service_obtener_info_cultivo, service_obtener_usuario_para_frontend
+from services.usuarios_service import (
+    service_obtener_info_cultivo,
+    service_obtener_usuario_para_frontend
+)
 from services.clima_service import clima_semana_service
 import json
 
@@ -33,30 +36,37 @@ def procesar_consulta(payload):
         for imagen in payload["imagen"]:
             contexto.append({"json": preguntar_enfermedad(imagen)})
 
-    if payload.get("correo") is not None and payload.get("cultivo") is not None:
+    if (payload.get("correo") is not None and
+            payload.get("cultivo") is not None):
         info_cultivo = service_obtener_info_cultivo(
             payload.get("correo"),
             payload.get("cultivo")
-        ) 
+        )
         contexto.append({"info_cultivo": info_cultivo})
 
         if info_cultivo.get("puntos"):
             puntos = json.loads(info_cultivo["puntos"])
-            primer_punto = next((p for p in puntos if p is not None), None)
+            primer_punto = next(
+                (p for p in puntos if p is not None), None
+            )
             if primer_punto:
                 latitud = primer_punto["latitud"]
                 longitud = primer_punto["longitud"]
             else:
-                usuario = service_obtener_usuario_para_frontend(payload.get("correo"))
+                usuario = service_obtener_usuario_para_frontend(
+                    payload.get("correo")
+                )
                 latitud = usuario.get("latitud")
                 longitud = usuario.get("longitud")
         else:
-            usuario = service_obtener_usuario_para_frontend(payload.get("correo"))
+            usuario = service_obtener_usuario_para_frontend(
+                payload.get("correo")
+            )
             latitud = usuario.get("latitud")
             longitud = usuario.get("longitud")
         clima_response = clima_semana_service(latitud, longitud)
         clima_cultivo = (clima_response.get("data", {})
-                if clima_response.get("success") else {})
+                         if clima_response.get("success") else {})
         contexto.append({"clima_cultivo": clima_cultivo})
 
     if payload.get("pdf"):  # Procesar PDFs múltiples
