@@ -234,7 +234,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       console.log('✅ Región/ciudad actualizadas')
 
-      // ✅ 3. ACTUALIZAR CACHÉ DEL USUARIO
+      // INVALIDAR CACHE DE CLIMA (nueva ubicación = nuevo clima)
+      if (typeof invalidarCacheClima === 'function') {
+        invalidarCacheClima()
+        console.log('🗑️ Cache de clima invalidado por cambio de ubicación')
+      }
+
+      // ACTUALIZAR CACHÉ DEL USUARIO
       const usuarioActualizado = await obtenerUsuario(correo)
 
       if (usuarioActualizado) {
@@ -275,6 +281,21 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('🔄 Recargando perfil.html...')
         alert('✅ Ubicación actualizada correctamente')
         window.location.reload()
+      }
+
+      // si es desde el home se recargan los cultivos
+      if (paginaActual.includes('home.html')) {
+        alert('✅ Ubicación actualizada correctamente')
+        console.log('🔄 Recargando clima en home.html...')
+        
+        // Recargar clima si la función existe
+        // if (typeof cargarClimaHome === 'function') {
+        //   await cargarClimaHome()
+        // }
+
+        // Recargar página para actualizar todo
+        window.location.reload()
+        return
       }
 
       alert('✅ Ubicación actualizada correctamente')

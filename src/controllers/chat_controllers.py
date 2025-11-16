@@ -8,7 +8,7 @@ def consultar(payload):
             "error": "El payload es obligatorio"
         }
 
-    mensaje = payload.get("mensaje")
+    mensaje = payload.get("texto")
 
     if not mensaje:
         return {
