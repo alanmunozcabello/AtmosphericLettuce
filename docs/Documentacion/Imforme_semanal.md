@@ -113,3 +113,19 @@
 - `Los endpoints estan completos tanto los endpoints de las API internas como los de las API externas.`
 - `Se hicieron pruebas unitarias a las carpetas de controllers, services y routes.`
 - `Se aplico la libreria Pytest para las pruebas unitarias.`
+
+## 📌 Semana 13
+- Correccion de errores para presentacion del hito 2
+- `Se creo documento de retroalimentacion donde se explica la metodologia aplicada hasta ahora.`
+- `Se aplicaron validaciones a controllers.`
+- `Se cambio el diseño al formulario.`
+- `Implementacion de display de datos metereologicos.`
+- `Creacion de landing page.`
+- `Implementacion de selector de cultivo en el chatbot.`
+- `Conexion realizada al backend en consultas al chatbot.`
+- `Creacion de plantilla de warning.`
+- `Modificacion de la planilla informe.`
+- `Creacion de los metodos para pasarse la info del cultivo y clima de cada cultivo al chatbot.`
+- `Implementacion de la logica de los warning.`
+- `Creacion otra tabla con el clima de cultivos.`
+
