@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>⚠️ Alerta Climática - AtmosphericLettuce</title>
+  <style>
+    /* Reset básico para emails */
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100% !important;
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+    img {
+      border: 0;
+      outline: none;
+      text-decoration: none;
+      -ms-interpolation-mode: bicubic;
+    }
+    table {
+      border-collapse: collapse;
+      mso-table-lspace: 0pt;
+      mso-table-rspace: 0pt;
+    }
+  </style>
+</head>
+
+<body style="margin: 0; padding: 0; background-color: #f4f4f4; font-family: Arial, sans-serif;">
+  
+  <!-- Contenedor principal con ancho fijo para emails -->
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#f4f4f4">
+    <tr>
+      <td align="center" style="padding: 20px 0;">
+        
+        <!-- Tabla de contenido de 600px (estándar para emails) -->
+        <table width="600" border="0" cellspacing="0" cellpadding="0" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          
+          <!-- ENCABEZADO DE ALERTA -->
+          <tr>
+            <td align="center" style="padding: 30px 20px; background: linear-gradient(135deg, #FF8C42, #FF6B35); border-radius: 8px 8px 0 0;">
+              <h1 style="margin: 0 0 10px 0; color: #ffffff; font-size: 28px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                ⚠️ Alerta Climática
+              </h1>
+              <p style="margin: 0; color: #fff8f0; font-size: 14px;">
+                Condiciones adversas detectadas en tus cultivos
+              </p>
+            </td>
+          </tr>
+
+          <!-- BANNER DE ADVERTENCIA -->
+          <tr>
+            <td style="padding: 15px 20px; background-color: #FFF3E0; border-left: 5px solid #FF8C42;">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td>
+                    <p style="margin: 0; color: #E65100; font-size: 14px; font-weight: bold;">
+                      🔔 Se han detectado {{ total_alertas }} condición(es) adversa(s) que requieren tu atención
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- INFORMACIÓN DEL USUARIO -->
+          <tr>
+            <td style="padding: 20px; border-bottom: 2px solid #f0f0f0;">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td>
+                    <p style="margin: 0 0 5px 0; color: #333333; font-size: 16px; font-weight: bold;">
+                      {{ usuario.nombre }}
+                    </p>
+                    <p style="margin: 0; color: #666666; font-size: 14px;">
+                      {{ usuario_correo }}
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- ALERTAS POR CULTIVO -->
+          {% for alerta in alertas %}
+          <tr>
+            <td style="padding: 20px;">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #FFF8F0; border-radius: 8px; border: 2px solid #FFB84D;">
+                
+                <!-- Cabecera de la alerta -->
+                <tr>
+                  <td style="padding: 15px; background: linear-gradient(135deg, #FFB84D, #FF9A3D); border-radius: 6px 6px 0 0;">
+                    <h2 style="margin: 0; color: #ffffff; font-size: 20px; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
+                      🌱 {{ alerta.cultivo }}
+                    </h2>
+                  </td>
+                </tr>
+
+                <!-- Tipo de alerta -->
+                <tr>
+                  <td style="padding: 15px; border-bottom: 1px solid #FFE0B2;">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td>
+                          <p style="margin: 0 0 5px 0; color: #E65100; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">
+                            {% if alerta.severidad == 'alta' %}🔴 Severidad Alta{% else %}🟡 Severidad Media{% endif %}
+                          </p>
+                          <h3 style="margin: 0; color: #FF6F00; font-size: 18px; font-weight: bold;">
+                            {{ alerta.tipo_alerta }}
+                          </h3>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Comparación de condiciones -->
+                <tr>
+                  <td style="padding: 15px;">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="10">
+                      <tr>
+                        <!-- Condición Inicial -->
+                        <td width="48%" style="background-color: #E8F5E9; border-radius: 5px; padding: 12px; vertical-align: top;">
+                          <p style="margin: 0 0 8px 0; color: #2E7D32; font-size: 12px; font-weight: bold; text-transform: uppercase;">
+                            📊 Condición Pronosticada
+                          </p>
+                          {% for key, value in alerta.condicion_inicial.items() %}
+                          <p style="margin: 3px 0; color: #555555; font-size: 13px;">
+                            <strong>{{ key }}:</strong> {{ value }}
+                          </p>
+                          {% endfor %}
+                        </td>
+                        
+                        <td width="4%" align="center" style="vertical-align: middle;">
+                          <span style="color: #FF8C42; font-size: 20px; font-weight: bold;">→</span>
+                        </td>
+                        
+                        <!-- Condición Actual -->
+                        <td width="48%" style="background-color: #FFEBEE; border-radius: 5px; padding: 12px; vertical-align: top;">
+                          <p style="margin: 0 0 8px 0; color: #C62828; font-size: 12px; font-weight: bold; text-transform: uppercase;">
+                            ⚡ Condición Actual
+                          </p>
+                          {% for key, value in alerta.condicion_actual.items() %}
+                          <p style="margin: 3px 0; color: #555555; font-size: 13px;">
+                            <strong>{{ key }}:</strong> {{ value }}
+                          </p>
+                          {% endfor %}
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Consejo/Recomendación -->
+                <tr>
+                  <td style="padding: 15px; background-color: #FFF9E6; border-radius: 0 0 6px 6px;">
+                    <p style="margin: 0 0 5px 0; color: #F57C00; font-size: 12px; font-weight: bold; text-transform: uppercase;">
+                      💡 Recomendación
+                    </p>
+                    <p style="margin: 0; color: #666666; font-size: 14px; line-height: 1.6;">
+                      {{ alerta.consejo }}
+                    </p>
+                  </td>
+                </tr>
+
+              </table>
+            </td>
+          </tr>
+          {% endfor %}
+
+          <!-- MENSAJE DE ACCIÓN -->
+          <tr>
+            <td style="padding: 20px; background-color: #FFF8F0; border-top: 2px solid #FFB84D;">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td>
+                    <p style="margin: 0 0 10px 0; color: #E65100; font-size: 14px; font-weight: bold;">
+                      📱 ¿Qué hacer ahora?
+                    </p>
+                    <ul style="margin: 0; padding-left: 20px; color: #666666; font-size: 13px; line-height: 1.6;">
+                      <li>Revisa tus cultivos en el sistema web</li>
+                      <li>Implementa las medidas preventivas sugeridas</li>
+                      <li>Monitorea las condiciones climáticas de cerca</li>
+                      <li>Consulta con un especialista si es necesario</li>
+                    </ul>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- PIE DE PÁGINA -->
+          <tr>
+            <td align="center" style="padding: 20px; background-color: #f0f0f0; border-radius: 0 0 8px 8px;">
+              <p style="margin: 0 0 5px 0; color: #999999; font-size: 12px;">
+                © 2025 AtmosphericLettuce - Sistema de Monitoreo Agrícola
+              </p>
+              <p style="margin: 0; color: #999999; font-size: 11px;">
+                Este es un correo automático de alerta. No responder.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+        
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
