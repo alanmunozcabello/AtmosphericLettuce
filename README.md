@@ -4,10 +4,10 @@
 
 **Equipo:** *Lechuga* 🥬  
 **Integrantes:**  
-- 👨‍💻 Nicolás Urbina
-- 🛠️ Cristian Aliaga
-- 🎨 Alan Muñoz
-- 📑 John Rojas
+- 👨‍💻 John Rojas
+- 🛠️ Nicolas Urbina
+- 🎨 Cristian Aliaga
+- 📑 Alan Muñoz
 
 **Universidad de Talca – Proyecto de Programación 2025**  
 
