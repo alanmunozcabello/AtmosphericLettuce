@@ -57,7 +57,7 @@
                 <tr>
                   <td>
                     <p style="margin: 0; color: #E65100; font-size: 14px; font-weight: bold;">
-                      🔔 Se han detectado 1 condición(es) adversa(s) que requieren tu atención
+                      🔔 Se han detectado condiciones adversas en 3 cultivo(s) - Total: 6 alerta(s)
                     </p>
                   </td>
                 </tr>
@@ -89,51 +89,99 @@
             <td style="padding: 20px;">
               <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #FFF8F0; border-radius: 8px; border: 2px solid #FFB84D;">
                 
-                <!-- Cabecera de la alerta -->
+                <!-- Cabecera del cultivo -->
                 <tr>
                   <td style="padding: 15px; background: linear-gradient(135deg, #FFB84D, #FF9A3D); border-radius: 6px 6px 0 0;">
-                    <h2 style="margin: 0; color: #ffffff; font-size: 20px; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
-                      🌱 papas
-                    </h2>
-                  </td>
-                </tr>
-
-                <!-- Tipo de alerta -->
-                <tr>
-                  <td style="padding: 15px; border-bottom: 1px solid #FFE0B2;">
                     <table width="100%" border="0" cellspacing="0" cellpadding="0">
                       <tr>
                         <td>
-                          <p style="margin: 0 0 5px 0; color: #E65100; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">
-                            🟡 Severidad Media
-                          </p>
-                          <h3 style="margin: 0; color: #FF6F00; font-size: 18px; font-weight: bold;">
-                            ⚠️ Lluvia no pronosticada
-                          </h3>
+                          <h2 style="margin: 0; color: #ffffff; font-size: 20px; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
+                            🌱 papas
+                          </h2>
+                        </td>
+                        <td align="right">
+                          <span style="background-color: rgba(255,255,255,0.3); padding: 5px 10px; border-radius: 12px; color: #ffffff; font-size: 12px; font-weight: bold;">
+                            3 alerta(s)
+                          </span>
                         </td>
                       </tr>
                     </table>
                   </td>
                 </tr>
 
-                <!-- Comparación de condiciones -->
+                <!-- Resumen de alertas -->
+                <tr>
+                  <td style="padding: 15px; border-bottom: 1px solid #FFE0B2;">
+                    <p style="margin: 0 0 5px 0; color: #E65100; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">
+                      🔴 Severidad Alta
+                    </p>
+                    <p style="margin: 5px 0 0 0; color: #666666; font-size: 13px;">
+                      Se detectaron las siguientes condiciones adversas:
+                    </p>
+                    <ul style="margin: 8px 0 0 20px; padding: 0; color: #FF6F00; font-size: 14px; line-height: 1.8;">
+                      
+                      <li><strong>⚠️ Lluvia no pronosticada</strong></li>
+                      
+                      <li><strong>🌡️ Temperatura máxima más alta (+13.0°C)</strong></li>
+                      
+                      <li><strong>⛈️ Cambio drástico: Clima favorable → Condiciones adversas</strong></li>
+                      
+                    </ul>
+                  </td>
+                </tr>
+
+                <!-- Comparación de condiciones (consolidada) -->
                 <tr>
                   <td style="padding: 15px;">
+                    <p style="margin: 0 0 10px 0; color: #E65100; font-size: 13px; font-weight: bold;">
+                      📊 Comparación de Condiciones
+                    </p>
                     <table width="100%" border="0" cellspacing="0" cellpadding="10">
                       <tr>
-                        <!-- Condición Inicial -->
+                        <!-- Condición Pronosticada -->
                         <td width="48%" style="background-color: #E8F5E9; border-radius: 5px; padding: 12px; vertical-align: top;">
                           <p style="margin: 0 0 8px 0; color: #2E7D32; font-size: 12px; font-weight: bold; text-transform: uppercase;">
                             📊 Condición Pronosticada
                           </p>
                           
-                          <p style="margin: 3px 0; color: #555555; font-size: 13px;">
-                            <strong>estado:</strong> clear
-                          </p>
                           
-                          <p style="margin: 3px 0; color: #555555; font-size: 13px;">
-                            <strong>precipitacion:</strong> 0
-                          </p>
+                            
+                              
+                                <p style="margin: 3px 0; color: #555555; font-size: 13px;">
+                                  <strong>estado:</strong> clear
+                                </p>
+                                
+                              
+                            
+                              
+                                <p style="margin: 3px 0; color: #555555; font-size: 13px;">
+                                  <strong>precipitacion:</strong> 0
+                                </p>
+                                
+                              
+                            
+                          
+                            
+                              
+                                <p style="margin: 3px 0; color: #555555; font-size: 13px;">
+                                  <strong>temp_max:</strong> 25.0
+                                </p>
+                                
+                              
+                            
+                              
+                            
+                          
+                            
+                              
+                            
+                              
+                                <p style="margin: 3px 0; color: #555555; font-size: 13px;">
+                                  <strong>temp:</strong> 20.0
+                                </p>
+                                
+                              
+                            
                           
                         </td>
                         
@@ -147,13 +195,39 @@
                             ⚡ Condición Actual
                           </p>
                           
-                          <p style="margin: 3px 0; color: #555555; font-size: 13px;">
-                            <strong>estado:</strong> rain
-                          </p>
                           
-                          <p style="margin: 3px 0; color: #555555; font-size: 13px;">
-                            <strong>temp:</strong> 18.5
-                          </p>
+                            
+                              
+                                <p style="margin: 3px 0; color: #555555; font-size: 13px;">
+                                  <strong>estado:</strong> rain
+                                </p>
+                                
+                              
+                            
+                              
+                                <p style="margin: 3px 0; color: #555555; font-size: 13px;">
+                                  <strong>temp:</strong> 32.0
+                                </p>
+                                
+                              
+                            
+                          
+                            
+                              
+                                <p style="margin: 3px 0; color: #555555; font-size: 13px;">
+                                  <strong>temp_max:</strong> 38.0
+                                </p>
+                                
+                              
+                            
+                              
+                            
+                          
+                            
+                              
+                            
+                              
+                            
                           
                         </td>
                       </tr>
@@ -161,14 +235,293 @@
                   </td>
                 </tr>
 
-                <!-- Consejo/Recomendación -->
+                <!-- Recomendación -->
                 <tr>
                   <td style="padding: 15px; background-color: #FFF9E6; border-radius: 0 0 6px 6px;">
                     <p style="margin: 0 0 5px 0; color: #F57C00; font-size: 12px; font-weight: bold; text-transform: uppercase;">
                       💡 Recomendación
                     </p>
-                    <p style="margin: 0; color: #666666; font-size: 14px; line-height: 1.6;">
-                      ⚠️ LLUVIA NO PREVISTA para papas: Se recomienda verificar sistemas de drenaje y proteger cultivos sensibles. Considere posponer aplicaciones de fertilizantes hasta que cese la lluvia.
+                    <p style="margin: 0 0 10px 0; color: #666666; font-size: 14px; line-height: 1.6;">
+                      Se recomienda proteger el cultivo de las lluvias intensas y verificar el drenaje del terreno. Monitorear posibles enfermedades fúngicas.
+                    </p>
+                    <p style="margin: 0; color: #999999; font-size: 12px; font-style: italic;">
+                      Para más detalles, consulta la página web de AtmosphericLettuce.
+                    </p>
+                  </td>
+                </tr>
+
+              </table>
+            </td>
+          </tr>
+          
+          <tr>
+            <td style="padding: 20px;">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #FFF8F0; border-radius: 8px; border: 2px solid #FFB84D;">
+                
+                <!-- Cabecera del cultivo -->
+                <tr>
+                  <td style="padding: 15px; background: linear-gradient(135deg, #FFB84D, #FF9A3D); border-radius: 6px 6px 0 0;">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td>
+                          <h2 style="margin: 0; color: #ffffff; font-size: 20px; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
+                            🌱 tomates
+                          </h2>
+                        </td>
+                        <td align="right">
+                          <span style="background-color: rgba(255,255,255,0.3); padding: 5px 10px; border-radius: 12px; color: #ffffff; font-size: 12px; font-weight: bold;">
+                            2 alerta(s)
+                          </span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Resumen de alertas -->
+                <tr>
+                  <td style="padding: 15px; border-bottom: 1px solid #FFE0B2;">
+                    <p style="margin: 0 0 5px 0; color: #E65100; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">
+                      🔴 Severidad Alta
+                    </p>
+                    <p style="margin: 5px 0 0 0; color: #666666; font-size: 13px;">
+                      Se detectaron las siguientes condiciones adversas:
+                    </p>
+                    <ul style="margin: 8px 0 0 20px; padding: 0; color: #FF6F00; font-size: 14px; line-height: 1.8;">
+                      
+                      <li><strong>⚠️ Lluvia no pronosticada</strong></li>
+                      
+                      <li><strong>🌡️ Temperatura máxima más alta (+13.0°C)</strong></li>
+                      
+                    </ul>
+                  </td>
+                </tr>
+
+                <!-- Comparación de condiciones (consolidada) -->
+                <tr>
+                  <td style="padding: 15px;">
+                    <p style="margin: 0 0 10px 0; color: #E65100; font-size: 13px; font-weight: bold;">
+                      📊 Comparación de Condiciones
+                    </p>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="10">
+                      <tr>
+                        <!-- Condición Pronosticada -->
+                        <td width="48%" style="background-color: #E8F5E9; border-radius: 5px; padding: 12px; vertical-align: top;">
+                          <p style="margin: 0 0 8px 0; color: #2E7D32; font-size: 12px; font-weight: bold; text-transform: uppercase;">
+                            📊 Condición Pronosticada
+                          </p>
+                          
+                          
+                            
+                              
+                                <p style="margin: 3px 0; color: #555555; font-size: 13px;">
+                                  <strong>estado:</strong> clear
+                                </p>
+                                
+                              
+                            
+                              
+                                <p style="margin: 3px 0; color: #555555; font-size: 13px;">
+                                  <strong>precipitacion:</strong> 0
+                                </p>
+                                
+                              
+                            
+                          
+                            
+                              
+                                <p style="margin: 3px 0; color: #555555; font-size: 13px;">
+                                  <strong>temp_max:</strong> 25.0
+                                </p>
+                                
+                              
+                            
+                              
+                            
+                          
+                        </td>
+                        
+                        <td width="4%" align="center" style="vertical-align: middle;">
+                          <span style="color: #FF8C42; font-size: 20px; font-weight: bold;">→</span>
+                        </td>
+                        
+                        <!-- Condición Actual -->
+                        <td width="48%" style="background-color: #FFEBEE; border-radius: 5px; padding: 12px; vertical-align: top;">
+                          <p style="margin: 0 0 8px 0; color: #C62828; font-size: 12px; font-weight: bold; text-transform: uppercase;">
+                            ⚡ Condición Actual
+                          </p>
+                          
+                          
+                            
+                              
+                                <p style="margin: 3px 0; color: #555555; font-size: 13px;">
+                                  <strong>estado:</strong> rain
+                                </p>
+                                
+                              
+                            
+                              
+                                <p style="margin: 3px 0; color: #555555; font-size: 13px;">
+                                  <strong>temp:</strong> 33.0
+                                </p>
+                                
+                              
+                            
+                          
+                            
+                              
+                                <p style="margin: 3px 0; color: #555555; font-size: 13px;">
+                                  <strong>temp_max:</strong> 38.0
+                                </p>
+                                
+                              
+                            
+                              
+                            
+                          
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Recomendación -->
+                <tr>
+                  <td style="padding: 15px; background-color: #FFF9E6; border-radius: 0 0 6px 6px;">
+                    <p style="margin: 0 0 5px 0; color: #F57C00; font-size: 12px; font-weight: bold; text-transform: uppercase;">
+                      💡 Recomendación
+                    </p>
+                    <p style="margin: 0 0 10px 0; color: #666666; font-size: 14px; line-height: 1.6;">
+                      Aumentar el riego gradualmente y proteger las plantas de la exposición directa al sol durante las horas más calurosas.
+                    </p>
+                    <p style="margin: 0; color: #999999; font-size: 12px; font-style: italic;">
+                      Para más detalles, consulta la página web de AtmosphericLettuce.
+                    </p>
+                  </td>
+                </tr>
+
+              </table>
+            </td>
+          </tr>
+          
+          <tr>
+            <td style="padding: 20px;">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #FFF8F0; border-radius: 8px; border: 2px solid #FFB84D;">
+                
+                <!-- Cabecera del cultivo -->
+                <tr>
+                  <td style="padding: 15px; background: linear-gradient(135deg, #FFB84D, #FF9A3D); border-radius: 6px 6px 0 0;">
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td>
+                          <h2 style="margin: 0; color: #ffffff; font-size: 20px; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
+                            🌱 lechugas
+                          </h2>
+                        </td>
+                        <td align="right">
+                          <span style="background-color: rgba(255,255,255,0.3); padding: 5px 10px; border-radius: 12px; color: #ffffff; font-size: 12px; font-weight: bold;">
+                            1 alerta(s)
+                          </span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Resumen de alertas -->
+                <tr>
+                  <td style="padding: 15px; border-bottom: 1px solid #FFE0B2;">
+                    <p style="margin: 0 0 5px 0; color: #E65100; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">
+                      🟡 Severidad Media
+                    </p>
+                    <p style="margin: 5px 0 0 0; color: #666666; font-size: 13px;">
+                      Se detectaron las siguientes condiciones adversas:
+                    </p>
+                    <ul style="margin: 8px 0 0 20px; padding: 0; color: #FF6F00; font-size: 14px; line-height: 1.8;">
+                      
+                      <li><strong>💨 Vientos fuertes no pronosticados</strong></li>
+                      
+                    </ul>
+                  </td>
+                </tr>
+
+                <!-- Comparación de condiciones (consolidada) -->
+                <tr>
+                  <td style="padding: 15px;">
+                    <p style="margin: 0 0 10px 0; color: #E65100; font-size: 13px; font-weight: bold;">
+                      📊 Comparación de Condiciones
+                    </p>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="10">
+                      <tr>
+                        <!-- Condición Pronosticada -->
+                        <td width="48%" style="background-color: #E8F5E9; border-radius: 5px; padding: 12px; vertical-align: top;">
+                          <p style="margin: 0 0 8px 0; color: #2E7D32; font-size: 12px; font-weight: bold; text-transform: uppercase;">
+                            📊 Condición Pronosticada
+                          </p>
+                          
+                          
+                            
+                              
+                                <p style="margin: 3px 0; color: #555555; font-size: 13px;">
+                                  <strong>viento:</strong> 5.0 m/s
+                                </p>
+                                
+                              
+                            
+                              
+                                <p style="margin: 3px 0; color: #555555; font-size: 13px;">
+                                  <strong>estado:</strong> clear
+                                </p>
+                                
+                              
+                            
+                          
+                        </td>
+                        
+                        <td width="4%" align="center" style="vertical-align: middle;">
+                          <span style="color: #FF8C42; font-size: 20px; font-weight: bold;">→</span>
+                        </td>
+                        
+                        <!-- Condición Actual -->
+                        <td width="48%" style="background-color: #FFEBEE; border-radius: 5px; padding: 12px; vertical-align: top;">
+                          <p style="margin: 0 0 8px 0; color: #C62828; font-size: 12px; font-weight: bold; text-transform: uppercase;">
+                            ⚡ Condición Actual
+                          </p>
+                          
+                          
+                            
+                              
+                                <p style="margin: 3px 0; color: #555555; font-size: 13px;">
+                                  <strong>estado:</strong> wind
+                                </p>
+                                
+                              
+                            
+                              
+                                <p style="margin: 3px 0; color: #555555; font-size: 13px;">
+                                  <strong>descripcion:</strong> Condiciones ventosas detectadas
+                                </p>
+                                
+                              
+                            
+                          
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Recomendación -->
+                <tr>
+                  <td style="padding: 15px; background-color: #FFF9E6; border-radius: 0 0 6px 6px;">
+                    <p style="margin: 0 0 5px 0; color: #F57C00; font-size: 12px; font-weight: bold; text-transform: uppercase;">
+                      💡 Recomendación
+                    </p>
+                    <p style="margin: 0 0 10px 0; color: #666666; font-size: 14px; line-height: 1.6;">
+                      Proteger las plantas con mallas o estructuras que reduzcan el impacto del viento. Verificar que las plantas estén bien ancladas.
+                    </p>
+                    <p style="margin: 0; color: #999999; font-size: 12px; font-style: italic;">
+                      Para más detalles, consulta la página web de AtmosphericLettuce.
                     </p>
                   </td>
                 </tr>

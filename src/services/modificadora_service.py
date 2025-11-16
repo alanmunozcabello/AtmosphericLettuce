@@ -41,28 +41,50 @@ def modificar_warning_html(correo, usuariop1, cultivos_alertas, condiciones_inic
     env = Environment(loader=FileSystemLoader("services/Archivos_HTML"))
     template = env.get_template("warning.html")
     
-    # Combinar datos para el template
-    alertas_completas = []
+    # Agrupar alertas por cultivo
+    cultivos_dict = {}
+    
     for i, cultivo_alerta in enumerate(cultivos_alertas):
-        alerta_data = {
-            "cultivo": cultivo_alerta["nombre"],
+        nombre_cultivo = cultivo_alerta["nombre"]
+        
+        if nombre_cultivo not in cultivos_dict:
+            cultivos_dict[nombre_cultivo] = {
+                "nombre": nombre_cultivo,
+                "alertas": [],
+                "severidad_maxima": "media"
+            }
+        
+        # Agregar alerta al cultivo
+        cultivos_dict[nombre_cultivo]["alertas"].append({
             "tipo_alerta": cultivo_alerta["tipo_alerta"],
             "severidad": cultivo_alerta["severidad"],
             "condicion_inicial": condiciones_iniciales[i] if i < len(condiciones_iniciales) else {},
-            "condicion_actual": condiciones_actuales[i] if i < len(condiciones_actuales) else {},
-            "consejo": consejos[i]["consejo"] if i < len(consejos) else "Se recomienda monitorear de cerca."
-        }
-        alertas_completas.append(alerta_data)
+            "condicion_actual": condiciones_actuales[i] if i < len(condiciones_actuales) else {}
+        })
+        
+        # Actualizar severidad máxima
+        if cultivo_alerta["severidad"] == "alta":
+            cultivos_dict[nombre_cultivo]["severidad_maxima"] = "alta"
+    
+    # Agregar consejos
+    for consejo_item in consejos:
+        nombre_cultivo = consejo_item.get("cultivo")
+        if nombre_cultivo in cultivos_dict:
+            cultivos_dict[nombre_cultivo]["consejo"] = consejo_item.get("consejo", "Se recomienda monitorear de cerca.")
+    
+    # Convertir a lista
+    cultivos_agrupados = list(cultivos_dict.values())
     
     html_renderizado = template.render(
         usuario=usuariop1,
         usuario_correo=correo,
-        alertas=alertas_completas,
-        total_alertas=len(alertas_completas)
+        cultivos=cultivos_agrupados,
+        total_alertas=len(cultivos_alertas),
+        total_cultivos=len(cultivos_agrupados)
     )
     
     with open("services/Archivos_HTML/warning_salida.html", "w", encoding="utf-8") as f:
         f.write(html_renderizado)
     
-    print(f"✅ HTML de advertencia generado con {len(alertas_completas)} alerta(s)")
+    print(f"✅ HTML de advertencia generado: {len(cultivos_agrupados)} cultivo(s), {len(cultivos_alertas)} alerta(s)")
 # ---------------------------------------------------

@@ -57,7 +57,7 @@
                 <tr>
                   <td>
                     <p style="margin: 0; color: #E65100; font-size: 14px; font-weight: bold;">
-                      🔔 Se han detectado {{ total_alertas }} condición(es) adversa(s) que requieren tu atención
+                      🔔 Se han detectado condiciones adversas en {{ total_cultivos }} cultivo(s) - Total: {{ total_alertas }} alerta(s)
                     </p>
                   </td>
                 </tr>
@@ -84,52 +84,71 @@
           </tr>
 
           <!-- ALERTAS POR CULTIVO -->
-          {% for alerta in alertas %}
+          {% for cultivo in cultivos %}
           <tr>
             <td style="padding: 20px;">
               <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #FFF8F0; border-radius: 8px; border: 2px solid #FFB84D;">
                 
-                <!-- Cabecera de la alerta -->
+                <!-- Cabecera del cultivo -->
                 <tr>
                   <td style="padding: 15px; background: linear-gradient(135deg, #FFB84D, #FF9A3D); border-radius: 6px 6px 0 0;">
-                    <h2 style="margin: 0; color: #ffffff; font-size: 20px; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
-                      🌱 {{ alerta.cultivo }}
-                    </h2>
-                  </td>
-                </tr>
-
-                <!-- Tipo de alerta -->
-                <tr>
-                  <td style="padding: 15px; border-bottom: 1px solid #FFE0B2;">
                     <table width="100%" border="0" cellspacing="0" cellpadding="0">
                       <tr>
                         <td>
-                          <p style="margin: 0 0 5px 0; color: #E65100; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">
-                            {% if alerta.severidad == 'alta' %}🔴 Severidad Alta{% else %}🟡 Severidad Media{% endif %}
-                          </p>
-                          <h3 style="margin: 0; color: #FF6F00; font-size: 18px; font-weight: bold;">
-                            {{ alerta.tipo_alerta }}
-                          </h3>
+                          <h2 style="margin: 0; color: #ffffff; font-size: 20px; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
+                            🌱 {{ cultivo.nombre }}
+                          </h2>
+                        </td>
+                        <td align="right">
+                          <span style="background-color: rgba(255,255,255,0.3); padding: 5px 10px; border-radius: 12px; color: #ffffff; font-size: 12px; font-weight: bold;">
+                            {{ cultivo.alertas|length }} alerta(s)
+                          </span>
                         </td>
                       </tr>
                     </table>
                   </td>
                 </tr>
 
-                <!-- Comparación de condiciones -->
+                <!-- Resumen de alertas -->
+                <tr>
+                  <td style="padding: 15px; border-bottom: 1px solid #FFE0B2;">
+                    <p style="margin: 0 0 5px 0; color: #E65100; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">
+                      {% if cultivo.severidad_maxima == 'alta' %}🔴 Severidad Alta{% else %}🟡 Severidad Media{% endif %}
+                    </p>
+                    <p style="margin: 5px 0 0 0; color: #666666; font-size: 13px;">
+                      Se detectaron las siguientes condiciones adversas:
+                    </p>
+                    <ul style="margin: 8px 0 0 20px; padding: 0; color: #FF6F00; font-size: 14px; line-height: 1.8;">
+                      {% for alerta in cultivo.alertas %}
+                      <li><strong>{{ alerta.tipo_alerta }}</strong></li>
+                      {% endfor %}
+                    </ul>
+                  </td>
+                </tr>
+
+                <!-- Comparación de condiciones (consolidada) -->
                 <tr>
                   <td style="padding: 15px;">
+                    <p style="margin: 0 0 10px 0; color: #E65100; font-size: 13px; font-weight: bold;">
+                      📊 Comparación de Condiciones
+                    </p>
                     <table width="100%" border="0" cellspacing="0" cellpadding="10">
                       <tr>
-                        <!-- Condición Inicial -->
+                        <!-- Condición Pronosticada -->
                         <td width="48%" style="background-color: #E8F5E9; border-radius: 5px; padding: 12px; vertical-align: top;">
                           <p style="margin: 0 0 8px 0; color: #2E7D32; font-size: 12px; font-weight: bold; text-transform: uppercase;">
                             📊 Condición Pronosticada
                           </p>
-                          {% for key, value in alerta.condicion_inicial.items() %}
-                          <p style="margin: 3px 0; color: #555555; font-size: 13px;">
-                            <strong>{{ key }}:</strong> {{ value }}
-                          </p>
+                          {% set initial_shown = {} %}
+                          {% for alerta in cultivo.alertas %}
+                            {% for key, value in alerta.condicion_inicial.items() %}
+                              {% if key not in initial_shown %}
+                                <p style="margin: 3px 0; color: #555555; font-size: 13px;">
+                                  <strong>{{ key }}:</strong> {{ value }}
+                                </p>
+                                {% set _ = initial_shown.update({key: True}) %}
+                              {% endif %}
+                            {% endfor %}
                           {% endfor %}
                         </td>
                         
@@ -142,10 +161,16 @@
                           <p style="margin: 0 0 8px 0; color: #C62828; font-size: 12px; font-weight: bold; text-transform: uppercase;">
                             ⚡ Condición Actual
                           </p>
-                          {% for key, value in alerta.condicion_actual.items() %}
-                          <p style="margin: 3px 0; color: #555555; font-size: 13px;">
-                            <strong>{{ key }}:</strong> {{ value }}
-                          </p>
+                          {% set current_shown = {} %}
+                          {% for alerta in cultivo.alertas %}
+                            {% for key, value in alerta.condicion_actual.items() %}
+                              {% if key not in current_shown %}
+                                <p style="margin: 3px 0; color: #555555; font-size: 13px;">
+                                  <strong>{{ key }}:</strong> {{ value }}
+                                </p>
+                                {% set _ = current_shown.update({key: True}) %}
+                              {% endif %}
+                            {% endfor %}
                           {% endfor %}
                         </td>
                       </tr>
@@ -153,14 +178,17 @@
                   </td>
                 </tr>
 
-                <!-- Consejo/Recomendación -->
+                <!-- Recomendación -->
                 <tr>
                   <td style="padding: 15px; background-color: #FFF9E6; border-radius: 0 0 6px 6px;">
                     <p style="margin: 0 0 5px 0; color: #F57C00; font-size: 12px; font-weight: bold; text-transform: uppercase;">
                       💡 Recomendación
                     </p>
-                    <p style="margin: 0; color: #666666; font-size: 14px; line-height: 1.6;">
-                      {{ alerta.consejo }}
+                    <p style="margin: 0 0 10px 0; color: #666666; font-size: 14px; line-height: 1.6;">
+                      {{ cultivo.consejo if cultivo.consejo else "Se recomienda monitorear de cerca las condiciones y tomar medidas preventivas." }}
+                    </p>
+                    <p style="margin: 0; color: #999999; font-size: 12px; font-style: italic;">
+                      Para más detalles, consulta la página web de AtmosphericLettuce.
                     </p>
                   </td>
                 </tr>
