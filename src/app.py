@@ -25,9 +25,9 @@ app.include_router(notificaciones_routes.router)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Iniciar scheduler de tareas
-@app.on_event("startup")
-def startup_event():
-    start_scheduler()
+#@app.on_event("startup")
+#def startup_event():
+#    start_scheduler()
 
 
 # Comandos útiles:
