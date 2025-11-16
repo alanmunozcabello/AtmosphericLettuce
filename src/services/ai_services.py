@@ -314,6 +314,9 @@ def deepseek_para_correos(info_cultivo):
                     "un cultivo y su estado actual. "
                     "No inventes información y prioriza la utilidad "
                     "práctica. "
+                    "No renvies la informacion del cultivo que recibes"
+                    "si es necesario menconarla por alguna recomenacion" 
+                    "puedes hacerlo."
                     "Puedes recibir múltiples diagnósticos en un solo "
                     "mensaje. Estos pueden ser de plantas diferentes; "
                     "debes procesarlos todos."
@@ -330,6 +333,8 @@ def deepseek_para_correos(info_cultivo):
                     "Si no estás seguro de una respuesta, indícalo "
                     "claramente y sugiere fuentes donde se pueda "
                     "encontrar más información. "
+                    "Recibirar la informacion del cultivo y el clima semanal "
+                    "correspondiente al cultivo. "
                 )
             },
             {

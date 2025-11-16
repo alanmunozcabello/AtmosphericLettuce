@@ -124,6 +124,11 @@ def filtrar_informacion_dia(respuesta):
         temp = main_data.get("temp", 273.15) - 273.15
         temp_min = main_data.get("temp_min", 273.15) - 273.15
         temp_max = main_data.get("temp_max", 273.15) - 273.15
+        temp_sence = main_data.get("feels_like", 273.15) - 273.15
+        wind_data = respuesta.get("wind", {})
+        wind_speed_ms = wind_data.get("speed", "no definido")
+        wind_speed_kmh = wind_speed_ms*3.6 #convertir a km/h
+        humidity = main_data.get("humidity")
 
         return {
             "success": True,
@@ -132,7 +137,11 @@ def filtrar_informacion_dia(respuesta):
                 "estado": estado,
                 "temp": round(temp, 1),
                 "min": round(temp_min, 1),
-                "max": round(temp_max, 1)
+                "max": round(temp_max, 1),
+                "sence": round(temp_sence,1),
+                "wind_ms": round(wind_speed_ms, 1),
+                "wind_kmh": round(wind_speed_kmh, 1),
+                "humidity": humidity
             }
         }
 

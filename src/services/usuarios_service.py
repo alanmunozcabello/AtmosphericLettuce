@@ -579,3 +579,57 @@ def service_obtener_info_cultivo(correo, nombre_cultivo):
     except Exception as e:
         error_msg = f"Error al obtener información del cultivo: {str(e)}"
         return {"error": error_msg}
+
+
+def guardar_clima_semanal(correo, cultivo_nombre, latitud, longitud, clima_dict):
+    """Guarda o actualiza el clima semanal de un cultivo en la base de datos"""
+    try:
+        conexion = get_db_connection()
+        cursor = conexion.cursor()
+        
+        clima_json = json.dumps(clima_dict)
+        
+        cursor.execute("""
+            INSERT OR REPLACE INTO clima_guardado 
+            (correo, cultivo_nombre, latitud, longitud, clima_json, fecha_guardado)
+            VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+        """, (correo, cultivo_nombre, latitud, longitud, clima_json))
+        
+        conexion.commit()
+        conexion.close()
+        
+        return {"mensaje": f"Clima guardado para {cultivo_nombre}"}
+    
+    except Exception as e:
+        return {"error": str(e)}
+
+
+def obtener_clima_guardado(correo, cultivo_nombre):
+    """Obtiene el clima guardado de un cultivo específico"""
+    try:
+        conexion = get_db_connection()
+        cursor = conexion.cursor()
+        
+        cursor.execute("""
+            SELECT clima_json, fecha_guardado, latitud, longitud
+            FROM clima_guardado
+            WHERE correo = ? AND cultivo_nombre = ?
+        """, (correo, cultivo_nombre))
+        
+        resultado = cursor.fetchone()
+        conexion.close()
+        
+        if not resultado:
+            return {"error": "No hay clima guardado para este cultivo"}
+        
+        clima_dict = json.loads(resultado[0])
+        
+        return {
+            "clima": clima_dict,
+            "fecha_guardado": resultado[1],
+            "latitud": resultado[2],
+            "longitud": resultado[3]
+        }
+    
+    except Exception as e:
+        return {"error": str(e)}
