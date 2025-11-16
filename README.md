@@ -50,10 +50,10 @@ Nuestro objetivo es entregar a agricultores y usuarios en general información c
 
 ## 👥 Roles en rotación  
 
-- **Líder Técnico:** Nicolás Urbina  
-- **Backend:** Cristian Aliaga  
-- **Frontend:** Alan Muñoz  
-- **QA & Documentación:** John Rojas
+- **Líder Técnico:** John Rojas
+- **Backend:** Nicolas Urbina  
+- **Frontend:** Cristian Aliaga
+- **QA & Documentación:** Alan Muñoz
 ---
 
 ## 🎯 Objetivo Académico  
