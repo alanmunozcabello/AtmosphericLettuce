@@ -5,9 +5,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const fileBtn = document.getElementById('fileBtn')
   const fileInput = document.getElementById('fileInput')
 
+  // Cargar los cultivos en el selector
+  cargarCultivosEnSelector()
+
   // Abrir/cerrar con el botón flotante
   chatToggle.addEventListener('click', () => {
-    chatWindow.style.display = chatWindow.style.display === 'flex' ? 'none' : 'flex'
+    chatWindow.style.display = chatWindow.style.display === 'flex' ? 'none' : 'flex';
+    cargarCultivosEnSelector()
   })
 
   // Cerrar con el circulito rojo
@@ -173,4 +177,56 @@ function leerArchivoBase64 (archivo) { // comvertir archivo imagen o pdf a base6
     lector.onerror = reject
     lector.readAsDataURL(archivo)
   })
+}
+
+// Carga cultivos y los agrega al selector
+async function cargarCultivosEnSelector() {
+  const select = document.getElementById('cultivoSelect')
+  if (!select) {
+    console.warn('⚠️ No se encontró el selector de cultivos')
+    return
+  }
+
+  // Obtener correo del usuario
+  const CORREO = localStorage.getItem('correoUsuario')
+  if (!CORREO) {
+    console.warn('⚠️ No hay correo de usuario')
+    return
+  }
+
+  try {
+    // Obtener datos del usuario desde el backend
+    const usuario = await obtenerUsuario(CORREO)
+    
+    if (!usuario) {
+      console.warn('⚠️ No se encontró usuario')
+      return
+    }
+
+    // Obtener array de cultivos
+    const cultivos = usuario.cultivos || []
+
+    // Limpiar selector (mantener solo "Sin cultivo")
+    select.innerHTML = '<option value="">(Sin cultivo)</option>'
+
+    // ✅ Validar si hay cultivos
+    if (!Array.isArray(cultivos) && cultivos.mensaje === 'Usuario no posee cultivos') {
+      console.log('ℹ️ Usuario sin cultivos registrados')
+      return
+    }
+
+    // Agregar cada cultivo al selector
+    cultivos.forEach(cultivo => {
+      const option = document.createElement('option')
+      const nombreCultivo = cultivo.nombre_cultivo || cultivo.nombre
+      option.value = nombreCultivo
+      option.textContent = nombreCultivo
+      select.appendChild(option)
+    })
+
+    console.log(`✅ ${cultivos.length} cultivos cargados en el selector`)
+
+  } catch (error) {
+    console.error('❌ Error cargando cultivos:', error)
+  }
 }
