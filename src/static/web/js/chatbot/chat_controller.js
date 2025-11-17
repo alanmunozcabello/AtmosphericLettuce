@@ -101,35 +101,64 @@ document.getElementById('enviarBtn').addEventListener('click', async () => {
 
   showLoader() // comenzar animacion de carga
 
+  // Construir HTML con previews de archivos
+  let mensajeHTML = '<p><b>Tú:</b> '
+
   // Caso 1: hay texto
   if (texto) {
     payload.texto = texto
+    mensajeHTML += texto
   }
   // console.log(inputArchivos.files[0].name);
 
   textoInput.value = ''
-  // mostrar la pregunta del usuario
-  document.getElementById('chatBox').innerHTML += `
-    <p><b>Tú:</b> ${texto}</p>
-  `
 
   if (archivosSeleccionados.length > 0) {
-    console.log('Archivos seleccionados:')
+    mensajeHTML += '<div class="archivo-previews">'
+    
     for (let archivo of archivosSeleccionados) {
-      // const archivo=inputArchivos.file[i];//<-- deberia iterar bien sobre los elementos
-      console.log(archivo.name, archivo.type) // Muestra el nombre de cada archivo
+      console.log(archivo.name, archivo.type)
       // Caso 2: hay archivo
       if (archivo.type === 'image/png' || archivo.type === 'image/jpeg') {
         const imagenBase64 = await leerArchivoBase64(archivo)
-        // console.log("Imagen en base64:", imagen_base64);
-        payload.imagen.push(imagenBase64) // se añade al payload la imagen en base64
-      } else if (archivo.type === 'application/pdf') {
+        payload.imagen.push(imagenBase64)
+        
+        // Preview de imagen pequeña
+        mensajeHTML += `
+          <div class="file-preview image-preview">
+            <img src="data:${archivo.type};base64,${imagenBase64}" 
+                 alt="${archivo.name}" 
+                 title="${archivo.name}">
+          </div>
+        `
+      } 
+      else if (archivo.type === 'application/pdf') {
         const pdfBase64 = await leerArchivoBase64(archivo)
-        // console.log("pdf en base64:", pdf_base64);
-        payload.pdf.push(pdfBase64) // se añade al payload la imagen en base64
+        payload.pdf.push(pdfBase64)
+        
+        // Preview de PDF con ícono
+        mensajeHTML += `
+          <div class="file-preview pdf-preview">
+            <svg class="pdf-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            <span class="pdf-name">${archivo.name}</span>
+          </div>
+        `
       }
     }
+
+    mensajeHTML += '</div>'
   }
+
+  mensajeHTML += '</p>'
+
+  // Mostrar mensaje con previews
+  document.getElementById('chatBox').innerHTML += mensajeHTML
 
   if(cultivoSeleccionado !== '(Sin cultivo)' && CORREO !== null){
     payload.cultivo = cultivoSeleccionado || null,

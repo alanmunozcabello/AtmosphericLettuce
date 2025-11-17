@@ -19,11 +19,13 @@
   right: 22px;
   bottom: 100px;
   width: 30vw;
-  height: 400px;
+  height: 70vh; /* 70% de la altura de la pantalla */
+  max-height: 700px; /* Límite máximo */
+  min-height: 400px; /* Altura mínima */
   background: white;
   border-radius: 10px;
   box-shadow: 0 10px 28px rgba(0,0,0,.2);
-  display: none; /* Oculta por defecto */
+  display: none;
   flex-direction: column;
   overflow: hidden;
   font-family: Arial, sans-serif;
@@ -120,27 +122,105 @@
     background: white;
 }
 
+/* Contenedor de previews */
+.archivo-previews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* Preview individual */
+.file-preview {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 8px;
+  background: #f0f0f0;
+  max-width: 200px;
+}
+
+/* Preview de imagen */
+.image-preview {
+  padding: 4px;
+  background: #fff;
+  border: 1px solid #ddd;
+}
+
+.image-preview img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.image-preview img:hover {
+  transform: scale(1.05);
+}
+
+/* Preview de PDF */
+.pdf-preview {
+  gap: 8px;
+  background: #fff3f3;
+  border: 1px solid #ff6b6b;
+}
+
+.pdf-icon {
+  width: 24px;
+  height: 24px;
+  color: #ff6b6b;
+  flex-shrink: 0;
+}
+
+.pdf-name {
+  font-size: 12px;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Hover en PDF */
+.pdf-preview:hover {
+  background: #ffe5e5;
+  cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .file-preview {
+    max-width: 100%;
+  }
+  
+  .image-preview img {
+    width: 60px;
+    height: 60px;
+  }
+}
+
 
 /* -------- Responsividad -------- */
 @media (max-width: 1024px) {
   .chat-window {
-    width: 40vw;   /* más ancho en pantallas medianas */
-    height: 380px;
+    width: 40vw;
+    height: 65vh; /* Ajustado proporcionalmente */
   }
 }
 
 @media (max-width: 768px) {
   .chat-window {
-    width: 60vw;   /* ocupa más espacio en tablets */
-    height: 360px;
+    width: 60vw;
+    height: 60vh; /* Ajustado para tablets */
   }
 }
 
 @media (max-width: 480px) {
   .chat-window {
-    width: 90vw;   /* casi todo el ancho en móviles */
-    height: 60vh;  /* altura proporcional a la pantalla */
-    right: 5%;     /* centrado con márgenes */
+    width: 90vw;
+    height: 70vh; /* Aumentado de 60vh a 70vh en móviles */
+    right: 5%;
     bottom: 80px;  
   }
 
