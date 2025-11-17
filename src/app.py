@@ -24,10 +24,11 @@ app.include_router(notificaciones_routes.router)
 # # Montar carpeta de archivos estáticos
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+
 # Iniciar scheduler de tareas
 @app.on_event("startup")
 def startup_event():
-   start_scheduler()
+    start_scheduler()
 
 
 # Comandos útiles:
