@@ -1,12 +1,23 @@
 /* global localStorage, location, document, window, invalidarCache */
 document.addEventListener('DOMContentLoaded', () => {
+  if (!verificarSesionActiva()) {
+    return
+  }
+
+  const correoDelToken = obtenerCorreoDelToken()
+  const correoURL = new URLSearchParams(location.search).get('correo')
+
+  if (correoURL && correoURL.toLowerCase() !== correoDelToken?.toLowerCase()) {
+    console.error('❌ Intento de acceso no autorizado')
+    cerrarSesion()
+    return
+  }
   // Obtener correo de localStorage o URL params
-  const correoUsuario = new URLSearchParams(location.search).get('correo') ||
-                         localStorage.getItem('correoUsuario')
+  const correoUsuario = correoDelToken ||
+                        localStorage.getItem('correoUsuario')
 
   if (!correoUsuario) {
-    console.warn('⚠️ Usuario no identificado')
-    window.location.href = 'index.html'
+    cerrarSesion()
     return
   }
 
@@ -23,15 +34,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const logo = document.querySelector('.logo img')
   if (logo) {
     logo.addEventListener('click', () => {
-      window.location.href = 'home.html'
+      window.location.href = `home.html?correo=${encodeURIComponent(correoUsuario)}`
     })
   }
 })
 
 // Función global para cerrar sesión
 function logout () {
-  // localStorage.removeItem('correoUsuario');
-  invalidarCache() // funcion de utils que se encarga de sacar los datos del usuario del local storage
-  localStorage.clear()
-  window.location.href = 'index.html'
+  cerrarSesion()
 }

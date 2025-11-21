@@ -2,13 +2,18 @@
 document.addEventListener('DOMContentLoaded', () => {
   // URL base del backend FastAPI
   // Clave para guardar el perfil en localStorage
+  if (!verificarSesionActiva()) {
+    return
+  }
   const LS_KEY = 'perfilAL'
 
   // ---cerrar sesion ---
   const logoutButton = document.getElementById('btn-logout')
   logoutButton.addEventListener('click', () => {
-    localStorage.clear() // limpia todo (sesión, caches, etc.)
+    /*localStorage.clear() // limpia todo (sesión, caches, etc.)
     location.replace('index.html') // redirige reemplazando la entrada del historial
+    */
+    cerrarSesion() // <-- Es de la función helper
   })
 
   // --- actualizar el correo en la URL sin recargar la página ---
@@ -23,16 +28,19 @@ document.addEventListener('DOMContentLoaded', () => {
   // Envia un JSON con { nombre, correo, ciudad, region } al endpoint PUT /usuarios/{correo}/modificar
   const putUsuario = async (correoActual, body) => {
     const url = `/usuarios/${encodeURIComponent(correoActual)}/modificar`
-
-    const res = await fetch(url, {
+    /*const res = await fetch(url, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' }, // se envía JSON
       body: JSON.stringify(body) // serializa el body a JSON
+      */
+    const res = await fetchConToken(url, {
+      method: 'PUT',
+      body: JSON.stringify(body)
     })
 
     // Si la respuesta no es postiva, lanza error con detalle
-    if (!res.ok) {
-      const text = await res.text()
+    if (!res || !res.ok) {
+      const text = await res.text().catch(() => 'Error desconocido')
       throw new Error(`PUT falló: ${res.status} ${res.statusText} ${text}`)
     }
 
@@ -45,15 +53,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Prioriza el parametro correo, luego localStorage, si no hay nada, cadena vacía
-  const CORREO =
-    new URLSearchParams(location.search).get('correo') ||
-    localStorage.getItem('correoUsuario') ||
-    ''
+  const CORREO = obtenerCorreoDelToken() ||
+                 new URLSearchParams(location.search).get('correo') ||
+                 localStorage.getItem('correoUsuario') ||
+                 ''
 
-  // Si no hay correo, se asume que no hay sesión: redirige a index
+  // Si no obtiene ni el token ni el correo entonces redirige al login, pero con jwt
   if (!CORREO) {
     console.warn('⚠️ Usuario no identificado')
-    window.location.href = 'index.html'
+    cerrarSesion()
     return // detiene el script
   }
   // Asegura persistencia del correo en localStorage
@@ -137,10 +145,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // ---  GET /usuarios/{correo} ---
   async function syncConBackend () {
     try {
-      // const res = await fetch(`${API_BASE}/usuarios/${encodeURIComponent(CORREO)}`); // pide datos al backend
-      // if (!res.ok) return; // si falla  sale
+      const res = await fetchConToken(`/usuarios/${encodeURIComponent(CORREO)}`)
 
-      const usuario = await obtenerUsuario(CORREO) // parsea JSON devuelto por el backend
+      if (!res || !res.ok) {
+        console.warn('No se pudo cargar el perfil desde el backend')
+        return
+      }
+      const usuario = await res.json()
+      
       const previo = leerLS() || {} // lee lo que ya estaba en cache
 
       // A veces el backend puede mandar "nombre" con un email; lo tratamos para mostrar algo amigable

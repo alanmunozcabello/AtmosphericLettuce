@@ -1,6 +1,6 @@
 import json
 import sqlite3
-from services.security import hash_password_simple, verify_password
+from services.security_service import hash_password_simple, verify_password
 from datetime import datetime
 
 DB_PATH = "data/DataBase.db"

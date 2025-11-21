@@ -111,6 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         localStorage.setItem('correoUsuario', vEmail)
         localStorage.setItem('usuario', JSON.stringify(usuarioCompleto)) // ✅ CACHE COMPLETO
+        localStorage.setItem('token', body.token)
         localStorage.setItem('ultimaActualizacion', Date.now()) // ✅ TIMESTAMP
 
         window.location.href = `home.html?correo=${encodeURIComponent(vEmail)}`

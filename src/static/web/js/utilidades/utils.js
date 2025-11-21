@@ -1,10 +1,9 @@
 function obtenerUsuarioCache (correo) {
   try {
-    const correoCache = localStorage.getItem('correoUsuario')
-    if (!correoCache || correoCache !== correo) {
-      console.log('🚫 Cache inválido: sesión no coincide')
+    const correoToken = obtenerCorreoDelToken()
+    if (!correoToken || correoToken !== correo) {
+      console.log('🚫 Cache inválido: correo no coincide con token')
       invalidarCache()
-      window.location.href = 'index.html'
       return null
     }
 
@@ -34,14 +33,23 @@ function obtenerUsuarioCache (correo) {
 }
 
 async function obtenerUsuario (correo) {
-  // verificar sesión ANTES de intentar cache
-  const correoCache = localStorage.getItem('correoUsuario')
-  if (!correoCache) {
-    console.log('🚫 No hay sesión - redirigiendo a login')
-    window.location.href = 'index.html'
+  // verificar sesión activa antes de todo
+  if (!verificarSesionActiva()) {
     return null
   }
 
+  const correoToken = obtenerCorreoDelToken()
+  if (!correoToken) {
+    console.log('🚫 No se pudo obtener correo del token')
+    cerrarSesion()
+    return null
+  }
+
+  if (correoToken !== correo) {
+    console.log('🚫 Intento de acceso no autorizado')
+    cerrarSesion()
+    return null
+  }
   // intentar cache primero
   let usuario = obtenerUsuarioCache(correo)
 
@@ -53,9 +61,9 @@ async function obtenerUsuario (correo) {
   // solo ir al backend si realmente es necesario
   try {
     console.log('🌐 Cache expirado/inexistente - cargando desde backend')
-    const res = await fetch(`/usuarios/${encodeURIComponent(correo)}`)
+    const res = await fetchConToken(`/usuarios/${encodeURIComponent(correo)}`)
 
-    if (!res.ok) {
+    if (!res || !res.ok) {
       throw new Error(`HTTP ${res.status}: ${res.statusText}`)
     }
 
@@ -77,10 +85,10 @@ async function obtenerUsuario (correo) {
       return cacheExpirado
     }
 
-    // Si no hay nada, ir al login
+    // Si no hay nada, cerrar sesión
     invalidarCache()
     alert('Error de conexión. Redirigiendo al login...')
-    window.location.href = 'index.html'
+    cerrarSesion()
     return null
   }
 }
@@ -107,17 +115,18 @@ function invalidarCache () {
 
 // función auxiliar para debugging
 function verEstadoCache (correo) {
-  const correoCache = localStorage.getItem('correoUsuario')
+  const correoToken = obtenerCorreoDelToken()
   const usuario = JSON.parse(localStorage.getItem('usuario') || 'null')
   const ultimaActualizacion = parseInt(localStorage.getItem('ultimaActualizacion') || '0')
   const ahora = Date.now()
 
   console.log('🔍 Estado del cache:')
   console.log('   Correo solicitado:', correo)
-  console.log('   Correo en cache:', correoCache)
+  console.log('   Correo del token:', correoToken)
   console.log('   Usuario en cache:', usuario?.correo)
   console.log('   Última actualización:', new Date(ultimaActualizacion).toLocaleString())
   console.log('   Expirado:', (ahora - ultimaActualizacion) > 5 * 60 * 1000)
+  console.log('   Token válido:', !!localStorage.getItem('token'))
 }
 
 // Invalidar cache de clima cuando cambien las coordenadas del usuario
