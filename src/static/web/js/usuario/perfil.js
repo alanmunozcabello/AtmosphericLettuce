@@ -357,3 +357,22 @@ document.addEventListener('DOMContentLoaded', () => {
   modoEdicion(false)
   syncConBackend() // trae datos desde el backend y los muestra
 })
+
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted) {
+    console.log('⚠️ Perfil restaurado desde caché (botón Atrás)')
+    
+    // Verificar sesión activa
+    if (!verificarSesionActiva()) {
+      return // Redirige automáticamente a login
+    }
+
+    const correoUsuario = obtenerCorreoDelToken()
+    if (!correoUsuario) {
+      cerrarSesion()
+      return
+    }
+
+    console.log('✅ Sesión válida en perfil restaurado')
+  }
+})
