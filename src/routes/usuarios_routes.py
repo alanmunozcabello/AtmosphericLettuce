@@ -1,6 +1,9 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from typing import Optional
+from services.jwt_service import crear_token
+from middleware.autenticacion_mw import verificar_autenticacion
+from middleware.permisos_mw import verificar_propietario
 
 from controllers.usuarios_controller import (
     controller_agregar_cultivo,
@@ -49,9 +52,13 @@ def ruta_obtener_usuarios():
 # que venga en la url como parametro para la funcion!!! :O
 # get es para dar información
 @router.get("/usuarios/{correo}")
-def ruta_obtener_usuario(correo):
+def ruta_obtener_usuario(
+    correo: str,
+    correo_token: str = Depends(verificar_autenticacion),
+):
     # enrutador para obtener la informacion de un usuario
     # ----------------front
+    verificar_propietario(correo, correo_token)
     return controller_obtener_usuario(correo)
 
 
@@ -60,7 +67,17 @@ def ruta_obtener_usuario(correo):
 # ver como seria cuando se vaya a usar coso de java token coso
 @router.get("/usuarios/iniciar_sesion/{correo}/{contrasena}")
 def ruta_iniciar_sesion(correo, contrasena):
-    return controller_iniciar_sesion(correo, contrasena)
+    resultado =  controller_iniciar_sesion(correo, contrasena)
+    
+    if "error" in resultado:
+        return resultado
+    
+    token = crear_token(correo)
+    
+    return {
+        **resultado,
+        "token": token
+    }
 
 
 class UsuarioRegistro(BaseModel):
@@ -192,7 +209,12 @@ class UsuarioModificado(BaseModel):
 
 # HAY QUE CAMBIAR TODITO EL COSIACO
 @router.put("/usuarios/{correo}/modificar")
-def ruta_modificar_usuario(correo, usuarioMOD: UsuarioModificado):
+def ruta_modificar_usuario(
+    correo: str,
+    usuarioMOD: UsuarioModificado,
+    correo_token: str = Depends(verificar_autenticacion)
+):
+    verificar_propietario(correo, correo_token) 
     # usuarioMOD es el dict completo del usuario a modificar
     return controller_modificar_usuario(correo, usuarioMOD)
 
