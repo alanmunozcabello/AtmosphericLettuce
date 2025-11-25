@@ -1,3 +1,4 @@
+/* global obtenerClimaSemana, document */
 async function cargarClimaSemana () {
   console.log('📅 Iniciando carga de clima semanal...')
 

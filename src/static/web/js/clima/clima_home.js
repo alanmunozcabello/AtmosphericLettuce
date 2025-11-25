@@ -1,3 +1,5 @@
+/* global obtenerClimaDia, obtenerClimaSemana, document, window */
+
 document.addEventListener('DOMContentLoaded', async () => {
   if (window.location.pathname.includes('home.html')) {
     // Solo cargar clima si estamos en home.html
