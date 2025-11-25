@@ -17,6 +17,7 @@ from controllers.usuarios_controller import (
     controller_obtener_todos_los_usuarios,
     controller_obtener_usuario,
     controller_registrar_usuario,
+    controller_filtrar_cultivos,
 )
 
 router = APIRouter()
@@ -78,8 +79,33 @@ def ruta_registrar_usuario(usuario: UsuarioRegistro):
 
 
 @router.get("/usuarios/{correo}/cultivos")
-def ruta_obtener_cultivos_usuario(correo):
-    return controller_obtener_cultivos_usuario(correo)
+def ruta_obtener_cultivos_usuario(
+    correo: str,
+    pagina: int = 1,
+    limite: int = 20
+):
+    """
+    Obtener cultivos de un usuario con paginación
+    
+    Parámetros:
+    - correo: Email del usuario
+    - pagina: Número de página (default: 1)
+    - limite: Cantidad de resultados por página (default: 20, máx: 100)
+    
+    Retorna:
+    {
+        "cultivos": [...],
+        "paginacion": {
+            "pagina_actual": 1,
+            "limite": 20,
+            "total": 45,
+            "total_paginas": 3,
+            "tiene_siguiente": true,
+            "tiene_anterior": false
+        }
+    }
+    """
+    return controller_obtener_cultivos_usuario(correo, pagina, limite)
 
 
 class CultivoCreate(BaseModel):
@@ -200,4 +226,47 @@ def ruta_modificar_notificaciones_usuario(
 ):
     return controller_modificar_notificaciones_usuario(
         correo, notificaciones
+    )
+
+
+@router.get("/cultivos/filtrar")
+def ruta_filtrar_cultivos(
+    correo: Optional[str] = None,
+    buscar: Optional[str] = None,
+    etapa_planta: Optional[str] = None,
+    fecha_siembra_desde: Optional[str] = None,
+    fecha_siembra_hasta: Optional[str] = None,
+    estado_planta: Optional[str] = None,
+    tipo_riego: Optional[str] = None,
+    tiene_area: Optional[bool] = None,
+    tiene_formulario: Optional[bool] = None,
+    ordenar_por: str = "nombre_cultivo",
+    orden: str = "ASC",
+    pagina: int = 1,
+    limite: int = 20
+):
+    """
+    Endpoint para filtrar cultivos con múltiples criterios
+
+    Ejemplos de uso:
+    - /cultivos/filtrar?correo=user@mail.com
+    - /cultivos/filtrar?buscar=tomate&pagina=1&limite=10
+    - /cultivos/filtrar?etapa_planta=cosecha&tipo_riego=goteo
+    - /cultivos/filtrar?fecha_siembra_desde=2025-01-01&fecha_siembra_hasta=2025-03-31
+    - /cultivos/filtrar?tiene_area=true&ordenar_por=hectareas&orden=DESC
+    """
+    return controller_filtrar_cultivos(
+        correo=correo,
+        buscar=buscar,
+        etapa_planta=etapa_planta,
+        fecha_siembra_desde=fecha_siembra_desde,
+        fecha_siembra_hasta=fecha_siembra_hasta,
+        estado_planta=estado_planta,
+        tipo_riego=tipo_riego,
+        tiene_area=tiene_area,
+        tiene_formulario=tiene_formulario,
+        ordenar_por=ordenar_por,
+        orden=orden,
+        pagina=pagina,
+        limite=limite
     )

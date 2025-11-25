@@ -14,6 +14,7 @@ from services.usuarios_service import (
     service_modificar_formulario_cultivo,
     service_modificar_area_cultivo,
     service_modificar_notificaciones_usuario,
+    service_filtrar_cultivos,
 )
 
 
@@ -102,7 +103,7 @@ def controller_registrar_usuario(correo, nombre, contrasena):
     return service_registrar_usuario(correo, nombre, contrasena)
 
 
-def controller_obtener_cultivos_usuario(correo):
+def controller_obtener_cultivos_usuario(correo, pagina=1, limite=20):
     if not correo or not correo.strip():
         return {
             "success": False,
@@ -118,7 +119,29 @@ def controller_obtener_cultivos_usuario(correo):
             "error": "Formato de correo inválido"
         }
 
-    return service_obtener_cultivos_usuario(correo)
+    # Validar paginación
+    try:
+        pagina = int(pagina)
+        limite = int(limite)
+    except (ValueError, TypeError):
+        return {
+            "success": False,
+            "error": "Página y límite deben ser números enteros"
+        }
+
+    if pagina < 1:
+        return {
+            "success": False,
+            "error": "La página debe ser mayor o igual a 1"
+        }
+
+    if limite < 1 or limite > 100:
+        return {
+            "success": False,
+            "error": "El límite debe estar entre 1 y 100"
+        }
+
+    return service_obtener_cultivos_usuario(correo, pagina, limite)
 
 
 def controller_eliminar_cultivo(correo, cultivo):
@@ -518,3 +541,94 @@ def controller_modificar_notificaciones_usuario(correo, notificaciones):
         }
 
     return service_modificar_notificaciones_usuario(correo, notificaciones)
+
+
+def controller_filtrar_cultivos(
+    correo=None,
+    buscar=None,
+    etapa_planta=None,
+    fecha_siembra_desde=None,
+    fecha_siembra_hasta=None,
+    estado_planta=None,
+    tipo_riego=None,
+    tiene_area=None,
+    tiene_formulario=None,
+    ordenar_por="nombre_cultivo",
+    orden="ASC",
+    pagina=1,
+    limite=20
+):
+    """
+    Controller para filtrar cultivos con validaciones de parámetros
+    """
+    # Validar correo si se proporciona
+    if correo:
+        correo = correo.strip().lower()
+        patron_email = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{1,}$"
+        if not re.match(patron_email, correo):
+            return {
+                "success": False,
+                "error": "Formato de correo inválido"
+            }
+
+    # Validar paginación
+    try:
+        pagina = int(pagina)
+        limite = int(limite)
+    except (ValueError, TypeError):
+        return {
+            "success": False,
+            "error": "Página y límite deben ser números enteros"
+        }
+
+    if pagina < 1:
+        return {
+            "success": False,
+            "error": "La página debe ser mayor o igual a 1"
+        }
+
+    if limite < 1 or limite > 100:
+        return {
+            "success": False,
+            "error": "El límite debe estar entre 1 y 100"
+        }
+
+    # Validar orden
+    if orden.upper() not in ["ASC", "DESC"]:
+        return {
+            "success": False,
+            "error": "El orden debe ser ASC o DESC"
+        }
+
+    # Validar fechas si se proporcionan
+    if fecha_siembra_desde:
+        patron_fecha = r"^\d{4}-\d{2}-\d{2}$"
+        if not re.match(patron_fecha, fecha_siembra_desde):
+            return {
+                "success": False,
+                "error": "Formato de fecha_desde inválido (use YYYY-MM-DD)"
+            }
+
+    if fecha_siembra_hasta:
+        patron_fecha = r"^\d{4}-\d{2}-\d{2}$"
+        if not re.match(patron_fecha, fecha_siembra_hasta):
+            return {
+                "success": False,
+                "error": "Formato de fecha_hasta inválido (use YYYY-MM-DD)"
+            }
+
+    return service_filtrar_cultivos(
+        correo=correo,
+        buscar=buscar,
+        etapa_planta=etapa_planta,
+        fecha_siembra_desde=fecha_siembra_desde,
+        fecha_siembra_hasta=fecha_siembra_hasta,
+        estado_planta=estado_planta,
+        tipo_riego=tipo_riego,
+        tiene_area=tiene_area,
+        tiene_formulario=tiene_formulario,
+        ordenar_por=ordenar_por,
+        orden=orden,
+        pagina=pagina,
+        limite=limite
+    )
