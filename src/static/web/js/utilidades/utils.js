@@ -1,3 +1,5 @@
+/* global localStorage, obtenerCorreoDelToken, verificarSesionActiva, cerrarSesion, fetchConToken, invalidarCacheClima */
+
 function obtenerUsuarioCache (correo) {
   try {
     const correoToken = obtenerCorreoDelToken()
