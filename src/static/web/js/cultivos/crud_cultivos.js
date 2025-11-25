@@ -1,3 +1,5 @@
+/* global fetchConToken, verificarSesionActiva, obtenerCorreoDelToken, cerrarSesion */
+
 // ========== INICIALIZAR EVENTOS CRUD ==========
 function inicializarEventosCRUD () {
   const form = document.getElementById('form-cultivo')
@@ -20,6 +22,10 @@ function inicializarEventosCRUD () {
 async function agregarCultivo (e) {
   e.preventDefault()
 
+  if (!verificarSesionActiva()) {
+    return
+  }
+
   const { correo, cultivosData } = window.cultivosState
   const inputCultivo = document.getElementById('input-cultivo')
   const inputHectareas = document.getElementById('input-hectareas')
@@ -39,11 +45,10 @@ async function agregarCultivo (e) {
     const accionTexto = cultivoExiste ? 'Modificando' : 'Agregando'
     console.log(`${accionTexto} cultivo:`, nombre)
 
-    const response = await fetch(
+    const response = await fetchConToken(
       `/usuarios/${encodeURIComponent(correo)}/agregar_cultivo`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nombre_cultivo: nombre,
           hectareas: hectareas
@@ -51,16 +56,12 @@ async function agregarCultivo (e) {
       }
     )
 
-    const data = await response.json()
-
-    if (data.error) {
-      throw new Error(data.error)
-    }
-
-    if (!response.ok) {
+    if (!response || !response.ok) {
+      const data = await response.json().catch(() => ({}))
       throw new Error(data.error || data.detail || 'Error en el servidor')
     }
 
+    const data = await response.json()
     console.log('✅', data.mensaje || 'Cultivo guardado')
 
     if (window.invalidarCache) {
@@ -92,27 +93,27 @@ async function eliminarCultivo (e) {
   const btn = e.target.closest('.btn-eliminar')
   if (!btn) return
 
+  if (!verificarSesionActiva()) {
+    return
+  }
+
   const { correo, cultivoSeleccionado } = window.cultivosState
   const nombre = btn.dataset.nombre
 
   if (!confirm(`¿Eliminar "${nombre}"?`)) return
 
   try {
-    const response = await fetch(
+    const response = await fetchConToken(
       `/usuarios/${encodeURIComponent(correo)}/${encodeURIComponent(nombre)}/eliminar`,
       { method: 'DELETE' }
     )
-
-    const data = await response.json()
-
-    if (data.error) {
-      throw new Error(data.error)
-    }
-
-    if (!response.ok) {
+    
+    if (!response || !response.ok) {
+      const data = await response.json().catch(() => ({}))
       throw new Error(data.error || data.detail || 'Error en el servidor')
     }
 
+    const data = await response.json()
     console.log('✅', data.mensaje || 'Cultivo eliminado del servidor')
 
     // si estaba seleccionado se limpia al seleccion
@@ -158,7 +159,13 @@ function manejarClickLista (e) {
   // Configurar
   if (e.target.classList.contains('btn-config')) {
     const nombre = e.target.dataset.nombre
-    const { correo } = window.cultivosState
+    const correo = obtenerCorreoDelToken()
+
+    if (!correo) {
+      cerrarSesion()
+      return
+    }
+
     window.location.href = `formulario_plantas.html?cultivo=${encodeURIComponent(nombre)}&correo=${encodeURIComponent(correo)}`
     return
   }

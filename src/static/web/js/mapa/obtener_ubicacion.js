@@ -1,15 +1,18 @@
-document.addEventListener('DOMContentLoaded', async () => {
-  // 1. Obtener correo como en otros archivos
-  const CORREO = new URLSearchParams(location.search).get('correo') ||
-    localStorage.getItem('correoUsuario')
+/* global localStorage, location, document, window, ol, verificarSesionActiva, obtenerCorreoDelToken, cerrarSesion, obtenerUsuario */
 
-  if (!CORREO) {
-    console.warn('⚠️ Usuario no identificado')
-    window.location.href = 'index.html'
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!verificarSesionActiva()) {
     return
   }
 
-  localStorage.setItem('correoUsuario', CORREO)
+  // 1. Obtener correo como en otros archivos
+  const CORREO = obtenerCorreoDelToken()
+
+  if (!CORREO) {
+    console.error('❌ No se pudo obtener correo del token')
+    cerrarSesion()
+    return
+  }
 
   let latUsuario, lonUsuario
 
@@ -19,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!usuario) {
       console.warn('⚠️ No se pudo obtener datos del usuario')
-      window.location.href = 'index.html'
+      cerrarSesion()
       return
     }
 

@@ -1,14 +1,5 @@
 /* global localStorage, alert, location, document */
 document.addEventListener('DOMContentLoaded', () => {
-  const CORREO = new URLSearchParams(location.search).get('correo') ||
-               localStorage.getItem('correoUsuario')
-
-  if (!CORREO) {
-    console.warn('⚠️ Usuario no identificado')
-    window.location.href = 'index.html'
-  }
-
-  localStorage.setItem('correoUsuario', CORREO)
 
   // Referencias a los elementos del formulario de registro
   const form = document.getElementById('register-form') // <form> principal

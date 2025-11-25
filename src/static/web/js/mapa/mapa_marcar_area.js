@@ -1,3 +1,5 @@
+/* global ol, fetchConToken, verificarSesionActiva */
+
 // ========== VARIABLES DEL MAPA DE MARCAR ÁREA ==========
 let mapSuperficie = null
 let vectorSourceSuperficie = null
@@ -339,6 +341,10 @@ async function guardarArea () {
     return
   }
 
+  if (!verificarSesionActiva()) {
+    return
+  }
+
   const { correo, cultivoSeleccionado, cultivosData } = window.cultivosState
 
   if (!cultivosData[cultivoSeleccionado]) {
@@ -372,11 +378,10 @@ async function guardarArea () {
       puntos: puntosParaGuardar
     })
 
-    const response = await fetch(
+    const response = await fetchConToken(
       `/usuarios/${encodeURIComponent(correo)}/cultivo/modificar_area_cultivo`,
       {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           cultivo: cultivoSeleccionado,
           area: areaHectareas,
@@ -385,15 +390,12 @@ async function guardarArea () {
       }
     )
 
-    const data = await response.json()
-
-    if (data.error) {
-      throw new Error(data.error)
-    }
-
-    if (!response.ok) {
+    if (!response || !response.ok) {
+      const data = await response.json().catch(() => ({}))
       throw new Error(data.error || data.detail || 'Error en el servidor')
     }
+
+    const data = await response.json()
 
     console.log('✅', data.mensaje || 'Área guardada')
 
