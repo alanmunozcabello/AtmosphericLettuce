@@ -3,10 +3,11 @@
 document.addEventListener('DOMContentLoaded', async () => {
   if (window.location.pathname.includes('home.html')) {
     // Solo cargar clima si estamos en home.html
-    setTimeout(() => {
+    setTimeout(async () => {
       if (typeof cargarClimaHome === 'function') {
-        cargarClimaHome()
+        await cargarClimaHome()
       }
+      await cargarConsejosClima()
     }, 1500) // mientras tanto será un tiempo fijo
   }
 })
@@ -129,4 +130,138 @@ function mostrarClimaFallback () {
 
   mostrarClimaEnHome(climaPorDefecto)
   console.log('📦 Mostrando clima por defecto')
+}
+
+// ========== CONSEJOS DEL CLIMA ==========
+async function cargarConsejosClima() {
+  console.log('💡 Cargando consejos del clima...')
+  
+  try {
+    const datosClimaDia = await obtenerClimaDia()
+    
+    if (!datosClimaDia) {
+      console.warn('⚠️ No hay datos de clima para generar consejos')
+      mostrarConsejosFallback()
+      return
+    }
+
+    const consejos = generarConsejos(datosClimaDia)
+    mostrarConsejos(consejos)
+
+  } catch (error) {
+    console.error('❌ Error cargando consejos:', error)
+    mostrarConsejosFallback()
+  }
+}
+
+function generarConsejos(clima) {
+  const consejos = []
+  
+  // Obtener datos del clima
+  const temp = clima.temp || 0
+  const humedad = clima.humidity || 0
+  const lluvia = clima.rain || 0
+  const viento = clima.wind_kmh || 0
+  const descripcion = (clima.estado || '').toLowerCase()
+
+  console.log('📊 Datos para consejos:', { temp, humedad, lluvia, viento, descripcion })
+
+  // ========== Consejos por temperatura ==========
+  if (temp > 30) {
+    consejos.push('🌡️ Temperatura alta: Aumenta la frecuencia de riego, especialmente en horas tempranas.')
+  } else if (temp > 25) {
+    consejos.push('☀️ Temperatura cálida: Monitorea la humedad del suelo regularmente.')
+  } else if (temp < 5) {
+    consejos.push('❄️ Temperatura baja: Protege tus cultivos sensibles a heladas.')
+  } else if (temp < 10) {
+    consejos.push('🌡️ Temperatura fresca: Reduce la frecuencia de riego.')
+  }
+
+  // ========== Consejos por humedad ==========
+  if (humedad > 80) {
+    consejos.push('💧 Humedad alta: Reduce el riego para evitar enfermedades fúngicas.')
+  } else if (humedad < 30) {
+    consejos.push('🏜️ Humedad baja: Considera riego por goteo para mantener humedad del suelo.')
+  }
+
+  // ========== Consejos por lluvia ==========
+  if (lluvia > 10) {
+    consejos.push('🌧️ Se esperan lluvias: Suspende el riego programado por hoy.')
+  } else if (lluvia > 0) {
+    consejos.push('🌦️ Lluvia ligera esperada: Monitorea el suelo antes de regar.')
+  }
+
+  // ========== Consejos por viento ==========
+  if (viento > 30) {
+    consejos.push('💨 Vientos fuertes: Asegura estructuras y protege plantas jóvenes.')
+  } else if (viento > 20) {
+    consejos.push('🌬️ Viento moderado: Verifica sistemas de riego y tutores.')
+  }
+
+  // ========== Consejos generales por descripción ==========
+  if (descripcion.includes('clear') || descripcion.includes('sunny')) {
+    consejos.push('☀️ Día despejado: Ideal para aplicar fertilizantes foliares en horas tempranas.')
+  }
+
+  if (descripcion.includes('storm')) {
+    consejos.push('⛈️ Tormenta cercana: Evita trabajos en campo y asegura sistemas de riego.')
+  }
+
+  if (descripcion.includes('cloud') && !descripcion.includes('rain')) {
+    consejos.push('☁️ Día nublado: Buen momento para realizar podas y mantenimiento.')
+  }
+
+  // ========== Si no hay consejos específicos ==========
+  if (consejos.length === 0) {
+    consejos.push('🌱 Clima estable: Buen día para monitorear tus cultivos y realizar mantenimiento.')
+  }
+
+  console.log(`✅ ${consejos.length} consejos generados`)
+  return consejos
+}
+
+function mostrarConsejos(consejos) {
+  const contenedorConsejos = document.getElementById('consejos-clima')
+  
+  if (!contenedorConsejos) {
+    console.warn('⚠️ No se encontró contenedor de consejos (#consejos-clima)')
+    return
+  }
+
+  // Limpiar contenedor
+  contenedorConsejos.innerHTML = ''
+
+  // Agregar cada consejo
+  consejos.forEach((consejo, index) => {
+    const divConsejo = document.createElement('div')
+    divConsejo.className = 'consejo-item'
+    divConsejo.textContent = consejo
+    
+    // Pequeña animación de entrada (opcional)
+    setTimeout(() => {
+      divConsejo.style.opacity = '1'
+      divConsejo.style.transform = 'translateX(0)'
+    }, index * 100)
+    
+    contenedorConsejos.appendChild(divConsejo)
+  })
+
+  console.log(`✅ ${consejos.length} consejos mostrados en la interfaz`)
+}
+
+function mostrarConsejosFallback() {
+  const contenedorConsejos = document.getElementById('consejos-clima')
+  
+  if (!contenedorConsejos) {
+    console.warn('⚠️ No se encontró contenedor de consejos')
+    return
+  }
+  
+  contenedorConsejos.innerHTML = `
+    <div class="consejo-item loading">
+      🌱 No se pudieron cargar los consejos del clima
+    </div>
+  `
+  
+  console.log('📦 Mostrando consejos fallback')
 }

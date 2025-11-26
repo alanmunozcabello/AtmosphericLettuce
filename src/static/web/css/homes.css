@@ -403,7 +403,51 @@ body{
     background: white;
 }
 
+/* --------- Consejos del Clima --------- */
+.consejos-clima {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
 
+.consejo-item {
+  padding: 12px 14px;
+  background: linear-gradient(135deg, rgba(93, 181, 255, 0.08), rgba(85, 194, 165, 0.08));
+  border-left: 4px solid #5db5ff;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1f2937;
+  line-height: 1.6;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.consejo-item:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  background: linear-gradient(135deg, rgba(93, 181, 255, 0.12), rgba(85, 194, 165, 0.12));
+}
+
+/* Variantes de color según tipo de consejo */
+.consejo-item:nth-child(2) {
+  border-left-color: #55c2a5;
+}
+
+.consejo-item:nth-child(3) {
+  border-left-color: #f59e0b;
+}
+
+.consejo-item:nth-child(4) {
+  border-left-color: #ef4444;
+}
+
+/* Estado de carga */
+.consejo-item.loading {
+  color: #9ca3af;
+  font-style: italic;
+  border-left-color: #d1d5db;
+}
 
 /* --------- Responsive --------- */
 @media (max-width: 900px){

@@ -163,7 +163,10 @@ document.getElementById('enviarBtn').addEventListener('click', async () => {
   // Mostrar mensaje con previews
   document.getElementById('chatBox').innerHTML += mensajeHTML
 
-  if(cultivoSeleccionado !== '(Sin cultivo)' && CORREO){
+  if(cultivoSeleccionado &&
+     cultivoSeleccionado !== '' &&
+     cultivoSeleccionado !== '(Sin cultivo)' &&
+     CORREO) {
     payload.cultivo = cultivoSeleccionado
     payload.correo = CORREO
   }

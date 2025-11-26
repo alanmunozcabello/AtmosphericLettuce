@@ -79,8 +79,13 @@ function cerrarSesion() {
   console.log('👋 Cerrando sesión...')
   localStorage.clear()
   sessionStorage.clear()
-  window.location.replace('index.html')
-  window.history.pushState(null, '', 'index.html')
+  console.log('✅ Sesión cerrada correctamente')
+  if (window.location.pathname.includes('index.html')) {
+    window.location.replace('index.html')
+  } else {
+    const urlBase = window.location.origin + window.location.pathname.split('/').slice(0, -1).join('/') + '/index.html'
+    window.location.replace(urlBase)
+  }
 }
 
 /**
