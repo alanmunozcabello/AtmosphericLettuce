@@ -4,24 +4,24 @@ from typing import Optional
 from services.jwt_service import crear_token
 from middleware.autenticacion_mw import verificar_autenticacion
 from middleware.permisos_mw import verificar_propietario
-
-from controllers.usuarios_controller import (
-    controller_agregar_cultivo,
-    controller_eliminar_cultivo,
-    controller_eliminar_usuario,
-    controller_iniciar_sesion,
-    controller_modificar_area_cultivo,
-    controller_modificar_formulario_cultivo,
-    controller_modificar_notificaciones_usuario,
-    controller_modificar_region_ciudad_usuario,
-    controller_modificar_ubicacion_usuario,
-    controller_modificar_usuario,
-    controller_obtener_cultivos_usuario,
-    controller_obtener_todos_los_usuarios,
-    controller_obtener_usuario,
-    controller_registrar_usuario,
-    controller_filtrar_cultivos,
+from services.usuarios_service import (
+    service_leer_usuarios,
+    service_registrar_usuario,
+    service_obtener_usuario_para_frontend,
+    service_obtener_cultivos_usuario,
+    service_eliminar_cultivo,
+    service_modificar_usuario,
+    service_modificar_ubicacion_usuario,
+    service_iniciar_sesion,
+    service_modificar_region_ciudad_usuario,
+    service_eliminar_usuario,
+    service_agregar_cultivo,
+    service_modificar_formulario_cultivo,
+    service_modificar_area_cultivo,
+    service_modificar_notificaciones_usuario,
+    service_filtrar_cultivos,
 )
+
 
 router = APIRouter()
 
@@ -45,7 +45,7 @@ def hacer_ping():
 def ruta_obtener_usuarios():
     # enrutador para obtener los usuarios y mostrarlos
     # ----------------front
-    return controller_obtener_todos_los_usuarios()
+    return service_leer_usuarios()
 
 
 # usar {correo} hace que automaticamente se ponga el correo
@@ -59,7 +59,7 @@ def ruta_obtener_usuario(
     # enrutador para obtener la informacion de un usuario
     # ----------------front
     verificar_propietario(correo, correo_token)
-    return controller_obtener_usuario(correo)
+    return service_obtener_usuario_para_frontend(correo)
 
 
 # funcion no tan necesaria, el frontend puede saltarse esta
@@ -67,7 +67,7 @@ def ruta_obtener_usuario(
 # ver como seria cuando se vaya a usar coso de java token coso
 @router.get("/usuarios/iniciar_sesion/{correo}/{contrasena}")
 def ruta_iniciar_sesion(correo, contrasena):
-    resultado =  controller_iniciar_sesion(correo, contrasena)
+    resultado =  service_iniciar_sesion(correo, contrasena)
     
     if "error" in resultado:
         return resultado
@@ -88,7 +88,7 @@ class UsuarioRegistro(BaseModel):
 
 @router.post("/usuarios/registrar")
 def ruta_registrar_usuario(usuario: UsuarioRegistro):
-    return controller_registrar_usuario(
+    return service_registrar_usuario(
         usuario.correo,
         usuario.nombre,
         usuario.contrasena
@@ -122,7 +122,7 @@ def ruta_obtener_cultivos_usuario(
         }
     }
     """
-    return controller_obtener_cultivos_usuario(correo, pagina, limite)
+    return service_obtener_cultivos_usuario(correo, pagina, limite)
 
 
 class CultivoCreate(BaseModel):
@@ -133,7 +133,7 @@ class CultivoCreate(BaseModel):
 # post para agregar
 @router.post("/usuarios/{correo}/agregar_cultivo")
 def ruta_agregar_cultivo(correo: str, cultivo: CultivoCreate):
-    return controller_agregar_cultivo(
+    return service_agregar_cultivo(
         correo, cultivo.nombre_cultivo, cultivo.hectareas)
 
 
@@ -168,7 +168,7 @@ def ruta_modificar_formulario_cultivo(
     correo: str,
     cultivo_datos: CultivoDatos
 ):
-    return controller_modificar_formulario_cultivo(correo, cultivo_datos)
+    return service_modificar_formulario_cultivo(correo, cultivo_datos)
 
 
 class PuntoCoordenada(BaseModel):
@@ -190,21 +190,20 @@ def ruta_modificar_area_cultivo(
     correo: str,
     area_datos: AreaCultivoDatos
 ):
-    return controller_modificar_area_cultivo(correo, area_datos)
+    return service_modificar_area_cultivo(correo, area_datos)
 
 
 # delete para borrar
 @router.delete("/usuarios/{correo}/{cultivo}/eliminar")
 def ruta_eliminar_cultivo(correo, cultivo):
-    return controller_eliminar_cultivo(correo, cultivo)
-
+    return service_eliminar_cultivo(correo, cultivo)
 
 class UsuarioModificado(BaseModel):
     # correo: str
-    nombre: str
-    ciudad: str
-    region: str
-    foto_perfil: str
+    nombre: Optional[str] = None
+    ciudad: Optional[str] = None
+    region: Optional[str] = None
+    foto_perfil: Optional[str] = None
 
 
 # HAY QUE CAMBIAR TODITO EL COSIACO
@@ -216,27 +215,27 @@ def ruta_modificar_usuario(
 ):
     verificar_propietario(correo, correo_token) 
     # usuarioMOD es el dict completo del usuario a modificar
-    return controller_modificar_usuario(correo, usuarioMOD)
+    return service_modificar_usuario(correo, usuarioMOD)
 
 
 @router.patch("/usuarios/{correo}/ubicacion/{lat}/{lon}/modificar")
 def ruta_modificar_ubicacion_usuario(correo, lat, lon):
     # lat y lon pueden ser pasados como string sin problema
-    return controller_modificar_ubicacion_usuario(correo, lat, lon)
+    return service_modificar_ubicacion_usuario(correo, lat, lon)
 
 
 @router.patch(
     "/usuarios/{correo}/ubicacion/region/{region}/{ciudad}/modificar"
 )
 def ruta_modificar_region_ciudad_usuario(correo, region, ciudad):
-    return controller_modificar_region_ciudad_usuario(
+    return service_modificar_region_ciudad_usuario(
         correo, region, ciudad
     )
 
 
 @router.delete("/usuarios/{correo}")
 def ruta_eliminar_usuario(correo):
-    return controller_eliminar_usuario(correo)
+    return service_eliminar_usuario(correo)
 
 
 @router.patch(
@@ -246,7 +245,7 @@ def ruta_modificar_notificaciones_usuario(
     correo,
     notificaciones: bool
 ):
-    return controller_modificar_notificaciones_usuario(
+    return service_modificar_notificaciones_usuario(
         correo, notificaciones
     )
 
@@ -277,7 +276,7 @@ def ruta_filtrar_cultivos(
     - /cultivos/filtrar?fecha_siembra_desde=2025-01-01&fecha_siembra_hasta=2025-03-31
     - /cultivos/filtrar?tiene_area=true&ordenar_por=hectareas&orden=DESC
     """
-    return controller_filtrar_cultivos(
+    return service_filtrar_cultivos(
         correo=correo,
         buscar=buscar,
         etapa_planta=etapa_planta,

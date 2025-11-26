@@ -1,9 +1,9 @@
 from fastapi import APIRouter
-from controllers.chat_controllers import consultar
+from services.chat_service import procesar_consulta
 
 router = APIRouter()
 
 
 @router.post("/chat/consulta")
 def hacer_consulta(payload: dict):
-    return {"respuesta": consultar(payload)}
+    return {"respuesta": procesar_consulta(payload)}
