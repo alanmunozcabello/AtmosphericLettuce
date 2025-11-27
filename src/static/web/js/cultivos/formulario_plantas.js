@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Configurar botón regresar
     btnRegresar.addEventListener('click', function () {
-      window.location.href = `gestor_cultivos.html?correo=${encodeURIComponent(correo)}`
+      window.location.href = 'gestor_cultivos.html'
     })
   } else {
     // Si no viene de cultivos, ocultar botón regresar

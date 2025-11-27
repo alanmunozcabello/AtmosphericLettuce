@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('token', body.token)
         localStorage.setItem('ultimaActualizacion', Date.now()) // ✅ TIMESTAMP
 
-        window.location.href = `home.html?correo=${encodeURIComponent(vEmail)}`
+        window.location.href = 'home.html'
       }
       // Limpia los campos del formulario
       email.value = ''
@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.disabled = false
 
       // Redirige a home con el correo en la URL para continuidad
-      window.location.href = `home.html?correo=${encodeURIComponent(vEmail)}`
+      window.location.href = 'home.html'
     } catch (err) {
       // Errores de red/conexión o excepciones no controladas
       console.error('Error de conexión:', err)

@@ -16,15 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
     cerrarSesion() // <-- Es de la función helper
   })
 
-  // --- actualizar el correo en la URL sin recargar la página ---
-  const replaceCorreoInURL = (nuevoCorreo) => {
-    try {
-      const url = new URL(location.href) // instancia un objeto URL con la URL actual
-      url.searchParams.set('correo', nuevoCorreo) // cambia el parametro 'correo'
-      history.replaceState(null, '', url.toString()) // reemplaza la URL en el historial sin recargar
-    } catch { /* noop */ }
-  }
-
   // Envia un JSON con { nombre, correo, ciudad, region } al endpoint PUT /usuarios/{correo}/modificar
   const putUsuario = async (correoActual, body) => {
     const url = `/usuarios/${encodeURIComponent(correoActual)}/modificar`
@@ -53,10 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Prioriza el parametro correo, luego localStorage, si no hay nada, cadena vacía
-  const CORREO = obtenerCorreoDelToken() ||
-                 new URLSearchParams(location.search).get('correo') ||
-                 localStorage.getItem('correoUsuario') ||
-                 ''
+  const CORREO = obtenerCorreoDelToken() || ''
 
   // Si no obtiene ni el token ni el correo entonces redirige al login, pero con jwt
   if (!CORREO) {
@@ -325,7 +313,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       guardarLS(fusionado) // guarda en cache
       localStorage.setItem('correoUsuario', correoNuevo) // actualiza el correo de sesión
-      replaceCorreoInURL(correoNuevo) // cambia ?correo=... en la URL sin recargar
       pintar(fusionado) // repinta vista y form
       modoEdicion(false) // sale de modo edición
 

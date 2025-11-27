@@ -5,18 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const correoDelToken = obtenerCorreoDelToken()
-  const correoURL = new URLSearchParams(location.search).get('correo')
 
-  if (correoURL && correoURL.toLowerCase() !== correoDelToken?.toLowerCase()) {
-    console.error('❌ Intento de acceso no autorizado')
-    cerrarSesion()
-    return
-  }
   // Obtener correo de localStorage o URL params
-  const correoUsuario = correoDelToken ||
-                        localStorage.getItem('correoUsuario')
+  const correoUsuario = correoDelToken
 
   if (!correoUsuario) {
+    console.error('❌ No se pudo obtener correo del token')
     cerrarSesion()
     return
   }
@@ -34,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const logo = document.querySelector('.logo img')
   if (logo) {
     logo.addEventListener('click', () => {
-      window.location.href = `home.html?correo=${encodeURIComponent(correoUsuario)}`
+      window.location.href = 'home.html'
     })
   }
 })

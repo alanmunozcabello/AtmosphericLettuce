@@ -12,15 +12,6 @@ function validarSesion() {
         cerrarSesion()
         return false
     }
-    
-    const correoURL = new URLSearchParams(location.search).get('correo')
-
-    if (correoURL && correoURL.toLowerCase() !== correoUsuario.toLowerCase()) {
-        console.error('❌ Intento de acceso no autorizado')
-        alert('Acceso denegado: no puedes ver el perfil de otro usuario')
-        cerrarSesion()
-        return false
-    }
 
     localStorage.setItem('correoUsuario', correoUsuario)
     console.log('✅ Usuario autenticado en home:', correoUsuario)
