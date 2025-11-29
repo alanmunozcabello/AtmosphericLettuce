@@ -19,14 +19,13 @@
 /* ========== PANEL LATERAL DERECHO ========== */
 .gestor-panel {
   width: 350px;
-  background: #ffffff;
+  height: 100vh; 
+  background: white;
   border-left: 2px solid #e3e5ea;
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
-  box-shadow: -2px 0 12px rgba(0,0,0,0.1);
-  z-index: 10;
-  overflow-y: auto;
+  overflow-y: hidden; 
+  overflow-x: hidden;
 }
 
 /* ✅ HEADER: mismo gradiente que home/días */
@@ -135,7 +134,9 @@
 .panel-content {
   flex: 1;
   padding: 16px;
-  overflow-y: auto;
+  overflow-y: hidden; 
+  display: flex;
+  flex-direction: column;
 }
 
 .panel-content h5 {
@@ -152,9 +153,32 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  flex: 1;
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  scroll-behavior: smooth;
+}
+
+.lista-cultivos::-webkit-scrollbar {
+  width: 8px;
+}
+
+.lista-cultivos::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+.lista-cultivos::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #5db5ff, #55c2a5);
+  border-radius: 4px;
+}
+
+.lista-cultivos::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #4a9fe6, #44b094);
 }
 
 .item-cultivo {
@@ -167,6 +191,20 @@
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s;
+  opacity: 0; /* Inicia invisible para animación */
+  animation: fadeInUp 0.3s ease forwards; /* Animación de entrada */
+}
+
+/* Animación de entrada de cultivos */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ✅ Hover con color del proyecto */
@@ -246,6 +284,35 @@
   text-align: center;
   color: #6b7280;
   font-style: italic;
+}
+
+/* Indicador "Cargando más..." con scroll infinito */
+.cultivo-item-loading-more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px;
+  margin-top: 8px;
+  background: rgba(93, 181, 255, 0.05);
+  border-radius: 8px;
+  color: #5db5ff;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Spinner animado */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(93, 181, 255, 0.2);
+  border-top-color: #5db5ff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 /* ========== ACCIONES ========== */
@@ -542,6 +609,11 @@
     border-bottom: 2px solid #e3e5ea;
   }
 
+  /* Menos altura en móvil */
+  .lista-cultivos {
+    max-height: 250px;
+  }
+
   .overlay-content-marcar {
     width: 98%;
     height: 95%;
@@ -568,6 +640,11 @@
   .panel-summary {
     flex-direction: column;
     gap: 8px;
+  }
+
+  /* Aún menos altura en móvil pequeño */
+  .lista-cultivos {
+    max-height: 200px;
   }
 
   .superficie-panel {

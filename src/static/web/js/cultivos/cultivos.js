@@ -19,15 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return
   }
 
-  const correoURL = new URLSearchParams(location.search).get('correo')
-  
-  if (correoURL && correoURL.toLowerCase() !== CORREO.toLowerCase()) {
-    console.error('❌ Intento de acceso no autorizado')
-    alert('Acceso denegado: no puedes ver cultivos de otro usuario')
-    cerrarSesion()
-    return
-  }
-
   localStorage.setItem('correoUsuario', CORREO)
 
   // ========== ESTADO GLOBAL COMPARTIDO ==========
@@ -41,7 +32,14 @@ document.addEventListener('DOMContentLoaded', () => {
     colores: [
       '#ef4444', '#f59e0b', '#10b981', '#3b82f6',
       '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'
-    ]
+    ],
+    scrollInfinito: {
+      cultivosPorCarga: 20,
+      cultivosCargados: 0,
+      totalCultivos: 0,
+      cargando: false,
+      todosCargados: false
+    }
   }
 
   // ========== INICIALIZACIÓN ==========
@@ -76,7 +74,12 @@ document.addEventListener('DOMContentLoaded', () => {
         usuario.cultivos.forEach(cultivo => {
           window.cultivosState.cultivosData[cultivo.nombre] = cultivo
         })
-        console.log('✅ Cultivos cargados:', Object.keys(window.cultivosState.cultivosData).length)
+
+        // Actualizar total de cultivos
+        window.cultivosState.scrollInfinito.totalCultivos = usuario.cultivos.length
+        window.cultivosState.scrollInfinito.cultivosCargados = 0
+        window.cultivosState.scrollInfinito.todosCargados = false
+        console.log('✅ Total de cultivos:', usuario.cultivos.length)      
       }
 
       // 2. Inicializar mapa principal
@@ -85,8 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // 3. Renderizar UI
-      if (typeof renderizarLista === 'function') {
-        renderizarLista()
+      if (typeof renderizarListaInicial === 'function') {
+        renderizarListaInicial()
       }
 
       if (typeof renderizarMapaPrincipal === 'function') {
@@ -106,6 +109,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (typeof inicializarEventosMarcarArea === 'function') {
         inicializarEventosMarcarArea()
       }
+      // 6. Inicializar detector de scroll
+      if (typeof inicializarScrollInfinito === 'function') {
+        inicializarScrollInfinito()
+      }
+
     } catch (error) {
       console.error('❌ Error en inicialización:', error)
       const listaCultivos = document.getElementById('lista-cultivos')
@@ -144,12 +152,17 @@ document.addEventListener('DOMContentLoaded', () => {
         usuario.cultivos.forEach(cultivo => {
           window.cultivosState.cultivosData[cultivo.nombre] = cultivo
         })
+
+        // Resetear estado de scroll
+        window.cultivosState.scrollInfinito.totalCultivos = usuario.cultivos.length
+        window.cultivosState.scrollInfinito.cultivosCargados = 0
+        window.cultivosState.scrollInfinito.todosCargados = false
       }
       
 
-      // Renderizar en UI
-      if (typeof renderizarLista === 'function') {
-        renderizarLista()
+      // Renderizar solo primeros 20 en UI
+      if (typeof renderizarListaInicial === 'function') {
+        renderizarListaInicial()
       }
 
       if (typeof renderizarMapaPrincipal === 'function') {
