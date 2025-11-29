@@ -3,18 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestor de Cultivos - Atmospheric Lettuce</title>
 
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
+  <title>Gestor de Cultivos - Atmospheric Lettuce</title>
+  
   <!-- OpenLayers -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.5.2/ol.css">
   
+  <style>
+    body { overflow: hidden !important; }
+    body > *:not(.loading-screen) {
+      visibility: hidden !important;
+      opacity: 0 !important;
+    }
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #5db5ff, #55c2a5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 99999;
+    }
+  </style>
+
   <!-- Estilos -->
   <link rel="stylesheet" href="css/homes.css">
   <link rel="stylesheet" href="css/gestor_cultivos.css">
+  <link rel="stylesheet" href="css/loading.css">
   <script>
     (function() {
       const token = localStorage.getItem('token')
@@ -39,6 +61,14 @@
   </script>
 </head>
 <body>
+  <!-- ========== LOADING SCREEN ========== -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-spinner">
+      <div class="spinner-leaf"></div>
+      <div class="spinner-leaf"></div>
+      <div class="spinner-leaf"></div>
+    </div>
+  </div>
   
   <!-- Barra superior (igual que home) -->
   <div class="barra-superior">
@@ -193,6 +223,7 @@
   <script src="js/cultivos/crud_cultivos.js"></script>
   <script src="js/mapa/mapa_principal.js"></script>
   <script src="js/mapa/mapa_marcar_area.js"></script>
+  <script src="js/core/loading.js"></script>
 
 </body>
 </html>

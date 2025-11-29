@@ -1,0 +1,73 @@
+/* ========== LOADING SCREEN ========== */
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #5db5ff, #55c2a5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+  transition: opacity 0.3s ease-out;
+}
+
+.loading-screen.hide {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Spinner */
+.loading-spinner {
+  width: 80px;
+  height: 80px;
+  position: relative;
+}
+
+.spinner-leaf {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 4px solid transparent;
+  border-top-color: white;
+  animation: spin 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+}
+
+.spinner-leaf:nth-child(2) {
+  border-top-color: rgba(255, 255, 255, 0.6);
+  animation-delay: -0.4s;
+  width: 90%;
+  height: 90%;
+  top: 5%;
+  left: 5%;
+}
+
+.spinner-leaf:nth-child(3) {
+  border-top-color: rgba(255, 255, 255, 0.3);
+  animation-delay: -0.8s;
+  width: 80%;
+  height: 80%;
+  top: 10%;
+  left: 10%;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ========== MOSTRAR CONTENIDO ========== */
+body.content-visible > *:not(.loading-screen) {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .loading-spinner {
+    width: 60px;
+    height: 60px;
+  }
+}
