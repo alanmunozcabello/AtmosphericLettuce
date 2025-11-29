@@ -3,12 +3,13 @@
 document.addEventListener('DOMContentLoaded', async () => {
   if (window.location.pathname.includes('home.html')) {
     // Solo cargar clima si estamos en home.html
-    setTimeout(async () => {
-      if (typeof cargarClimaHome === 'function') {
-        await cargarClimaHome()
-      }
-      await cargarConsejosClima()
-    }, 1500) // mientras tanto será un tiempo fijo
+    if (typeof cargarClimaHome === 'function') {
+      await cargarClimaHome()
+    }
+    await cargarConsejosClima()
+
+    // Marcar como listo
+    window.climaCargado = true
   }
 })
 
@@ -19,6 +20,9 @@ async function cargarClimaHome () {
   if (typeof obtenerClimaDia !== 'function') {
     console.error('❌ obtenerClimaDia no está disponible')
     mostrarClimaFallback()
+
+    // Marcar como listo
+    window.climaCargado = true
     return
   }
 
@@ -45,6 +49,9 @@ async function cargarClimaHome () {
   } catch (error) {
     console.error('❌ Error cargando clima:', error)
     mostrarClimaFallback()
+  } finally {
+    // Marcar como listo
+    window.climaCargado = true
   }
 }
 

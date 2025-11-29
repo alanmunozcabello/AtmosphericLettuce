@@ -14,6 +14,9 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.5.2/ol.css">
   
   <style>
+    html {
+      display: none;
+    }
     body { overflow: hidden !important; }
     body > *:not(.loading-screen) {
       visibility: hidden !important;
@@ -51,6 +54,8 @@
           localStorage.clear()
           document.documentElement.style.display = 'none'
           window.location.replace('index.html')
+        } else {
+          document.documentElement.style.display = 'block'
         }
       } catch (e) {
         localStorage.clear()

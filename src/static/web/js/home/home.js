@@ -15,6 +15,9 @@ function validarSesion() {
 
     localStorage.setItem('correoUsuario', correoUsuario)
     console.log('✅ Usuario autenticado en home:', correoUsuario)
+    // Marcar como listo
+    window.usuarioCargado = true
+    
     return true
 }
 

@@ -22,7 +22,7 @@ function showContent() {
   }
 }
 
-// ========== VALIDAR SESIÓN ==========
+// ========== VALIDAR SESIÓN Y ESPERAR DATOS ==========
 async function validateAndShow() {
   const currentPage = window.location.pathname
   
@@ -33,6 +33,8 @@ async function validateAndShow() {
   )
   
   if (isPublicPage) {
+    // Mostrar HTML inmediatamente en páginas públicas
+    document.documentElement.style.display = 'block'
     showContent()
     return
   }
@@ -57,6 +59,8 @@ async function validateAndShow() {
     })
     
     if (response.ok) {
+      // ESPERAR a que los datos críticos estén listos
+      await esperarDatosCriticos()
       showContent()
     } else {
       localStorage.removeItem('token')
@@ -69,6 +73,52 @@ async function validateAndShow() {
   }
 }
 
+// ========== Esperar datos según la página ==========
+async function esperarDatosCriticos() {
+  const currentPage = window.location.pathname
+  
+  console.log('⏳ Esperando datos críticos para:', currentPage)
+  
+  if (currentPage.includes('home.html')) {
+    // Esperar clima + usuario (máximo 8 segundos total)
+    await Promise.all([
+      waitFor(() => window.climaCargado, 'Clima', 4000),  // 4s
+      waitFor(() => window.usuarioCargado, 'Usuario', 4000)  // 4s
+    ])
+  } else if (currentPage.includes('dias.html')) {
+    await waitFor(() => window.climaSemanaCargado, 'Clima semanal', 5000)
+  } else if (currentPage.includes('perfil.html')) {
+    await waitFor(() => window.perfilCargado, 'Perfil', 5000)
+  } else if (currentPage.includes('gestor_cultivos.html')) {
+    await waitFor(() => window.cultivosCargados, 'Cultivos', 6000)  // Más tiempo para scroll infinito
+  } else if (currentPage.includes('formulario_plantas.html')) {
+    await waitFor(() => window.formularioCargado, 'Formulario', 2000)
+  } else {
+    console.log('ℹ️ Página sin datos específicos')
+  }
+  
+  console.log('✅ Todos los datos críticos están listos')
+}
+
+// ========== Helper: Esperar hasta que una condición sea true ==========
+function waitFor(condition, nombre = 'Dato', timeout = 5000) {
+  return new Promise((resolve) => {
+    const startTime = Date.now()
+    
+    const interval = setInterval(() => {
+      if (condition()) {
+        clearInterval(interval)
+        console.log(`✅ ${nombre} cargado`)
+        resolve()
+      } else if (Date.now() - startTime > timeout) {
+        console.warn(`⚠️ Timeout esperando: ${nombre}`)
+        clearInterval(interval)
+        resolve() // Continuar de todos modos para no bloquear
+      }
+    }, 100)
+  })
+}
+
 // ========== EJECUTAR AL CARGAR ==========
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', validateAndShow)
@@ -78,5 +128,6 @@ if (document.readyState === 'loading') {
 
 // ========== FALLBACK ==========
 setTimeout(() => {
+  console.warn('⚠️ Timeout general del loading screen (10s)')
   showContent()
-}, 3000)
+}, 10000) // 10 segundos máximo

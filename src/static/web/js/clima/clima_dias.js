@@ -1,4 +1,15 @@
 /* global obtenerClimaSemana, document */
+document.addEventListener('DOMContentLoaded', async () => {
+  console.log('📅 Iniciando carga de clima semanal desde DOMContentLoaded...')
+  
+  // Esperar un poco para que otros scripts se inicialicen
+  setTimeout(async () => {
+    if (typeof cargarClimaSemana === 'function') {
+      await cargarClimaSemana()
+    }
+  }, 1000)
+})
+
 async function cargarClimaSemana () {
   console.log('📅 Iniciando carga de clima semanal...')
 
@@ -14,6 +25,9 @@ async function cargarClimaSemana () {
   } catch (error) {
     console.error('❌ Error cargando clima semanal:', error)
     mostrarClimaFallbackSemana()
+  } finally {
+    // Marcar como listo
+    window.climaSemanaCargado = true
   }
 }
 

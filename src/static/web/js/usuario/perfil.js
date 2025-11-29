@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // URL base del backend FastAPI
   // Clave para guardar el perfil en localStorage
   if (!verificarSesionActiva()) {
+    // Marcar como listo
+    window.perfilCargado = true
     return
   }
   const LS_KEY = 'perfilAL'
@@ -49,6 +51,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Si no obtiene ni el token ni el correo entonces redirige al login, pero con jwt
   if (!CORREO) {
     console.warn('⚠️ Usuario no identificado')
+
+    // Marcar como listo
+    window.perfilCargado = true
+
     cerrarSesion()
     return // detiene el script
   }
@@ -137,6 +143,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (!res || !res.ok) {
         console.warn('No se pudo cargar el perfil desde el backend')
+        // Marcar como listo
+        window.perfilCargado = true
         return
       }
       const usuario = await res.json()
@@ -175,8 +183,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       guardarLS(fusionado) // actualiza cache
       pintar(fusionado) // y pantalla
+
+      // Marcar como listo
+      window.perfilCargado = true
     } catch (e) {
       console.warn('No se pudo sincronizar perfil:', e)
+
+      // Marcar como listo
+      window.perfilCargado = true
     }
   }
 

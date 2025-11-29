@@ -190,4 +190,7 @@ document.addEventListener('DOMContentLoaded', function () {
         alert(`❌ Error al guardar la configuración del cultivo: ${error.message}`)
       })
   })
+  
+  // Marcar como listo
+  window.formularioCargado = true
 })

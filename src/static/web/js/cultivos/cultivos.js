@@ -114,12 +114,17 @@ document.addEventListener('DOMContentLoaded', () => {
         inicializarScrollInfinito()
       }
 
+      // Marcar como listo
+      window.cultivosCargados = true
+
     } catch (error) {
       console.error('❌ Error en inicialización:', error)
       const listaCultivos = document.getElementById('lista-cultivos')
       if (listaCultivos) {
         listaCultivos.innerHTML = '<li class="cultivo-item-loading">Error al cargar</li>'
       }
+      // Marcar como listo
+      window.cultivosCargados = true
     }
   }
 
