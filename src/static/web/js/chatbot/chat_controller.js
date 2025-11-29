@@ -10,6 +10,22 @@ document.addEventListener('DOMContentLoaded', () => {
   // Cargar los cultivos en el selector
   cargarCultivosEnSelector()
 
+  const textoInput = document.getElementById('textoInput')
+
+  // Enviar con Enter (sin Shift)
+  textoInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      enviarBtn.click()
+    }
+  })
+
+// Auto-resize del textarea
+  textoInput.addEventListener('input', function() {
+    this.style.height = 'auto'
+    this.style.height = Math.min(this.scrollHeight, 120) + 'px'
+  })
+
   // Abrir/cerrar con el botón flotante
   chatToggle.addEventListener('click', () => {
     chatWindow.style.display = chatWindow.style.display === 'flex' ? 'none' : 'flex';
@@ -115,6 +131,7 @@ document.getElementById('enviarBtn').addEventListener('click', async () => {
   // console.log(inputArchivos.files[0].name);
 
   textoInput.value = ''
+  textoInput.style.height = 'auto'
 
   if (archivosSeleccionados.length > 0) {
     mensajeHTML += '<div class="archivo-previews">'
@@ -220,6 +237,9 @@ document.getElementById('enviarBtn').addEventListener('click', async () => {
     document.getElementById('chatBox').innerHTML += `
       <p><b>Lechuguin:</b> ❌ Error de conexión. Por favor, intenta nuevamente.</p>
     `
+  } finally {
+  // Resetear altura del textarea siempre
+  textoInput.style.height = 'auto'
   }
 })
 

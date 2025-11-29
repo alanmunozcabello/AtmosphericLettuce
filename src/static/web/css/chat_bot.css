@@ -56,11 +56,37 @@
   background: #fff;
 }
 
-.chat-input input {
+.chat-input textarea {
   flex: 1;
-  padding: 6px;
+  padding: 8px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  resize: none;
+  min-height: 38px;
+  max-height: 120px;
+  overflow-y: auto;
+  line-height: 1.4;
+  outline: none;
+}
+
+.chat-input textarea::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-input textarea::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 3px;
+}
+
+.chat-input textarea::-webkit-scrollbar-thumb {
+  background: #5db5ff;
+  border-radius: 3px;
+}
+
+.chat-input textarea::-webkit-scrollbar-thumb:hover {
+  background: #4a9fe6;
 }
 
 .chat-input button {
