@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends
-from pydantic import BaseModel
 from typing import Optional
 from services.jwt_service import crear_token
 from middleware.autenticacion_mw import verificar_autenticacion
@@ -20,6 +19,14 @@ from services.usuarios_service import (
     service_modificar_area_cultivo,
     service_modificar_notificaciones_usuario,
     service_filtrar_cultivos,
+)
+from models import (
+    UsuarioRegistro,
+    UsuarioModificado,
+    CultivoCreate,
+    CultivoDatos,
+    AreaCultivoDatos,
+    PuntoCoordenada
 )
 
 
@@ -80,12 +87,6 @@ def ruta_iniciar_sesion(correo, contrasena):
     }
 
 
-class UsuarioRegistro(BaseModel):
-    correo: str
-    nombre: str
-    contrasena: str
-
-
 @router.post("/usuarios/registrar")
 def ruta_registrar_usuario(usuario: UsuarioRegistro):
     return service_registrar_usuario(
@@ -125,39 +126,11 @@ def ruta_obtener_cultivos_usuario(
     return service_obtener_cultivos_usuario(correo, pagina, limite)
 
 
-class CultivoCreate(BaseModel):
-    nombre_cultivo: str
-    hectareas: int
-
-
 # post para agregar
 @router.post("/usuarios/{correo}/agregar_cultivo")
 def ruta_agregar_cultivo(correo: str, cultivo: CultivoCreate):
     return service_agregar_cultivo(
         correo, cultivo.nombre_cultivo, cultivo.hectareas)
-
-
-class CultivoDatos(BaseModel):
-    nombre_cultivo: str
-    hectareas: Optional[float]
-    fecha_siembra: Optional[str]
-    notas: Optional[str]
-    etapa_planta: Optional[str]
-    tipo_riego: Optional[str]
-    ultimo_riego: Optional[str]  # datetime como string
-    frecuencia_riego: Optional[str]
-    humedad_suelo: Optional[str]
-    textura_suelo: Optional[str]
-    variedad_planta: Optional[str]
-    estado_planta: Optional[str]
-    estres_hidrico: Optional[int]  # boolean: 0=No, 1=Sí
-    profundidad_radical: Optional[int]
-    densidad_plantacion: Optional[int]
-    tipo_sensor: Optional[str]
-    eficiencia_riego: Optional[float]  # decimal
-    caudal: Optional[float]  # decimal
-    ph_agua: Optional[float]  # decimal
-    acolchado: Optional[int]  # boolean: 0=No, 1=Sí
 
 
 # patch para modificar
@@ -171,17 +144,6 @@ def ruta_modificar_formulario_cultivo(
     # Convertir Pydantic a dict para el service
     cultivo_dict = cultivo_datos.model_dump(exclude_unset=True)
     return service_modificar_formulario_cultivo(correo, cultivo_dict)
-
-
-class PuntoCoordenada(BaseModel):
-    latitud: Optional[float]
-    longitud: Optional[float]
-
-
-class AreaCultivoDatos(BaseModel):
-    cultivo: str
-    area: float
-    puntos: list[Optional[PuntoCoordenada]]
 
 
 # patch para modificar
@@ -202,12 +164,7 @@ def ruta_modificar_area_cultivo(
 def ruta_eliminar_cultivo(correo, cultivo):
     return service_eliminar_cultivo(correo, cultivo)
 
-class UsuarioModificado(BaseModel):
-    # correo: str
-    nombre: Optional[str] = None
-    ciudad: Optional[str] = None
-    region: Optional[str] = None
-    foto_perfil: Optional[str] = None
+
 # HAY QUE CAMBIAR TODITO EL COSIACO
 @router.put("/usuarios/{correo}/modificar")
 def ruta_modificar_usuario(

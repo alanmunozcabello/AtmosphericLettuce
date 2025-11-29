@@ -1,4 +1,5 @@
 // ========== VARIABLES DEL MAPA DE MARCAR ÁREA ==========
+// Last updated: 2025-11-29 - Fixed Pydantic error handling
 let mapSuperficie = null
 let vectorSourceSuperficie = null
 let puntosMarcados = []
@@ -348,17 +349,17 @@ async function guardarArea () {
   }
 
   try {
-    // ✅ Crear array de 20 puntos
-    const puntosParaGuardar = Array.from({ length: MAX_PUNTOS }, (_, index) => {
-      if (index < puntosMarcados.length) {
-        return {
-          latitud: puntosMarcados[index].lat,
-          longitud: puntosMarcados[index].lon
-        }
-      } else {
-        return null
-      }
-    })
+    // ✅ Crear array solo con puntos válidos (sin nulls)
+    const puntosParaGuardar = puntosMarcados.map(punto => ({
+      latitud: punto.lat,
+      longitud: punto.lon
+    }))
+
+    // Validar mínimo 3 puntos
+    if (puntosParaGuardar.length < 3) {
+      alert('⚠️ Debes marcar al menos 3 puntos para definir un área')
+      return
+    }
 
     const areaMetros = poligonoActual
       ? ol.sphere.getArea(poligonoActual.getGeometry(), { projection: 'EPSG:3857' })
@@ -369,8 +370,10 @@ async function guardarArea () {
     console.log('📤 Enviando al backend:', {
       cultivo: cultivoSeleccionado,
       area: areaHectareas,
-      puntos: puntosParaGuardar
+      puntos: puntosParaGuardar,
+      totalPuntos: puntosParaGuardar.length
     })
+    console.log('📍 Puntos detallados:', JSON.stringify(puntosParaGuardar, null, 2))
 
     const response = await fetchAutenticado(
       `/usuarios/${encodeURIComponent(correo)}/cultivo/modificar_area_cultivo`,
@@ -386,14 +389,29 @@ async function guardarArea () {
     
     if (!response) return // fetchAutenticado retorna null si hay 401
 
+    if (!response.ok) {
+      const errorData = await response.json()
+      console.error('❌ Error del servidor:', errorData)
+      
+      // Formatear errores de validación de Pydantic
+      if (errorData.detail && Array.isArray(errorData.detail)) {
+        const errores = errorData.detail.map(err => 
+          `${err.loc.join('.')}: ${err.msg}`
+        ).join('\n')
+        throw new Error(`Errores de validación:\n${errores}`)
+      }
+      
+      // Si detail no es array, convertirlo a string
+      const mensaje = typeof errorData.detail === 'string' 
+        ? errorData.detail 
+        : JSON.stringify(errorData.detail || errorData.error || 'Error desconocido')
+      throw new Error(mensaje)
+    }
+
     const data = await response.json()
 
     if (data.error) {
       throw new Error(data.error)
-    }
-
-    if (!response.ok) {
-      throw new Error(data.error || data.detail || 'Error en el servidor')
     }
 
     console.log('✅', data.mensaje || 'Área guardada')
@@ -409,6 +427,9 @@ async function guardarArea () {
     renderizarMapaPrincipal()
   } catch (error) {
     console.error('❌ Error guardando área:', error)
-    alert(`⚠️ ${error.message}`)
+    const mensajeUsuario = error.message.includes('Errores de validación') 
+      ? error.message 
+      : '⚠️ No se pudo guardar el área. Verifica que hayas marcado al menos 3 puntos.'
+    alert(mensajeUsuario)
   }
 }

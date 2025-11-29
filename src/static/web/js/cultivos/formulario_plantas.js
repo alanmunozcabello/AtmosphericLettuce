@@ -152,8 +152,26 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!response) return // fetchAutenticado retorna null si hay 401
         
         if (!response.ok) {
-          return response.text().then(text => {
-            throw new Error(`HTTP ${response.status}: ${text || response.statusText}`)
+          return response.json().then(errorData => {
+            console.error('❌ Error del servidor:', errorData)
+            
+            // Formatear errores de validación de Pydantic
+            if (errorData.detail && Array.isArray(errorData.detail)) {
+              const errores = errorData.detail.map(err => 
+                `${err.loc.join('.')}: ${err.msg}`
+              ).join('\n')
+              throw new Error(`Errores de validación:\n${errores}`)
+            }
+            
+            const mensaje = typeof errorData.detail === 'string' 
+              ? errorData.detail 
+              : JSON.stringify(errorData.detail || 'Error desconocido')
+            throw new Error(`HTTP ${response.status}: ${mensaje}`)
+          }).catch(jsonError => {
+            // Si no es JSON, leer como texto
+            return response.text().then(text => {
+              throw new Error(`HTTP ${response.status}: ${text || response.statusText}`)
+            })
           })
         }
         return response.json()
@@ -171,7 +189,10 @@ document.addEventListener('DOMContentLoaded', function () {
       })
       .catch(error => {
         console.error('Error completo:', error)
-        alert(`❌ Error al guardar la configuración del cultivo: ${error.message}`)
+        const mensajeUsuario = error.message.includes('Errores de validación') 
+          ? error.message 
+          : '❌ No se pudo guardar la configuración. Revisa los datos ingresados.'
+        alert(mensajeUsuario)
       })
   })
 })

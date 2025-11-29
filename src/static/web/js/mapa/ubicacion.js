@@ -214,7 +214,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (!respuesta1.ok) {
         const error1 = await respuesta1.json()
-        throw new Error(error1.error || 'Error actualizando coordenadas')
+        console.error('❌ Error actualizando coordenadas:', error1)
+        
+        // Formatear errores de validación de Pydantic
+        if (error1.detail && Array.isArray(error1.detail)) {
+          const errores = error1.detail.map(err => 
+            `${err.loc.join('.')}: ${err.msg}`
+          ).join('\n')
+          throw new Error(`Errores de validación:\n${errores}`)
+        }
+        
+        const mensaje = typeof error1.detail === 'string' 
+          ? error1.detail 
+          : JSON.stringify(error1.detail || error1.error || 'Error actualizando coordenadas')
+        throw new Error(mensaje)
       }
 
       console.log('✅ Coordenadas actualizadas')
@@ -231,7 +244,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (!respuesta2.ok) {
         const error2 = await respuesta2.json()
-        throw new Error(error2.error || 'Error actualizando región/ciudad')
+        console.error('❌ Error actualizando región:', error2)
+        
+        // Formatear errores de validación de Pydantic
+        if (error2.detail && Array.isArray(error2.detail)) {
+          const errores = error2.detail.map(err => 
+            `${err.loc.join('.')}: ${err.msg}`
+          ).join('\n')
+          throw new Error(`Errores de validación:\n${errores}`)
+        }
+        
+        const mensaje = typeof error2.detail === 'string' 
+          ? error2.detail 
+          : JSON.stringify(error2.detail || error2.error || 'Error actualizando región/ciudad')
+        throw new Error(mensaje)
       }
 
       console.log('✅ Región/ciudad actualizadas')
@@ -304,7 +330,10 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('✅ Ubicación confirmada y guardada')
     } catch (error) {
       console.error('❌ Error actualizando ubicación:', error)
-      alert(`⚠️ Error: ${error.message}`)
+      const mensajeUsuario = error.message.includes('Errores de validación') 
+        ? error.message 
+        : '⚠️ No se pudo actualizar la ubicación. Intenta de nuevo.'
+      alert(mensajeUsuario)
     }
   })
 
