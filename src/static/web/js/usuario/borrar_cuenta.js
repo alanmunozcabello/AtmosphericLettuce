@@ -22,9 +22,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- Confirmar borrado ---
   btnConfirmar.addEventListener('click', async () => {
     try {
-      const res = await fetch(`/usuarios/${encodeURIComponent(correoUsuario)}`, {
+      const res = await fetchAutenticado(`/usuarios/${encodeURIComponent(correoUsuario)}`, {
         method: 'DELETE'
       })
+      
+      if (!res) return // fetchAutenticado retorna null si hay 401
 
       if (res.ok) {
         alert('✅ Cuenta eliminada correctamente')

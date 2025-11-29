@@ -33,11 +33,8 @@ def service_obtener_usuario_para_frontend(correo):
         if isinstance(cultivos, dict) and "mensaje" in cultivos:
             cultivos = []
         
-        # Convertir a formato legacy (nombre: hectareas)
-        cultivos_dict = {}
-        for cultivo in cultivos:
-            cultivos_dict[cultivo["nombre"]] = cultivo["hectareas"]
-
+        # ✅ DEVOLVER CULTIVOS COMPLETOS (no solo nombre: hectareas)
+        # El frontend necesita puntos, formulario, etc.
         usuario_dict = {
             "nombre": usuario[1],
             "ubicacion": {
@@ -46,7 +43,7 @@ def service_obtener_usuario_para_frontend(correo):
                 "ciudad": usuario[5] if usuario[5] else "",
                 "region": usuario[6] if usuario[6] else ""
             },
-            "cultivos": cultivos_dict,
+            "cultivos": cultivos,  # ✅ Array completo de cultivos
             "foto_perfil": usuario[7],
             "notificaciones": bool(usuario[10]) if len(usuario) > 10
             and usuario[10] is not None else True

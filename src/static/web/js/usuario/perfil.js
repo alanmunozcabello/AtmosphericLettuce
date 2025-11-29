@@ -24,11 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const putUsuario = async (correoActual, body) => {
     const url = `/usuarios/${encodeURIComponent(correoActual)}/modificar`
 
-    const res = await fetch(url, {
+    const res = await fetchAutenticado(url, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' }, // se envía JSON
       body: JSON.stringify(body) // serializa el body a JSON
     })
+    
+    if (!res) return null // fetchAutenticado retorna null si hay 401
 
     // Si la respuesta no es postiva, lanza error con detalle
     if (!res.ok) {

@@ -1,3 +1,47 @@
+// ✅ FUNCIÓN HELPER PARA HACER FETCH CON TOKEN JWT
+function obtenerHeaders(incluirContentType = true) {
+  const headers = {}
+  
+  // Agregar token si existe
+  const token = localStorage.getItem('token')
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`
+  }
+  
+  // Agregar Content-Type si es necesario
+  if (incluirContentType) {
+    headers['Content-Type'] = 'application/json'
+  }
+  
+  return headers
+}
+
+// ✅ FUNCIÓN HELPER PARA FETCH AUTENTICADO
+async function fetchAutenticado(url, options = {}) {
+  const headers = obtenerHeaders(!options.body || typeof options.body === 'string')
+  
+  const config = {
+    ...options,
+    headers: {
+      ...headers,
+      ...options.headers
+    }
+  }
+  
+  const response = await fetch(url, config)
+  
+  // Si retorna 401, el token expiró - cerrar sesión
+  if (response.status === 401) {
+    console.error('🚫 Token expirado o inválido - cerrando sesión')
+    localStorage.clear()
+    alert('Tu sesión ha expirado. Por favor inicia sesión nuevamente.')
+    window.location.href = 'index.html'
+    return null
+  }
+  
+  return response
+}
+
 function obtenerUsuarioCache (correo) {
   try {
     const correoCache = localStorage.getItem('correoUsuario')
@@ -53,7 +97,14 @@ async function obtenerUsuario (correo) {
   // solo ir al backend si realmente es necesario
   try {
     console.log('🌐 Cache expirado/inexistente - cargando desde backend')
-    const res = await fetch(`/usuarios/${encodeURIComponent(correo)}`)
+    
+    // ✅ Usar fetchAutenticado para incluir el token
+    const res = await fetchAutenticado(`/usuarios/${encodeURIComponent(correo)}`)
+    
+    if (!res) {
+      // fetchAutenticado retorna null si hay 401 (ya redirigió al login)
+      return null
+    }
 
     if (!res.ok) {
       throw new Error(`HTTP ${res.status}: ${res.statusText}`)

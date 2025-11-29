@@ -1,13 +1,16 @@
 from jinja2 import Environment, FileSystemLoader
-from usuarios_service import service_obtener_usuario_para_frontend
-from clima_service import clima_semana_service
-from ai_services import deepseek_para_correos
+
+from services.clima_service import clima_semana_service
+from services.ai_services import deepseek_para_correos
 
 
 # cambiar rutas----------------------
 def services_modificar_html(correo):
     # ---------------------------------------------------
     # Configurar Jinja2 para que busque la carpeta plantilla_html
+    # Import movido aquí para evitar import circular
+    from services.usuarios_service import service_obtener_usuario_para_frontend
+    
     env = Environment(loader=FileSystemLoader("services/Archivos_HTML"))
 
     # Cargar la plantilla

@@ -39,17 +39,18 @@ async function agregarCultivo (e) {
     const accionTexto = cultivoExiste ? 'Modificando' : 'Agregando'
     console.log(`${accionTexto} cultivo:`, nombre)
 
-    const response = await fetch(
+    const response = await fetchAutenticado(
       `/usuarios/${encodeURIComponent(correo)}/agregar_cultivo`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nombre_cultivo: nombre,
           hectareas: hectareas
         })
       }
     )
+    
+    if (!response) return // fetchAutenticado retorna null si hay 401
 
     const data = await response.json()
 
@@ -98,10 +99,12 @@ async function eliminarCultivo (e) {
   if (!confirm(`¿Eliminar "${nombre}"?`)) return
 
   try {
-    const response = await fetch(
+    const response = await fetchAutenticado(
       `/usuarios/${encodeURIComponent(correo)}/${encodeURIComponent(nombre)}/eliminar`,
       { method: 'DELETE' }
     )
+    
+    if (!response) return // fetchAutenticado retorna null si hay 401
 
     const data = await response.json()
 

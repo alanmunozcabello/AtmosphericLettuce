@@ -372,11 +372,10 @@ async function guardarArea () {
       puntos: puntosParaGuardar
     })
 
-    const response = await fetch(
+    const response = await fetchAutenticado(
       `/usuarios/${encodeURIComponent(correo)}/cultivo/modificar_area_cultivo`,
       {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           cultivo: cultivoSeleccionado,
           area: areaHectareas,
@@ -384,6 +383,8 @@ async function guardarArea () {
         })
       }
     )
+    
+    if (!response) return // fetchAutenticado retorna null si hay 401
 
     const data = await response.json()
 

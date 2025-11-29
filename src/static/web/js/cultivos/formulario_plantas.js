@@ -102,6 +102,11 @@ document.addEventListener('DOMContentLoaded', function () {
   const formulario = document.getElementById('formulario-plantas')
   formulario.addEventListener('submit', function (e) {
     e.preventDefault()
+    
+    console.log('📝 Formulario enviado')
+    console.log('Correo:', correo)
+    console.log('Cultivo:', cultivo)
+    console.log('fetchAutenticado disponible:', typeof fetchAutenticado)
 
     // Validar que tenemos la información del cultivo
     if (!correo || !cultivo) {
@@ -138,15 +143,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     console.log('Datos del formulario mapeados:', datosParaBackend)
 
-    // Enviar al backend
-    fetch(`/usuarios/${encodeURIComponent(correo)}/cultivos/modificar_formulario_cultivo`, {
+    // Enviar al backend con autenticación
+    fetchAutenticado(`/usuarios/${encodeURIComponent(correo)}/cultivos/modificar_formulario_cultivo`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
       body: JSON.stringify(datosParaBackend)
     })
       .then(response => {
+        if (!response) return // fetchAutenticado retorna null si hay 401
+        
         if (!response.ok) {
           return response.text().then(text => {
             throw new Error(`HTTP ${response.status}: ${text || response.statusText}`)
@@ -155,6 +159,8 @@ document.addEventListener('DOMContentLoaded', function () {
         return response.json()
       })
       .then(data => {
+        if (!data) return // Si no hay respuesta (401), no continuar
+        
         console.log('Respuesta del servidor:', data)
         if (data.mensaje) {
           alert(`✅ ${data.mensaje}`)

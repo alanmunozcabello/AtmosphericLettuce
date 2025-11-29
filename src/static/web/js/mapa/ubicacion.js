@@ -203,13 +203,14 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('📤 Enviando ubicación al backend...')
 
       // 1. Actualizar coordenadas
-      const respuesta1 = await fetch(
+      const respuesta1 = await fetchAutenticado(
         `/usuarios/${encodeURIComponent(correo)}/ubicacion/${latMod}/${lonMod}/modificar`,
         {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' }
+          method: 'PATCH'
         }
       )
+      
+      if (!respuesta1) return // fetchAutenticado retorna null si hay 401
 
       if (!respuesta1.ok) {
         const error1 = await respuesta1.json()
@@ -219,13 +220,14 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('✅ Coordenadas actualizadas')
 
       // 2. Actualizar región/ciudad
-      const respuesta2 = await fetch(
+      const respuesta2 = await fetchAutenticado(
         `/usuarios/${encodeURIComponent(correo)}/ubicacion/region/${encodeURIComponent(region)}/${encodeURIComponent(ciudad)}/modificar`,
         {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' }
+          method: 'PATCH'
         }
       )
+      
+      if (!respuesta2) return // fetchAutenticado retorna null si hay 401
 
       if (!respuesta2.ok) {
         const error2 = await respuesta2.json()

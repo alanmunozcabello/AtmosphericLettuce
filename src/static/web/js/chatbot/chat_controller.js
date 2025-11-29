@@ -174,12 +174,16 @@ document.getElementById('enviarBtn').addEventListener('click', async () => {
 
   // console.log(payload);
 
-  // Enviar al backend
-  const respuesta = await fetch('/chat/consulta', {
+  // Enviar al backend con autenticación
+  const respuesta = await fetchAutenticado('/chat/consulta', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
   })
+  
+  if (!respuesta) {
+    hideLoader()
+    return // fetchAutenticado retorna null si hay 401
+  }
 
   const result = await respuesta.json()
 

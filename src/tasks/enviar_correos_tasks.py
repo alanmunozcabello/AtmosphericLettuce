@@ -5,7 +5,7 @@ from services.usuarios_service import (
 )
 from services.notificaciones_service import enviar_archivo
 from services.modificadora_service import (
-    modificar_html,
+    services_modificar_html,
     modificar_warning_html
 )
 from services.clima_service import clima_semana_service
@@ -85,12 +85,12 @@ def enviar_correos_a_todos():
                     consejos = []
                     for cultivo_data in cultivos_info:
                         consejo = deepseek_para_correos(cultivo_data["info"])
-                        consejos.append({
-                            "cultivo": cultivo_data["nombre"],
-                            "consejo": consejo
-                        })
+                    consejos.append({
+                        "cultivo": cultivo_data["nombre"],
+                        "consejo": consejo
+                    })
 
-                    modificar_html(correo, usuario, clima, consejos)
+                    services_modificar_html(correo)
                     enviar_archivo(
                         correo, "services/Archivos_HTML/salida.html"
                     )

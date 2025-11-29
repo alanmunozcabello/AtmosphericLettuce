@@ -104,14 +104,20 @@ document.addEventListener('DOMContentLoaded', () => {
           correo: vEmail,
           nombre: body.nombre || 'Usuario',
           ubicacion: body.ubicacion || {},
-          cultivos: body.cultivos || {},
+          cultivos: body.cultivos || [],  // ✅ Array de cultivos completos
           foto_perfil: body.foto_perfil || ''
         }
-        console.log(usuarioCompleto.cultivos)
+        console.log('✅ Cultivos guardados:', usuarioCompleto.cultivos)
 
         localStorage.setItem('correoUsuario', vEmail)
         localStorage.setItem('usuario', JSON.stringify(usuarioCompleto)) // ✅ CACHE COMPLETO
         localStorage.setItem('ultimaActualizacion', Date.now()) // ✅ TIMESTAMP
+        
+        // ✅ GUARDAR TOKEN JWT
+        if (body.token) {
+          localStorage.setItem('token', body.token)
+          console.log('✅ Token JWT guardado')
+        }
 
         window.location.href = `home.html?correo=${encodeURIComponent(vEmail)}`
       }

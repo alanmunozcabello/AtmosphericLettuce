@@ -168,7 +168,9 @@ def ruta_modificar_formulario_cultivo(
     correo: str,
     cultivo_datos: CultivoDatos
 ):
-    return service_modificar_formulario_cultivo(correo, cultivo_datos)
+    # Convertir Pydantic a dict para el service
+    cultivo_dict = cultivo_datos.model_dump(exclude_unset=True)
+    return service_modificar_formulario_cultivo(correo, cultivo_dict)
 
 
 class PuntoCoordenada(BaseModel):
@@ -190,7 +192,9 @@ def ruta_modificar_area_cultivo(
     correo: str,
     area_datos: AreaCultivoDatos
 ):
-    return service_modificar_area_cultivo(correo, area_datos)
+    # Convertir Pydantic a dict para el service
+    area_dict = area_datos.model_dump()
+    return service_modificar_area_cultivo(correo, area_dict)
 
 
 # delete para borrar
@@ -204,8 +208,6 @@ class UsuarioModificado(BaseModel):
     ciudad: Optional[str] = None
     region: Optional[str] = None
     foto_perfil: Optional[str] = None
-
-
 # HAY QUE CAMBIAR TODITO EL COSIACO
 @router.put("/usuarios/{correo}/modificar")
 def ruta_modificar_usuario(
@@ -213,7 +215,10 @@ def ruta_modificar_usuario(
     usuarioMOD: UsuarioModificado,
     correo_token: str = Depends(verificar_autenticacion)
 ):
-    verificar_propietario(correo, correo_token) 
+    verificar_propietario(correo, correo_token)
+    # Convertir Pydantic a dict para el service
+    usuario_dict = usuarioMOD.model_dump(exclude_unset=True)
+    return service_modificar_usuario(correo, usuario_dict)
     # usuarioMOD es el dict completo del usuario a modificar
     return service_modificar_usuario(correo, usuarioMOD)
 
