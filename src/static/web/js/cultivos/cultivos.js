@@ -114,6 +114,12 @@ document.addEventListener('DOMContentLoaded', () => {
         inicializarScrollInfinito()
       }
 
+      // 7. Inicializar búsqueda de cultivos
+      if (typeof inicializarBusqueda === 'function') {
+        inicializarBusqueda()
+      }
+
+
       // Marcar como listo
       window.cultivosCargados = true
 
