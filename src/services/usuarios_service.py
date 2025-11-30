@@ -109,9 +109,6 @@ def service_existe_usuario(correo):
 
 def service_registrar_usuario(correo, nombre, contrasena):
     try:
-        if not correo or not nombre or not contrasena:
-            return {"error": "Faltan datos requeridos"}
-
         if service_existe_usuario(correo):
             return {"error": "Usuario ya existe"}
 
@@ -551,16 +548,7 @@ def service_modificar_region_ciudad_usuario(correo, region, ciudad):
 def service_actualizar_foto_perfil_base64(correo, imagen_base64):
     """Actualizar foto de perfil usando datos Base64"""
     try:
-        # Validar formato Base64
-        if not imagen_base64.startswith('data:image/'):
-            error_msg = "Formato de imagen inválido. Debe ser data:image/..."
-            return {"error": error_msg}
-
-        # Validar tamaño (máximo ~300KB en Base64 = ~225KB imagen)
-        if len(imagen_base64) > 400000:  # ~300KB en Base64
-            return {"error": "Imagen muy grande. Máximo 225KB"}
-
-        # Actualizar en BD
+        # Actualizar en BD (validaciones en UsuarioModificado)
         datos = {"foto_perfil": imagen_base64}
         resultado = service_modificar_usuario(correo, datos)
 
@@ -571,62 +559,6 @@ def service_actualizar_foto_perfil_base64(correo, imagen_base64):
 
     except Exception as e:
         return {"error": str(e)}
-
-
-def service_validar_imagen_base64(imagen_base64):
-    """Validar que la cadena Base64 sea una imagen válida"""
-    try:
-        import base64
-
-        # Verificar formato data:image/...
-        if not imagen_base64.startswith('data:image/'):
-            return {"valida": False, "error": "No es formato data:image/"}
-
-        # Extraer datos Base64 y tipo MIME
-        header, data = imagen_base64.split(',', 1)
-        mime_type = header.split(':')[1].split(';')[0]
-
-        # Verificar tipos MIME soportados
-        tipos_soportados = [
-            'image/jpeg', 'image/jpg', 'image/png',
-            'image/gif', 'image/webp'
-        ]
-
-        if mime_type not in tipos_soportados:
-            error = f"Tipo {mime_type} no soportado"
-            return {"valida": False, "error": error}
-
-        # Decodificar Base64 para verificar validez
-        try:
-            image_data = base64.b64decode(data, validate=True)
-        except Exception:
-            return {"valida": False, "error": "Datos Base64 inválidos"}
-
-        # Verificar que tenga contenido
-        if len(image_data) < 100:  # Muy pequeño para ser imagen
-            error = "Imagen muy pequeña o corrupta"
-            return {"valida": False, "error": error}
-
-        # Verificar tamaños
-        size_kb = len(image_data) / 1024
-        base64_size_kb = len(imagen_base64) / 1024
-
-        # Límite de 300KB para imagen original
-        if size_kb > 300:
-            error = (
-                f"Imagen muy grande: {size_kb:.1f}KB (máx: 300KB)"
-            )
-            return {"valida": False, "error": error}
-
-        return {
-            "valida": True,
-            "tipo": mime_type,
-            "tamaño_kb": round(size_kb, 2),
-            "tamaño_base64_kb": round(base64_size_kb, 2)
-        }
-
-    except Exception as e:
-        return {"valida": False, "error": str(e)}
 
 
 def service_modificar_notificaciones_usuario(correo, notificaciones):

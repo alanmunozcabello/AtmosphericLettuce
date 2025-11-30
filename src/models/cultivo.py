@@ -5,6 +5,47 @@ Modelos Pydantic para Cultivo
 from pydantic import BaseModel, Field, validator
 from typing import Optional, List
 from datetime import datetime
+from enum import Enum
+
+
+class EtapaPlanta(str, Enum):
+    """Etapas del ciclo de vida de la planta"""
+    SIEMBRA_GERMINACION = "siembra-germinacion"
+    CRECIMIENTO_VEGETATIVO = "crecimiento-vegetativo"
+    FLORACION = "floracion"
+    FRUCTIFICACION = "fructificacion"
+    MADURACION = "maduracion"
+    COSECHA_DORMANCIA = "cosecha-dormancia"
+
+
+class TipoRiego(str, Enum):
+    """Tipos de sistemas de riego"""
+    GOTEO = "goteo"
+    ASPERSION = "aspersion"
+    INUNDACION = "inundacion"
+    PIVOTE_CENTRAL = "pivote-central"
+    MICROASPERSION = "microaspersion"
+
+
+class TexturaSuelo(str, Enum):
+    """Texturas del suelo"""
+    ARENOSO = "arenoso"
+    FRANCO = "franco"
+    ARCILLOSO = "arcilloso"
+    FRANCO_ARENOSO = "franco-arenoso"
+    FRANCO_ARCILLOSO = "franco-arcilloso"
+    ARCILLO_ARENOSO = "arcillo-arenoso"
+
+
+class TipoSensor(str, Enum):
+    """Tipos de sensores de humedad"""
+    CAPACITANCIA = "capacitancia"
+    TENSIOMETRO = "tensiometro"
+    RESISTENCIA = "resistencia"
+    NEUTRONES = "neutrones"
+    TDR = "tdr"
+    GRAVIMETRICO = "gravimetrico"
+    NO_TIENE = "no-tiene"
 
 
 class PuntoCoordenada(BaseModel):
@@ -70,22 +111,22 @@ class CultivoDatos(BaseModel):
     notas: Optional[str] = Field(None, max_length=1000)
     
     # Etapa y riego
-    etapa_planta: Optional[str] = Field(
+    etapa_planta: Optional[EtapaPlanta] = Field(
         None,
-        description="Etapa de la planta: siembra-germinacion, crecimiento-vegetativo, floracion, fructificacion, maduracion, cosecha-dormancia"
+        description="Etapa de la planta"
     )
-    tipo_riego: Optional[str] = Field(
+    tipo_riego: Optional[TipoRiego] = Field(
         None,
-        description="Tipo de riego: goteo, aspersion, inundacion, pivote-central, microaspersion"
+        description="Tipo de riego"
     )
     ultimo_riego: Optional[str] = Field(None, description="Última vez que se regó (datetime)")
     frecuencia_riego: Optional[str] = Field(None, description="Frecuencia de riego en días")
     
     # Suelo
     humedad_suelo: Optional[str] = Field(None, description="Porcentaje de humedad del suelo")
-    textura_suelo: Optional[str] = Field(
+    textura_suelo: Optional[TexturaSuelo] = Field(
         None,
-        description="Textura: arenoso, franco, arcilloso, franco-arenoso, franco-arcilloso, arcillo-arenoso"
+        description="Textura del suelo"
     )
     
     # Planta
@@ -96,9 +137,9 @@ class CultivoDatos(BaseModel):
     densidad_plantacion: Optional[int] = Field(None, gt=0, description="Plantas por hectárea")
     
     # Sistema de riego
-    tipo_sensor: Optional[str] = Field(
+    tipo_sensor: Optional[TipoSensor] = Field(
         None,
-        description="Tipo de sensor: capacitancia, tensiometro, resistencia, neutrones, tdr, gravimetrico, no-tiene"
+        description="Tipo de sensor"
     )
     eficiencia_riego: Optional[float] = Field(None, ge=0, le=100, description="Porcentaje de eficiencia")
     caudal: Optional[float] = Field(None, gt=0, description="Litros por hora")

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Path
 from typing import Optional
 from services.jwt_service import crear_token
 from middleware.autenticacion_mw import verificar_autenticacion
@@ -21,6 +21,7 @@ from services.usuarios_service import (
     service_filtrar_cultivos,
 )
 from models import (
+    LoginRequest,
     UsuarioRegistro,
     UsuarioModificado,
     CultivoCreate,
@@ -71,15 +72,14 @@ def ruta_obtener_usuario(
 
 # funcion no tan necesaria, el frontend puede saltarse esta
 # y llamar directamente a ruta_obtener_usuario(correo)
-# ver como seria cuando se vaya a usar coso de java token coso
-@router.get("/usuarios/iniciar_sesion/{correo}/{contrasena}")
-def ruta_iniciar_sesion(correo, contrasena):
-    resultado =  service_iniciar_sesion(correo, contrasena)
+@router.post("/usuarios/login")
+def ruta_iniciar_sesion(credenciales: LoginRequest):
+    resultado = service_iniciar_sesion(credenciales.correo, credenciales.contrasena)
     
     if "error" in resultado:
         return resultado
     
-    token = crear_token(correo)
+    token = crear_token(credenciales.correo)
     
     return {
         **resultado,
@@ -181,8 +181,11 @@ def ruta_modificar_usuario(
 
 
 @router.patch("/usuarios/{correo}/ubicacion/{lat}/{lon}/modificar")
-def ruta_modificar_ubicacion_usuario(correo, lat, lon):
-    # lat y lon pueden ser pasados como string sin problema
+def ruta_modificar_ubicacion_usuario(
+    correo: str,
+    lat: float = Path(..., ge=-90, le=90, description="Latitud"),
+    lon: float = Path(..., ge=-180, le=180, description="Longitud")
+):
     return service_modificar_ubicacion_usuario(correo, lat, lon)
 
 

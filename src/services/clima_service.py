@@ -321,6 +321,7 @@ def procesar_status_code_error(respuesta):
 def clima_hora_service(lat, lon):
     """
     Obtiene el pronóstico del clima hora a hora para los próximos 4 días.
+    Las coordenadas ya están validadas por FastAPI.
     """
     if not API_KEY:
         return {
@@ -328,14 +329,6 @@ def clima_hora_service(lat, lon):
             "error_type": "api_key_missing",
             "error_message": "API key no configurada en .env",
             "status_code": 500
-        }
-
-    if lat is None or lon is None or lat == "" or lon == "":
-        return {
-            "success": False,
-            "error_type": "invalid_coordinates",
-            "error_message": "Latitud o longitud inválidas",
-            "status_code": 400
         }
 
     # URL base para obtener la información del clima por hora
@@ -402,20 +395,13 @@ def clima_hora_service(lat, lon):
 
 
 def clima_hoy_service(lat, lon):
+    """Las coordenadas ya están validadas por FastAPI."""
     if not API_KEY:
         return {
             "success": False,
             "error_type": "api_key_missing",
             "error_message": "API key no configurada en .env",
             "status_code": 500
-        }
-
-    if lat is None or lon is None or lat == "" or lon == "":
-        return {
-            "success": False,
-            "error_type": "invalid_coordinates",
-            "error_message": "Latitud o longitud inválidas",
-            "status_code": 400
         }
 
     url = (
@@ -479,20 +465,13 @@ def clima_hoy_service(lat, lon):
 
 
 def clima_semana_service(lat, lon):
+    """Las coordenadas ya están validadas por FastAPI."""
     if not API_KEY:
         return {
             "success": False,
             "error_type": "api_key_missing",
             "error_message": "API key no configurada en .env",
             "status_code": 500
-        }
-
-    if lat is None or lon is None or lat == "" or lon == "":
-        return {
-            "success": False,
-            "error_type": "invalid_coordinates",
-            "error_message": "Latitud o longitud inválidas",
-            "status_code": 400
         }
 
     # Solo este servicio no está funcionando

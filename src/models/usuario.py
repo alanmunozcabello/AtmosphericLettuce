@@ -6,6 +6,31 @@ from pydantic import BaseModel, EmailStr, Field, validator
 from typing import Optional
 
 
+class LoginRequest(BaseModel):
+    """
+    Modelo para inicio de sesión
+    """
+    correo: EmailStr = Field(
+        ...,
+        description="Correo electrónico",
+        example="usuario@example.com"
+    )
+    contrasena: str = Field(
+        ...,
+        min_length=1,
+        description="Contraseña del usuario",
+        example="MiContraseña123"
+    )
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "correo": "usuario@example.com",
+                "contrasena": "MiContraseña123"
+            }
+        }
+
+
 class UsuarioRegistro(BaseModel):
     """
     Modelo para registro de nuevo usuario
@@ -68,10 +93,32 @@ class UsuarioModificado(BaseModel):
     @validator('foto_perfil')
     def validar_foto_base64(cls, v):
         """Validar que la foto sea Base64 válida"""
-        if v and not v.startswith('data:image/'):
+        if not v:
+            return v
+            
+        import base64
+        import re
+        
+        # Validar formato data:image/...
+        if not v.startswith('data:image/'):
             raise ValueError('La foto debe estar en formato Base64 (data:image/...)')
-        if v and len(v) > 500000:  # ~375KB en Base64
+        
+        # Validar tamaño
+        if len(v) > 500000:  # ~375KB en Base64
             raise ValueError('La imagen es muy grande (máximo ~375KB)')
+        
+        # Validar tipos MIME permitidos
+        mime_pattern = r'^data:image/(jpeg|jpg|png|gif|webp);base64,'
+        if not re.match(mime_pattern, v):
+            raise ValueError('Tipo de imagen no soportado. Usa: jpeg, jpg, png, gif o webp')
+        
+        # Validar que el Base64 sea decodificable
+        try:
+            header, data = v.split(',', 1)
+            base64.b64decode(data, validate=True)
+        except Exception:
+            raise ValueError('Datos Base64 inválidos o corruptos')
+        
         return v
 
     class Config:
@@ -83,6 +130,14 @@ class UsuarioModificado(BaseModel):
                 "foto_perfil": "data:image/jpeg;base64,/9j/4AAQ..."
             }
         }
+
+
+class Coordenadas(BaseModel):
+    """
+    Modelo simple para validar coordenadas GPS
+    """
+    lat: float = Field(..., ge=-90, le=90, description="Latitud")
+    lon: float = Field(..., ge=-180, le=180, description="Longitud")
 
 
 class UbicacionUsuario(BaseModel):
@@ -138,6 +193,23 @@ class UsuarioResponse(BaseModel):
                     }
                 ],
                 "foto_perfil": "data:image/jpeg;base64,/9j/4AAQ...",
+                "notificaciones": True
+            }
+        }
+
+
+class NotificacionesConfig(BaseModel):
+    """
+    Modelo para configurar notificaciones del usuario
+    """
+    notificaciones: bool = Field(
+        ...,
+        description="Activar/desactivar notificaciones por correo"
+    )
+
+    class Config:
+        json_schema_extra = {
+            "example": {
                 "notificaciones": True
             }
         }
