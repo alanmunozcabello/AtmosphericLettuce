@@ -2,7 +2,7 @@
 Modelos Pydantic para Clima
 """
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 
 class ClimaRequest(BaseModel):
@@ -22,10 +22,11 @@ class ClimaRequest(BaseModel):
         description="Longitud (entre -180 y 180)"
     )
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "lat": -33.4489,
                 "lon": -70.6693
             }
         }
+    )

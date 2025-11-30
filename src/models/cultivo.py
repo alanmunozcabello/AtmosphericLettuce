@@ -2,7 +2,7 @@
 Modelos Pydantic para Cultivo
 """
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 from typing import Optional, List
 from datetime import datetime
 from enum import Enum
@@ -65,13 +65,14 @@ class PuntoCoordenada(BaseModel):
         description="Longitud (entre -180 y 180)"
     )
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "latitud": -33.4489,
                 "longitud": -70.6693
             }
         }
+    )
 
 
 class CultivoCreate(BaseModel):
@@ -92,13 +93,14 @@ class CultivoCreate(BaseModel):
         example=5
     )
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "nombre_cultivo": "Tomate",
                 "hectareas": 5
             }
         }
+    )
 
 
 class CultivoDatos(BaseModel):
@@ -146,7 +148,8 @@ class CultivoDatos(BaseModel):
     ph_agua: Optional[float] = Field(None, ge=0, le=14, description="pH del agua")
     acolchado: Optional[int] = Field(None, ge=0, le=1, description="0=No, 1=Sí")
 
-    @validator('fecha_siembra')
+    @field_validator('fecha_siembra')
+    @classmethod
     def validar_fecha_siembra(cls, v):
         """Validar que la fecha no sea futura"""
         if v:
@@ -158,7 +161,8 @@ class CultivoDatos(BaseModel):
                 raise ValueError(f'Formato de fecha inválido: {e}')
         return v
 
-    @validator('ph_agua')
+    @field_validator('ph_agua')
+    @classmethod
     def validar_ph(cls, v):
         """Validar rango de pH"""
         if v is not None and (v < 0 or v > 14):
@@ -204,15 +208,16 @@ class AreaCultivoDatos(BaseModel):
         description="Lista de puntos GPS que forman el polígono (mínimo 3)"
     )
 
-    @validator('puntos')
+    @field_validator('puntos')
+    @classmethod
     def validar_puntos(cls, v):
         """Validar que haya al menos 3 puntos para formar un polígono"""
         if len(v) < 3:
             raise ValueError('Se necesitan al menos 3 puntos para formar un área')
         return v
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "cultivo": "Tomate",
                 "area": 5.5,
@@ -224,6 +229,7 @@ class AreaCultivoDatos(BaseModel):
                 ]
             }
         }
+    )
 
 
 class CultivoResponse(BaseModel):
@@ -236,8 +242,8 @@ class CultivoResponse(BaseModel):
     formulario: dict
     puntos: List[PuntoCoordenada]
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "id": 1,
                 "nombre": "Tomate",
@@ -252,3 +258,4 @@ class CultivoResponse(BaseModel):
                 ]
             }
         }
+    )

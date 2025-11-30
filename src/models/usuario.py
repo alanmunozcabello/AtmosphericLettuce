@@ -2,7 +2,7 @@
 Modelos Pydantic para Usuario
 """
 
-from pydantic import BaseModel, EmailStr, Field, validator
+from pydantic import BaseModel, EmailStr, Field, field_validator, ConfigDict
 from typing import Optional
 
 
@@ -10,6 +10,15 @@ class LoginRequest(BaseModel):
     """
     Modelo para inicio de sesión
     """
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "correo": "usuario@example.com",
+                "contrasena": "MiContraseña123"
+            }
+        }
+    )
+    
     correo: EmailStr = Field(
         ...,
         description="Correo electrónico",
@@ -22,19 +31,21 @@ class LoginRequest(BaseModel):
         example="MiContraseña123"
     )
 
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "correo": "usuario@example.com",
-                "contrasena": "MiContraseña123"
-            }
-        }
-
 
 class UsuarioRegistro(BaseModel):
     """
     Modelo para registro de nuevo usuario
     """
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "correo": "usuario@example.com",
+                "nombre": "Juan Pérez",
+                "contrasena": "MiContraseña123"
+            }
+        }
+    )
+    
     correo: EmailStr = Field(
         ...,
         description="Correo electrónico del usuario",
@@ -54,21 +65,23 @@ class UsuarioRegistro(BaseModel):
         example="MiContraseña123"
     )
 
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "correo": "usuario@example.com",
-                "nombre": "Juan Pérez",
-                "contrasena": "MiContraseña123"
-            }
-        }
-
 
 class UsuarioModificado(BaseModel):
     """
     Modelo para modificar datos del usuario
     Todos los campos son opcionales
     """
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "nombre": "Juan Pérez Actualizado",
+                "ciudad": "Santiago",
+                "region": "Región Metropolitana",
+                "foto_perfil": "data:image/jpeg;base64,/9j/4AAQ..."
+            }
+        }
+    )
+    
     nombre: Optional[str] = Field(
         None,
         min_length=2,
@@ -90,7 +103,8 @@ class UsuarioModificado(BaseModel):
         description="Foto de perfil en formato Base64"
     )
 
-    @validator('foto_perfil')
+    @field_validator('foto_perfil')
+    @classmethod
     def validar_foto_base64(cls, v):
         """Validar que la foto sea Base64 válida"""
         if not v:
@@ -121,21 +135,20 @@ class UsuarioModificado(BaseModel):
         
         return v
 
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "nombre": "Juan Pérez Actualizado",
-                "ciudad": "Santiago",
-                "region": "Región Metropolitana",
-                "foto_perfil": "data:image/jpeg;base64,/9j/4AAQ..."
-            }
-        }
-
 
 class Coordenadas(BaseModel):
     """
     Modelo simple para validar coordenadas GPS
     """
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "lat": -33.4489,
+                "lon": -70.6693
+            }
+        }
+    )
+    
     lat: float = Field(..., ge=-90, le=90, description="Latitud")
     lon: float = Field(..., ge=-180, le=180, description="Longitud")
 
@@ -144,6 +157,17 @@ class UbicacionUsuario(BaseModel):
     """
     Modelo para ubicación del usuario
     """
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "latitud": -33.4489,
+                "longitud": -70.6693,
+                "ciudad": "Santiago",
+                "region": "Región Metropolitana"
+            }
+        }
+    )
+    
     latitud: float = Field(
         ...,
         ge=-90,
@@ -164,15 +188,8 @@ class UsuarioResponse(BaseModel):
     """
     Modelo de respuesta con datos del usuario
     """
-    id: str
-    nombre: str
-    ubicacion: dict
-    cultivos: list
-    foto_perfil: Optional[str] = None
-    notificaciones: bool = True
-
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "id": "usuario@example.com",
                 "nombre": "Juan Pérez",
@@ -196,20 +213,29 @@ class UsuarioResponse(BaseModel):
                 "notificaciones": True
             }
         }
+    )
+    
+    id: str
+    nombre: str
+    ubicacion: dict
+    cultivos: list
+    foto_perfil: Optional[str] = None
+    notificaciones: bool = True
 
 
 class NotificacionesConfig(BaseModel):
     """
     Modelo para configurar notificaciones del usuario
     """
-    notificaciones: bool = Field(
-        ...,
-        description="Activar/desactivar notificaciones por correo"
-    )
-
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "notificaciones": True
             }
         }
+    )
+    
+    notificaciones: bool = Field(
+        ...,
+        description="Activar/desactivar notificaciones por correo"
+    )

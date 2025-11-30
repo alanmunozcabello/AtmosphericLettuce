@@ -2,7 +2,7 @@
 Modelos Pydantic para Chat
 """
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, ConfigDict
 from typing import Optional, List
 
 
@@ -33,8 +33,8 @@ class ChatConsulta(BaseModel):
         description="Lista de PDFs en Base64 para análisis"
     )
 
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "texto": "¿Cómo puedo mejorar el riego de mis tomates?",
                 "correo": "usuario@example.com",
@@ -43,3 +43,4 @@ class ChatConsulta(BaseModel):
                 "pdf": []
             }
         }
+    )
