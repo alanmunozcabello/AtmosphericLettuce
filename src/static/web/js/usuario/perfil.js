@@ -2,37 +2,38 @@
 document.addEventListener('DOMContentLoaded', () => {
   // URL base del backend FastAPI
   // Clave para guardar el perfil en localStorage
+  if (!verificarSesionActiva()) {
+    // Marcar como listo
+    window.perfilCargado = true
+    return
+  }
   const LS_KEY = 'perfilAL'
 
   // ---cerrar sesion ---
   const logoutButton = document.getElementById('btn-logout')
   logoutButton.addEventListener('click', () => {
-    localStorage.clear() // limpia todo (sesión, caches, etc.)
+    /*localStorage.clear() // limpia todo (sesión, caches, etc.)
     location.replace('index.html') // redirige reemplazando la entrada del historial
+    */
+    cerrarSesion() // <-- Es de la función helper
   })
-
-  // --- actualizar el correo en la URL sin recargar la página ---
-  const replaceCorreoInURL = (nuevoCorreo) => {
-    try {
-      const url = new URL(location.href) // instancia un objeto URL con la URL actual
-      url.searchParams.set('correo', nuevoCorreo) // cambia el parametro 'correo'
-      history.replaceState(null, '', url.toString()) // reemplaza la URL en el historial sin recargar
-    } catch { /* noop */ }
-  }
 
   // Envia un JSON con { nombre, correo, ciudad, region } al endpoint PUT /usuarios/{correo}/modificar
   const putUsuario = async (correoActual, body) => {
     const url = `/usuarios/${encodeURIComponent(correoActual)}/modificar`
-
-    const res = await fetch(url, {
+    /*const res = await fetch(url, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' }, // se envía JSON
       body: JSON.stringify(body) // serializa el body a JSON
+      */
+    const res = await fetchConToken(url, {
+      method: 'PUT',
+      body: JSON.stringify(body)
     })
 
     // Si la respuesta no es postiva, lanza error con detalle
-    if (!res.ok) {
-      const text = await res.text()
+    if (!res || !res.ok) {
+      const text = await res.text().catch(() => 'Error desconocido')
       throw new Error(`PUT falló: ${res.status} ${res.statusText} ${text}`)
     }
 
@@ -45,15 +46,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Prioriza el parametro correo, luego localStorage, si no hay nada, cadena vacía
-  const CORREO =
-    new URLSearchParams(location.search).get('correo') ||
-    localStorage.getItem('correoUsuario') ||
-    ''
+  const CORREO = obtenerCorreoDelToken() || ''
 
-  // Si no hay correo, se asume que no hay sesión: redirige a index
+  // Si no obtiene ni el token ni el correo entonces redirige al login, pero con jwt
   if (!CORREO) {
     console.warn('⚠️ Usuario no identificado')
-    window.location.href = 'index.html'
+
+    // Marcar como listo
+    window.perfilCargado = true
+
+    cerrarSesion()
     return // detiene el script
   }
   // Asegura persistencia del correo en localStorage
@@ -137,10 +139,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // ---  GET /usuarios/{correo} ---
   async function syncConBackend () {
     try {
-      // const res = await fetch(`${API_BASE}/usuarios/${encodeURIComponent(CORREO)}`); // pide datos al backend
-      // if (!res.ok) return; // si falla  sale
+      const res = await fetchConToken(`/usuarios/${encodeURIComponent(CORREO)}`)
 
-      const usuario = await obtenerUsuario(CORREO) // parsea JSON devuelto por el backend
+      if (!res || !res.ok) {
+        console.warn('No se pudo cargar el perfil desde el backend')
+        // Marcar como listo
+        window.perfilCargado = true
+        return
+      }
+      const usuario = await res.json()
+      
       const previo = leerLS() || {} // lee lo que ya estaba en cache
 
       // A veces el backend puede mandar "nombre" con un email; lo tratamos para mostrar algo amigable
@@ -175,8 +183,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       guardarLS(fusionado) // actualiza cache
       pintar(fusionado) // y pantalla
+
+      // Marcar como listo
+      window.perfilCargado = true
     } catch (e) {
       console.warn('No se pudo sincronizar perfil:', e)
+
+      // Marcar como listo
+      window.perfilCargado = true
     }
   }
 
@@ -313,7 +327,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       guardarLS(fusionado) // guarda en cache
       localStorage.setItem('correoUsuario', correoNuevo) // actualiza el correo de sesión
-      replaceCorreoInURL(correoNuevo) // cambia ?correo=... en la URL sin recargar
       pintar(fusionado) // repinta vista y form
       modoEdicion(false) // sale de modo edición
 
@@ -344,4 +357,23 @@ document.addEventListener('DOMContentLoaded', () => {
   cargarInicial() // pinta con cache o con lo que haya en la vista
   modoEdicion(false)
   syncConBackend() // trae datos desde el backend y los muestra
+})
+
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted) {
+    console.log('⚠️ Perfil restaurado desde caché (botón Atrás)')
+    
+    // Verificar sesión activa
+    if (!verificarSesionActiva()) {
+      return // Redirige automáticamente a login
+    }
+
+    const correoUsuario = obtenerCorreoDelToken()
+    if (!correoUsuario) {
+      cerrarSesion()
+      return
+    }
+
+    console.log('✅ Sesión válida en perfil restaurado')
+  }
 })

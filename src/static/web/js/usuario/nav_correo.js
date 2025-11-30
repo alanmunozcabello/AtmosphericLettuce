@@ -1,12 +1,17 @@
 /* global localStorage, location, document, window, invalidarCache */
 document.addEventListener('DOMContentLoaded', () => {
+  if (!verificarSesionActiva()) {
+    return
+  }
+
+  const correoDelToken = obtenerCorreoDelToken()
+
   // Obtener correo de localStorage o URL params
-  const correoUsuario = new URLSearchParams(location.search).get('correo') ||
-                         localStorage.getItem('correoUsuario')
+  const correoUsuario = correoDelToken
 
   if (!correoUsuario) {
-    console.warn('⚠️ Usuario no identificado')
-    window.location.href = 'index.html'
+    console.error('❌ No se pudo obtener correo del token')
+    cerrarSesion()
     return
   }
 
@@ -30,8 +35,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Función global para cerrar sesión
 function logout () {
-  // localStorage.removeItem('correoUsuario');
-  invalidarCache() // funcion de utils que se encarga de sacar los datos del usuario del local storage
-  localStorage.clear()
-  window.location.href = 'index.html'
+  cerrarSesion()
 }

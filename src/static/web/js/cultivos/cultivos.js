@@ -1,16 +1,21 @@
+/* global verificarSesionActiva, obtenerCorreoDelToken, cerrarSesion, obtenerUsuario, location, localStorage */
+
 window.recargarCultivos = async function () {
   console.log('⚠️ recargarCultivos llamado antes de inicializar')
   return Promise.resolve()
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  if (!verificarSesionActiva()) {
+    return
+  }
+
   // ========== VERIFICAR SESIÓN ==========
-  const CORREO = new URLSearchParams(location.search).get('correo') ||
-    localStorage.getItem('correoUsuario')
+  const CORREO = obtenerCorreoDelToken()
 
   if (!CORREO) {
-    console.warn('⚠️ Usuario no identificado')
-    window.location.href = 'index.html'
+    console.error('❌ No se pudo obtener correo del token')
+    cerrarSesion()
     return
   }
 
@@ -27,7 +32,14 @@ document.addEventListener('DOMContentLoaded', () => {
     colores: [
       '#ef4444', '#f59e0b', '#10b981', '#3b82f6',
       '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'
-    ]
+    ],
+    scrollInfinito: {
+      cultivosPorCarga: 20,
+      cultivosCargados: 0,
+      totalCultivos: 0,
+      cargando: false,
+      todosCargados: false
+    }
   }
 
   // ========== INICIALIZACIÓN ==========
@@ -38,28 +50,36 @@ document.addEventListener('DOMContentLoaded', () => {
       // 1. Obtener datos del usuario
       const usuario = await obtenerUsuario(CORREO)
 
-      if (usuario) {
+      if (!usuario) {
+        console.warn('⚠️ No se pudo obtener datos del usuario')
+        cerrarSesion()
+        return
+      }
         // ✅ Guardar datos completos
-        window.cultivosState.usuarioData = usuario
+      window.cultivosState.usuarioData = usuario
 
         // ✅ Actualizar ubicación con nuevo formato
-        if (usuario.ubicacion) {
-          window.cultivosState.usuarioLatitud = usuario.ubicacion.latitud || -33.446
-          window.cultivosState.usuarioLongitud = usuario.ubicacion.longitud || -70.681
-          console.log('📍 Ubicación:',
-            window.cultivosState.usuarioLatitud,
-            window.cultivosState.usuarioLongitud
-          )
-        }
+      if (usuario.ubicacion) {
+        window.cultivosState.usuarioLatitud = usuario.ubicacion.latitud || -33.446
+        window.cultivosState.usuarioLongitud = usuario.ubicacion.longitud || -70.681
+        console.log('📍 Ubicación:',
+          window.cultivosState.usuarioLatitud,
+          window.cultivosState.usuarioLongitud
+        )
+      }
 
         // ✅ Convertir array de cultivos a objeto { nombre: cultivoObj }
-        if (Array.isArray(usuario.cultivos)) {
-          window.cultivosState.cultivosData = {}
-          usuario.cultivos.forEach(cultivo => {
-            window.cultivosState.cultivosData[cultivo.nombre] = cultivo
-          })
-          console.log('✅ Cultivos cargados:', Object.keys(window.cultivosState.cultivosData).length)
-        }
+      if (Array.isArray(usuario.cultivos)) {
+        window.cultivosState.cultivosData = {}
+        usuario.cultivos.forEach(cultivo => {
+          window.cultivosState.cultivosData[cultivo.nombre] = cultivo
+        })
+
+        // Actualizar total de cultivos
+        window.cultivosState.scrollInfinito.totalCultivos = usuario.cultivos.length
+        window.cultivosState.scrollInfinito.cultivosCargados = 0
+        window.cultivosState.scrollInfinito.todosCargados = false
+        console.log('✅ Total de cultivos:', usuario.cultivos.length)      
       }
 
       // 2. Inicializar mapa principal
@@ -68,8 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // 3. Renderizar UI
-      if (typeof renderizarLista === 'function') {
-        renderizarLista()
+      if (typeof renderizarListaInicial === 'function') {
+        renderizarListaInicial()
       }
 
       if (typeof renderizarMapaPrincipal === 'function') {
@@ -89,17 +109,31 @@ document.addEventListener('DOMContentLoaded', () => {
       if (typeof inicializarEventosMarcarArea === 'function') {
         inicializarEventosMarcarArea()
       }
+      // 6. Inicializar detector de scroll
+      if (typeof inicializarScrollInfinito === 'function') {
+        inicializarScrollInfinito()
+      }
+
+      // Marcar como listo
+      window.cultivosCargados = true
+
     } catch (error) {
       console.error('❌ Error en inicialización:', error)
       const listaCultivos = document.getElementById('lista-cultivos')
       if (listaCultivos) {
         listaCultivos.innerHTML = '<li class="cultivo-item-loading">Error al cargar</li>'
       }
+      // Marcar como listo
+      window.cultivosCargados = true
     }
   }
 
   // ========== CARGAR/RECARGAR CULTIVOS ==========
   async function cargarCultivos () {
+    if (!verificarSesionActiva()) {
+      return
+    }
+
     const listaCultivos = document.getElementById('lista-cultivos')
     if (listaCultivos) {
       listaCultivos.innerHTML = '<li class="cultivo-item-loading">Cargando...</li>'
@@ -108,23 +142,32 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const usuario = await obtenerUsuario(CORREO)
 
-      if (usuario) {
-        window.cultivosState.usuarioData = usuario
-
-        // ✅ LIMPIAR ANTES DE ACTUALIZAR
-        window.cultivosState.cultivosData = {}
-
-        if (Array.isArray(usuario.cultivos)) {
-          window.cultivosState.cultivosData = {}
-          usuario.cultivos.forEach(cultivo => {
-            window.cultivosState.cultivosData[cultivo.nombre] = cultivo
-          })
-        }
+      if (!usuario) {
+        cerrarSesion()
+        return
       }
 
-      // Renderizar en UI
-      if (typeof renderizarLista === 'function') {
-        renderizarLista()
+      window.cultivosState.usuarioData = usuario
+
+      // ✅ LIMPIAR ANTES DE ACTUALIZAR
+      window.cultivosState.cultivosData = {}
+
+      if (Array.isArray(usuario.cultivos)) {
+        window.cultivosState.cultivosData = {}
+        usuario.cultivos.forEach(cultivo => {
+          window.cultivosState.cultivosData[cultivo.nombre] = cultivo
+        })
+
+        // Resetear estado de scroll
+        window.cultivosState.scrollInfinito.totalCultivos = usuario.cultivos.length
+        window.cultivosState.scrollInfinito.cultivosCargados = 0
+        window.cultivosState.scrollInfinito.todosCargados = false
+      }
+      
+
+      // Renderizar solo primeros 20 en UI
+      if (typeof renderizarListaInicial === 'function') {
+        renderizarListaInicial()
       }
 
       if (typeof renderizarMapaPrincipal === 'function') {

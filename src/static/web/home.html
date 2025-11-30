@@ -2,11 +2,72 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
   <title>Atmospheric Lettuce</title>
+  
+  <style>
+    html {
+      display: none;
+    }
+    body { overflow: hidden !important; }
+    body > *:not(.loading-screen) {
+      visibility: hidden !important;
+      opacity: 0 !important;
+    }
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #5db5ff, #55c2a5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 99999;
+    }
+  </style>
+
   <link rel="stylesheet" href="css/homes.css">
   <link rel="stylesheet" href="css/chat_bot.css">
+  <link rel="stylesheet" href="/static/web/css/loading.css">
+
+  <script>
+    (function() {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        window.location.replace('index.html')
+        return
+      }
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]))
+        if (payload.exp < Math.floor(Date.now() / 1000)) {
+          localStorage.clear()
+          window.location.replace('index.html')
+        } else {
+          document.documentElement.style.display = 'block'
+        }
+      } catch (e) {
+        localStorage.clear()
+        window.location.replace('index.html')
+      }
+    })()
+  </script>
 </head>
 <body>
+  <!-- ========== LOADING SCREEN ========== -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-spinner">
+      <div class="spinner-leaf"></div>
+      <div class="spinner-leaf"></div>
+      <div class="spinner-leaf"></div>
+    </div>
+  </div>
   <!-- Barra superior -->
   <div class="barra-superior">
     <div class="logo">
@@ -47,6 +108,13 @@
       <div class="info-detalles">🌡️ Sensación Térmica <span class="sensacion">Cargando...</span></div>
     </div>
 
+    <div class="tarjeta consejos">
+      <div class="titulo">💡 Consejos según el clima</div>
+      <div id="consejos-clima" class="consejos-clima">
+        <!-- Los consejos se cargarán dinámicamente aquí -->
+        <div class="consejo-item">🌱 Cargando consejos...</div>
+      </div>
+    </div>
     <!-- Cultivos -->
 <!-- <div class="tarjeta cultivos">
   <div class="titulo">Cultivos</div>
@@ -60,13 +128,6 @@
   <ul id="lista-cultivos" class="lista-cultivos"></ul>
 
 </div> -->
-
-    <!-- Consejos -->
-    <div class="tarjeta consejos">
-      <div class="titulo">Consejos</div>
-      <div class="info-detalles">✔ Clima perfecto para regar las plantas</div>
-    </div>
-  </div>
 
   <div class="mapa-overlay" id="mapa-overlay">
     <div class="mapa-container">
@@ -157,7 +218,7 @@
     </div>
 
     <div class="chat-input">
-      <input type="text" id="textoInput" placeholder="Escribe un mensaje...">
+      <textarea id="textoInput" placeholder="Escribe un mensaje..." rows="1"></textarea>
 
       <!-- Botones de acción -->
       <button id="fileBtn">📄</button>
@@ -168,7 +229,10 @@
     </div>
   </div>
 
+  <script src="js/utilidades/autenticacion.js" defer></script>
+  <script src="js/utilidades/proteger_pagina.js" defer></script>
   <script src="js/utilidades/utils.js" defer></script>
+  <script src="js/home/home.js" defer></script>
   <script src="js/clima/cache_clima.js" defer></script>
   <script src="js/clima/clima_home.js" defer></script>
   <script src="js/usuario/nav_correo.js" defer></script>
@@ -178,6 +242,7 @@
   <script src="js/mapa/ubicacion.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="js/chatbot/chat_controller.js" defer></script>
+  <script src="js/core/loading.js" defer></script>
 
 </body>
 </html>

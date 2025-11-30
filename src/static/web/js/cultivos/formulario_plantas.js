@@ -1,4 +1,9 @@
+/* global verificarSesionActiva, obtenerCorreoDelToken, cerrarSesion, fetchConToken */
+
 document.addEventListener('DOMContentLoaded', function () {
+  if (!verificarSesionActiva()) {
+    return
+  }
   // Elementos del DOM
   const btnDatosAdicionales = document.getElementById('btnDatosAdicionales')
   const camposAdicionales = document.getElementById('camposAdicionales')
@@ -16,7 +21,23 @@ document.addEventListener('DOMContentLoaded', function () {
   // Obtener parámetros de la URL
   const urlParams = new URLSearchParams(window.location.search)
   const cultivo = urlParams.get('cultivo')
-  const correo = urlParams.get('correo')
+  const correoURL = urlParams.get('correo')
+  const correoToken = obtenerCorreoDelToken()
+
+  if (!correoToken) {
+    console.error('❌ No se pudo obtener correo del token')
+    cerrarSesion()
+    return
+  }
+
+  if (correoURL && correoURL.toLowerCase() !== correoToken.toLowerCase()) {
+    console.error('❌ Intento de acceso no autorizado')
+    alert('Acceso denegado: no puedes modificar cultivos de otro usuario')
+    cerrarSesion()
+    return
+  }
+
+  const correo = correoToken
 
   function actualizarProgreso() {
       // Selecciona TODOS los campos (visibles e invisibles)
@@ -64,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Configurar botón regresar
     btnRegresar.addEventListener('click', function () {
-      window.location.href = `gestor_cultivos.html?correo=${encodeURIComponent(correo)}`
+      window.location.href = 'gestor_cultivos.html'
     })
   } else {
     // Si no viene de cultivos, ocultar botón regresar
@@ -103,6 +124,10 @@ document.addEventListener('DOMContentLoaded', function () {
   formulario.addEventListener('submit', function (e) {
     e.preventDefault()
 
+    if (!verificarSesionActiva()) {
+      return
+    }
+
     // Validar que tenemos la información del cultivo
     if (!correo || !cultivo) {
       alert('⚠️ Error: Falta información del cultivo o usuario. Por favor accede desde la página de cultivos.')
@@ -139,11 +164,8 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log('Datos del formulario mapeados:', datosParaBackend)
 
     // Enviar al backend
-    fetch(`/usuarios/${encodeURIComponent(correo)}/cultivos/modificar_formulario_cultivo`, {
+    fetchConToken(`/usuarios/${encodeURIComponent(correo)}/cultivos/modificar_formulario_cultivo`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
       body: JSON.stringify(datosParaBackend)
     })
       .then(response => {
@@ -168,4 +190,7 @@ document.addEventListener('DOMContentLoaded', function () {
         alert(`❌ Error al guardar la configuración del cultivo: ${error.message}`)
       })
   })
+  
+  // Marcar como listo
+  window.formularioCargado = true
 })

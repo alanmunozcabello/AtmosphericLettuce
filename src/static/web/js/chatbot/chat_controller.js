@@ -1,3 +1,5 @@
+/* global localStorage, document, obtenerUsuario, obtenerCorreoDelToken, verificarSesionActiva, marked */
+
 document.addEventListener('DOMContentLoaded', () => {
   const chatToggle = document.getElementById('chatToggle')
   const chatWindow = document.getElementById('chatWindow')
@@ -7,6 +9,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Cargar los cultivos en el selector
   cargarCultivosEnSelector()
+
+  const textoInput = document.getElementById('textoInput')
+
+  // Enviar con Enter (sin Shift)
+  textoInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      enviarBtn.click()
+    }
+  })
+
+// Auto-resize del textarea
+  textoInput.addEventListener('input', function() {
+    this.style.height = 'auto'
+    this.style.height = Math.min(this.scrollHeight, 120) + 'px'
+  })
 
   // Abrir/cerrar con el botón flotante
   chatToggle.addEventListener('click', () => {
@@ -90,7 +108,8 @@ document.getElementById('enviarBtn').addEventListener('click', async () => {
   const textoInput = document.getElementById('textoInput')
   const texto = textoInput.value.trim()
   const cultivoSeleccionado = document.getElementById("cultivoSelect").value
-  const CORREO = localStorage.getItem('correoUsuario') || null;
+  
+  const CORREO = obtenerCorreoDelToken()
   // const inputArchivos = document.getElementById('fileInput');
 
   // Arreglo con el payload final
@@ -112,6 +131,7 @@ document.getElementById('enviarBtn').addEventListener('click', async () => {
   // console.log(inputArchivos.files[0].name);
 
   textoInput.value = ''
+  textoInput.style.height = 'auto'
 
   if (archivosSeleccionados.length > 0) {
     mensajeHTML += '<div class="archivo-previews">'
@@ -160,8 +180,11 @@ document.getElementById('enviarBtn').addEventListener('click', async () => {
   // Mostrar mensaje con previews
   document.getElementById('chatBox').innerHTML += mensajeHTML
 
-  if(cultivoSeleccionado !== '(Sin cultivo)' && CORREO !== null){
-    payload.cultivo = cultivoSeleccionado || null,
+  if(cultivoSeleccionado &&
+     cultivoSeleccionado !== '' &&
+     cultivoSeleccionado !== '(Sin cultivo)' &&
+     CORREO) {
+    payload.cultivo = cultivoSeleccionado
     payload.correo = CORREO
   }
 
@@ -175,26 +198,49 @@ document.getElementById('enviarBtn').addEventListener('click', async () => {
   // console.log(payload);
 
   // Enviar al backend
-  const respuesta = await fetch('/chat/consulta', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  })
+  try {
+    const respuesta = await fetch('/chat/consulta', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
 
-  const result = await respuesta.json()
+    if (!respuesta.ok) {
+      throw new Error(`Error ${respuesta.status}: ${respuesta.statusText}`)
+    }
 
-  let formatted = 'Hubo un error, intente nuevamente más tarde.' // estado inicial como error
+    const result = await respuesta.json()
 
-  if (result.success === undefined && typeof result.respuesta === 'string') { // por algun motivo solo cuando hay error existe success
-    formatted = marked.parse(result.respuesta)
-  }
+    let formatted = 'Hubo un error, intente nuevamente más tarde.'
 
-  hideLoader() // terminar animacion de carga
+    if (result.success === undefined && typeof result.respuesta === 'string') {
+      formatted = marked.parse(result.respuesta)
+    } else if (result.error) {
+      formatted = `Error: ${result.error}`
+    }
 
-  // mostrar respuesta del chatbot
-  document.getElementById('chatBox').innerHTML += `
+    hideLoader()
+
+    // Mostrar respuesta del chatbot
+    document.getElementById('chatBox').innerHTML += `
       <p><b>Lechuguin:</b> ${formatted}</p>
-  `
+    `
+
+    // ✅ CAMBIO 4: Limpiar archivos después de enviar
+    archivosSeleccionados = []
+    document.getElementById('fileFeedback').innerHTML = ''
+
+  } catch (error) {
+    console.error('❌ Error en chatbot:', error)
+    hideLoader()
+    
+    document.getElementById('chatBox').innerHTML += `
+      <p><b>Lechuguin:</b> ❌ Error de conexión. Por favor, intenta nuevamente.</p>
+    `
+  } finally {
+  // Resetear altura del textarea siempre
+  textoInput.style.height = 'auto'
+  }
 })
 
 function leerArchivoBase64 (archivo) { // comvertir archivo imagen o pdf a base64
@@ -216,8 +262,13 @@ async function cargarCultivosEnSelector() {
     return
   }
 
+  if (typeof verificarSesionActiva === 'function' && !verificarSesionActiva()) {
+    console.warn('⚠️ No hay sesión activa')
+    return
+  }
   // Obtener correo del usuario
-  const CORREO = localStorage.getItem('correoUsuario')
+  const CORREO = obtenerCorreoDelToken()
+  
   if (!CORREO) {
     console.warn('⚠️ No hay correo de usuario')
     return

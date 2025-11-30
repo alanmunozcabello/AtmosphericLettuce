@@ -1,6 +1,15 @@
 /* global localStorage, document, window, alert, encodeURIComponent */
 document.addEventListener('DOMContentLoaded', () => {
-  const correoUsuario = localStorage.getItem('correoUsuario')
+  if(!verificarSesionActiva()) {
+    return
+  }
+  const correoUsuario = obtenerCorreoDelToken() ||
+                        localStorage.getItem('correoUsuario')
+  
+  if (!correoUsuario) {
+    cerrarSesion()
+    return
+  }
 
   const btnDelete = document.getElementById('btn-delete')
   const alerta = document.getElementById('alerta-borrar')
@@ -10,46 +19,45 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- Abrir alerta ---
   if (btnDelete) {
     btnDelete.addEventListener('click', () => {
-      alerta.style.display = 'flex' // mostrar alerta
+      // alerta.style.display = 'flex' // mostrar alerta
+      alerta.classList.add('activo')
     })
   }
 
   // --- Cancelar ---
   btnCancelar.addEventListener('click', () => {
-    alerta.style.display = 'none'
+    // alerta.style.display = 'none'
+    alerta.classList.remove('activo')
   })
 
   // --- Confirmar borrado ---
   btnConfirmar.addEventListener('click', async () => {
     try {
-      const res = await fetch(`/usuarios/${encodeURIComponent(correoUsuario)}`, {
+      /*const res = await fetch(`/usuarios/${encodeURIComponent(correoUsuario)}`, {
         method: 'DELETE'
-      })
+      })*/
+      const res = await fetchConToken(
+        `/usuarios/${encodeURIComponent(correoUsuario)}`,
+        { method: 'DELETE' }
+      )
 
-      if (res.ok) {
-        alert('✅ Cuenta eliminada correctamente')
-        localStorage.clear()
-
-        // Redirige y evita volver atrás
-        window.location.replace('index.html')
-        window.history.pushState(null, '', window.location.href)
-        window.onpopstate = function () {
-          window.history.go(1)
-        }
+      if (res && res.ok) {
+        alert('Cuenta eliminada exitosamente')
+        cerrarSesion() // <-- limpia y cierra sesión
       } else {
-        const errorMsg = await res.text()
-        alert('❌ Error al borrar cuenta: ' + errorMsg)
+        alert('No se pudo eliminar la cuenta.Intenta nuevamente.')
       }
     } catch (err) {
       console.error('Error en la petición DELETE', err)
-      alert('❌ No se pudo conectar al servidor')
+      alert('Error al intentar eliminar la cuenta')
     }
   })
 
   // --- Cerrar si se hace clic fuera de la alerta ---
   window.addEventListener('click', (e) => {
     if (e.target === alerta) {
-      alerta.style.display = 'none'
+      // alerta.style.display = 'none'
+      alerta.classList.remove('activo')
     }
   })
 

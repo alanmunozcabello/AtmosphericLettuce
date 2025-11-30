@@ -1,4 +1,10 @@
+/* global localStorage, location, document, ol, verificarSesionActiva, obtenerCorreoDelToken, cerrarSesion, fetchConToken, obtenerUsuario */
+
 document.addEventListener('DOMContentLoaded', () => {
+  if (!verificarSesionActiva()) {
+    return
+  }
+
   const inputUbicacion = document.getElementById('input-ubicacion')
   const mapaOverlay = document.getElementById('mapa-overlay')
   const btnCerrar = document.getElementById('cerrar-mapa')
@@ -21,29 +27,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     mapaOverlay.style.display = 'flex'
     // console.log('🗺️ Mapa abierto')
-    // 1. Obtener correo como en otros archivos
-    const CORREO = new URLSearchParams(location.search).get('correo') ||
-      localStorage.getItem('correoUsuario')
+    correo = obtenerCorreoDelToken()
 
-    if (!CORREO) {
-      console.warn('⚠️ Usuario no identificado')
-      window.location.href = 'index.html'
+    if (!correo) {
+      console.error('❌ No se pudo obtener correo del token')
+      cerrarSesion()
       return
     }
 
-    localStorage.setItem('correoUsuario', CORREO)
-    correo = CORREO
-
     try {
-      // 2. ✅ Usar obtenerUsuario() como en el resto del proyecto
-      const usuario = await obtenerUsuario(CORREO)
+      const usuario = await obtenerUsuario(correo)
 
       if (!usuario) {
         console.warn('⚠️ No se pudo obtener datos del usuario')
-        window.location.href = 'index.html'
+        cerrarSesion()
         return
       }
-
       // 3. Extraer coordenadas
       latUsuario = usuario.ubicacion?.latitud ?? usuario.ubicacion?.lat ?? -33.446
       lonUsuario = usuario.ubicacion?.longitud ?? usuario.ubicacion?.lon ?? -70.681
@@ -203,32 +202,30 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('📤 Enviando ubicación al backend...')
 
       // 1. Actualizar coordenadas
-      const respuesta1 = await fetch(
+      const respuesta1 = await fetchConToken(
         `/usuarios/${encodeURIComponent(correo)}/ubicacion/${latMod}/${lonMod}/modificar`,
         {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' }
+          method: 'PATCH'
         }
       )
 
-      if (!respuesta1.ok) {
-        const error1 = await respuesta1.json()
+      if (!respuesta1 || !respuesta1.ok) {
+        const error1 = await respuesta1.json().catch(() => ({}))
         throw new Error(error1.error || 'Error actualizando coordenadas')
       }
 
       console.log('✅ Coordenadas actualizadas')
 
       // 2. Actualizar región/ciudad
-      const respuesta2 = await fetch(
+      const respuesta2 = await fetchConToken(
         `/usuarios/${encodeURIComponent(correo)}/ubicacion/region/${encodeURIComponent(region)}/${encodeURIComponent(ciudad)}/modificar`,
         {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' }
+          method: 'PATCH'
         }
       )
 
-      if (!respuesta2.ok) {
-        const error2 = await respuesta2.json()
+      if (!respuesta2 || !respuesta2.ok) {
+        const error2 = await respuesta2.json().catch(() => ({}))
         throw new Error(error2.error || 'Error actualizando región/ciudad')
       }
 
@@ -237,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // INVALIDAR CACHE DE CLIMA (nueva ubicación = nuevo clima)
       if (typeof invalidarCacheClima === 'function') {
         invalidarCacheClima()
-        console.log('🗑️ Cache de clima invalidado por cambio de ubicación')
+        console.log('🗑️ Cache de clima invalidado')
       }
 
       // ACTUALIZAR CACHÉ DEL USUARIO

@@ -3,11 +3,72 @@
 
 <head>
     <meta charset="UTF-8">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
     <title>Formulario de plantas</title>
+
+    <style>
+        html {
+             display: none;
+        }
+        body { overflow: hidden !important; }
+        body > *:not(.loading-screen) {
+            visibility: hidden !important;
+            opacity: 0 !important;
+        }
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #5db5ff, #55c2a5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+        }
+    </style>
+
     <link rel="stylesheet" href="css/formulario_plantas.css">
+    <link rel="stylesheet" href="css/loading.css">
+
+    <script>
+      (function() {
+        const token = localStorage.getItem('token')
+        if (!token) {
+          document.documentElement.style.display = 'none'
+          window.location.replace('index.html')
+          return
+        }
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]))
+          if (payload.exp < Math.floor(Date.now() / 1000)) {
+            localStorage.clear()
+            document.documentElement.style.display = 'none'
+            window.location.replace('index.html')
+          }
+        } catch (e) {
+          localStorage.clear()
+          document.documentElement.style.display = 'none'
+          window.location.replace('index.html')
+        }
+      })()
+    </script>
 </head>
 
 <body>
+    <!-- ========== LOADING SCREEN ========== -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-spinner">
+        <div class="spinner-leaf"></div>
+        <div class="spinner-leaf"></div>
+        <div class="spinner-leaf"></div>
+        </div>
+    </div>
     <form id="formulario-plantas">
         <div class="contenedor_general">
             <div class="contenedor_superior">
@@ -194,7 +255,11 @@
             </div>
         </div>
     </form>
+    <script src="js/utilidades/autenticacion.js" defer></script>
+    <script src="js/utilidades/proteger_pagina.js" defer></script>
+    <script src="js/utilidades/utils.js" defer></script>
     <script src="js/cultivos/formulario_plantas.js"></script>
+    <script src="js/core/loading.js"></script>
 </body>
 
 </html>

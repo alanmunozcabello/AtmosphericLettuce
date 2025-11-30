@@ -1,3 +1,4 @@
+/* global localStorage, obtenerUsuario */
 // aquí gestionaré el clima en local storage
 // problematica -> para obtener la temp actual min y max de hoy necesito hacer la llamada a clima hoy y clima semana
 // solucion -> guardar en localstorage la informacion completa de el clima en el formato siguiente:
