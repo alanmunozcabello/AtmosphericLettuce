@@ -19,7 +19,7 @@
 /* ========== PANEL LATERAL DERECHO ========== */
 .gestor-panel {
   width: 350px;
-  height: 100vh; 
+  height: calc(100vh - 60px); 
   background: white;
   border-left: 2px solid #e3e5ea;
   display: flex;
