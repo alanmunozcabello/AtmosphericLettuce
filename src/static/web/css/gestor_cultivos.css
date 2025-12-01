@@ -51,6 +51,78 @@
   border-bottom: 1px solid #e3e5ea;
 }
 
+/* ========== BARRA DE BÚSQUEDA ========== */
+.panel-search {
+  padding: 12px 16px;
+  background: #ffffff;
+  border-bottom: 1px solid #e3e5ea;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-search input {
+  flex: 1;
+  padding: 10px 12px;
+  padding-right: 36px; /* Espacio para el botón X */
+  border: 2px solid #e3e5ea;
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s;
+  background: #f8f9fa;
+}
+
+.panel-search input:focus {
+  border-color: #5db5ff;
+  box-shadow: 0 0 0 3px rgba(93, 181, 255, 0.15);
+  background: white;
+}
+
+.panel-search input::placeholder {
+  color: #9ca3af;
+}
+
+.btn-limpiar-busqueda {
+  position: absolute;
+  right: 24px;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px 8px;
+  transition: color 0.2s;
+  border-radius: 50%;
+}
+
+.btn-limpiar-busqueda:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* Mensaje cuando no hay resultados */
+.cultivo-item-no-results {
+  padding: 20px;
+  text-align: center;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.cultivo-item-no-results strong {
+  color: #5db5ff;
+  font-weight: 600;
+}
+
+/* Resaltar texto coincidente */
+.highlight {
+  background: linear-gradient(135deg, rgba(93, 181, 255, 0.2), rgba(85, 194, 165, 0.2));
+  font-weight: 700;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
 .summary-item {
   flex: 1;
   padding: 12px;

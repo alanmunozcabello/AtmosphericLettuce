@@ -276,3 +276,136 @@ function agregarCultivoALista (nombre, cultivo, reAgregarIndicador = true) {
   const li = crearElementoCultivo(nombre, cultivo)
   listaCultivos.appendChild(li)
 }
+
+// ========== FILTRADO DE CULTIVOS ==========
+function inicializarBusqueda() {
+  const inputBuscar = document.getElementById('input-buscar-cultivo')
+  const btnLimpiar = document.getElementById('btn-limpiar-busqueda')
+  
+  if (!inputBuscar) {
+    console.warn('⚠️ No se encontró #input-buscar-cultivo')
+    return
+  }
+
+  // Filtrado instantáneo (input event se dispara con cada tecla)
+  inputBuscar.addEventListener('input', (e) => {
+    const termino = e.target.value.trim()
+    
+    // Mostrar/ocultar botón de limpiar
+    if (termino) {
+      btnLimpiar.style.display = 'block'
+    } else {
+      btnLimpiar.style.display = 'none'
+    }
+    
+    filtrarCultivos(termino)
+  })
+
+  // Limpiar búsqueda
+  if (btnLimpiar) {
+    btnLimpiar.addEventListener('click', () => {
+      inputBuscar.value = ''
+      btnLimpiar.style.display = 'none'
+      filtrarCultivos('')
+      inputBuscar.focus()
+    })
+  }
+
+  // Limpiar con Escape
+  inputBuscar.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      inputBuscar.value = ''
+      btnLimpiar.style.display = 'none'
+      filtrarCultivos('')
+    }
+  })
+
+  console.log('✅ Búsqueda de cultivos inicializada')
+}
+
+// ========== FILTRAR CULTIVOS EN LA LISTA ==========
+function filtrarCultivos(termino) {
+  const listaCultivos = document.getElementById('lista-cultivos')
+  if (!listaCultivos) return
+
+  const { cultivosData, scrollInfinito } = window.cultivosState
+  const terminoLower = termino.toLowerCase()
+
+  // Caso 1: Sin término de búsqueda -> mostrar todos (con scroll infinito)
+  if (!terminoLower) {
+    // Resetear scroll infinito
+    scrollInfinito.cultivosCargados = 0
+    scrollInfinito.todosCargados = false
+    scrollInfinito.cargando = false
+    
+    // Renderizar primeros 20
+    renderizarListaInicial()
+    console.log('🔄 Búsqueda limpiada, mostrando todos los cultivos')
+    return
+  }
+
+  // Caso 2: Con término de búsqueda -> filtrar y mostrar todos los resultados
+  const entries = Object.entries(cultivosData)
+  const cultivosFiltrados = entries.filter(([nombre]) => 
+    nombre.toLowerCase().includes(terminoLower)
+  )
+
+  // Limpiar lista
+  listaCultivos.innerHTML = ''
+
+  // Caso 2a: No hay resultados
+  if (cultivosFiltrados.length === 0) {
+    listaCultivos.innerHTML = `
+      <li class="cultivo-item-no-results">
+        No se encontraron cultivos con <strong>"${termino}"</strong>
+      </li>
+    `
+    console.log(`🔍 0 resultados para "${termino}"`)
+    return
+  }
+
+  // Caso 2b: Hay resultados -> mostrar todos (sin scroll infinito durante búsqueda)
+  cultivosFiltrados.forEach(([nombre, cultivo]) => {
+    const li = crearElementoCultivoConResaltado(nombre, cultivo, terminoLower)
+    listaCultivos.appendChild(li)
+  })
+
+  console.log(`🔍 ${cultivosFiltrados.length} resultado(s) para "${termino}"`)
+}
+
+// ========== CREAR ELEMENTO CON TEXTO RESALTADO ==========
+function crearElementoCultivoConResaltado(nombre, cultivo, termino) {
+  const hectareas = cultivo.hectareas || 0
+  const puntos = cultivo.puntos || []
+  const tienePuntos = puntos.length > 0 && puntos.some(p => p !== null)
+
+  const li = document.createElement('li')
+  li.className = 'item-cultivo'
+  li.dataset.nombre = nombre
+  li.dataset.cultivoId = cultivo.id
+
+  // Resaltar término de búsqueda
+  const nombreResaltado = resaltarTexto(nombre, termino)
+
+  li.innerHTML = `
+    <span class="tick">✔</span>
+    <span>
+      <strong>${nombreResaltado}</strong> — ${hectareas.toFixed(2)} ha
+      ${tienePuntos ? ' 📍' : ''}
+    </span>
+    <div class="botones-grupo">
+      <button class="btn-config" data-nombre="${nombre}" aria-label="Configurar">⚙️</button>
+      <button class="btn-eliminar" data-nombre="${nombre}" aria-label="Eliminar">✕</button>
+    </div>
+  `
+
+  return li
+}
+
+// ========== RESALTAR TÉRMINO EN TEXTO ==========
+function resaltarTexto(texto, termino) {
+  if (!termino) return texto
+
+  const regex = new RegExp(`(${termino})`, 'gi')
+  return texto.replace(regex, '<span class="highlight">$1</span>')
+}
