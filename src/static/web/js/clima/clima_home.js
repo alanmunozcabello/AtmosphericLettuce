@@ -38,6 +38,14 @@ async function cargarClimaHome () {
     const clima = await obtenerClimaDia()
     const climaSemana = await obtenerClimaSemana()
 
+    // ✅ VALIDAR que climaSemana tiene datos antes de acceder
+    if (!climaSemana || !climaSemana['1']) {
+      console.warn('⚠️ climaSemana no tiene datos válidos:', climaSemana)
+      mostrarClimaFallback()
+      window.climaCargado = true
+      return
+    }
+
     clima.min = climaSemana['1'].min
     clima.max = climaSemana['1'].max
 

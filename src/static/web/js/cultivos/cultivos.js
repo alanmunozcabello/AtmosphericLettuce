@@ -139,8 +139,12 @@ document.addEventListener('DOMContentLoaded', () => {
       return
     }
 
+    // ✅ NO MOSTRAR PANTALLA DE CARGA si ya estamos mostrando cultivos
     const listaCultivos = document.getElementById('lista-cultivos')
-    if (listaCultivos) {
+    const esRecarga = listaCultivos && listaCultivos.children.length > 0 && 
+                      !listaCultivos.innerHTML.includes('Cargando')
+    
+    if (listaCultivos && !esRecarga) {
       listaCultivos.innerHTML = '<li class="cultivo-item-loading">Cargando...</li>'
     }
 

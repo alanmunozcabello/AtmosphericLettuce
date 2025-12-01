@@ -24,7 +24,8 @@ function validarSesion() {
 window.addEventListener('pageshow', (event) => {
     if (event.persisted) {
         console.log('⚠️ Página restaurada desde caché (botón Atrás)')
-        validarSesion()
+        // ✅ NO hacer validarSesion() aquí para evitar flash
+        // El DOM ya está intacto desde la caché
     }
 })
 
