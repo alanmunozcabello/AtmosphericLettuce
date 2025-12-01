@@ -14,7 +14,10 @@
         html {
              display: none;
         }
-        body { overflow: hidden !important; }
+        /* ✅ Solo bloquear scroll cuando loading está activo */
+        body.loading-active { 
+            overflow: hidden !important; 
+        }
         body > *:not(.loading-screen) {
             visibility: hidden !important;
             opacity: 0 !important;
@@ -56,11 +59,15 @@
           document.documentElement.style.display = 'none'
           window.location.replace('index.html')
         }
+        finally {
+            document.documentElement.style.display = 'block'
+        }
+
       })()
     </script>
 </head>
 
-<body>
+<body class="loading-active">
     <!-- ========== LOADING SCREEN ========== -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-spinner">

@@ -1,20 +1,32 @@
 from jinja2 import Environment, FileSystemLoader
 
+from services.clima_service import clima_semana_service
+from services.ai_services import deepseek_para_correos
+
 
 # cambiar rutas----------------------
-def modificar_html(correo, usuariop1, clima_, consejos):
+def services_modificar_html(correo):
     # ---------------------------------------------------
     # Configurar Jinja2 para que busque la carpeta plantilla_html
+    # Import movido aquí para evitar import circular
+    from services.usuarios_service import service_obtener_usuario_para_frontend
+    
     env = Environment(loader=FileSystemLoader("services/Archivos_HTML"))
 
     # Cargar la plantilla
     template = env.get_template("index.html")
+    usuariop1 = service_obtener_usuario_para_frontend(correo)
+    clima_response = clima_semana_service(
+        usuariop1["ubicacion"]["latitud"],
+        usuariop1["ubicacion"]["longitud"]
+    )
+    consejos = deepseek_para_correos(correo)
 
     # Renderizar el HTML con datos
     html_renderizado = template.render(
         usuario=usuariop1,
         usuario_correo=correo,
-        clima=clima_,
+        clima=clima_response.get("data", {}),
         consejos=consejos
     )
 

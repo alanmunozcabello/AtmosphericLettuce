@@ -12,6 +12,8 @@ window.addEventListener('pageshow', (event) => {
 // ========== MOSTRAR CONTENIDO ==========
 function showContent() {
   document.body.classList.add('content-visible')
+  // ✅ Permitir scroll cuando se oculta el loading
+  document.body.classList.remove('loading-active')
   
   const loadingScreen = document.getElementById('loadingScreen')
   if (loadingScreen) {

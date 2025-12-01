@@ -23,7 +23,18 @@ def service_obtener_usuario_para_frontend(correo):
             return {"error": "Usuario no encontrado"}
 
         conexion.close()
-        cultivos = service_obtener_cultivos_usuario(correo)
+        # Obtener TODOS los cultivos sin paginación para el perfil
+        cultivos = service_obtener_todos_cultivos_usuario(correo)
+        
+        # Manejar respuesta
+        if isinstance(cultivos, dict) and "error" in cultivos:
+            return cultivos
+        
+        if isinstance(cultivos, dict) and "mensaje" in cultivos:
+            cultivos = []
+        
+        # ✅ DEVOLVER CULTIVOS COMPLETOS (no solo nombre: hectareas)
+        # El frontend necesita puntos, formulario, etc.
         usuario_dict = {
             "nombre": usuario[1],
             "ubicacion": {
@@ -32,7 +43,7 @@ def service_obtener_usuario_para_frontend(correo):
                 "ciudad": usuario[5] if usuario[5] else "",
                 "region": usuario[6] if usuario[6] else ""
             },
-            "cultivos": cultivos,
+            "cultivos": cultivos,  # ✅ Array completo de cultivos
             "foto_perfil": usuario[7],
             "notificaciones": bool(usuario[10]) if len(usuario) > 10
             and usuario[10] is not None else True
@@ -98,9 +109,6 @@ def service_existe_usuario(correo):
 
 def service_registrar_usuario(correo, nombre, contrasena):
     try:
-        if not correo or not nombre or not contrasena:
-            return {"error": "Faltan datos requeridos"}
-
         if service_existe_usuario(correo):
             return {"error": "Usuario ya existe"}
 
@@ -347,7 +355,14 @@ def service_eliminar_usuario(correo):
         return {"error": str(e)}
 
 
-def service_obtener_cultivos_usuario(correo):
+def service_obtener_todos_cultivos_usuario(correo):
+    """
+    Obtiene TODOS los cultivos de un usuario SIN paginación.
+    Solo para uso interno (ej: obtener_usuario_para_frontend).
+    
+    Retorna directamente el arreglo de cultivos en formato completo,
+    o un dict con error/mensaje si hay problemas.
+    """
     try:
         if not service_existe_usuario(correo):
             return {"error": "Usuario no existe"}
@@ -365,8 +380,86 @@ def service_obtener_cultivos_usuario(correo):
                 consejos_ia, created_at
             FROM cultivos
             WHERE usuario_correo = ?
-            ORDER BY nombre_cultivo
+            ORDER BY nombre_cultivo ASC
         """, (correo,))
+
+        cultivos_rows = cursor.fetchall()
+        conexion.close()
+
+        if not cultivos_rows:
+            return {"mensaje": "Usuario no posee cultivos"}
+
+        cultivos = []
+        default_consejos = "Aquí están los consejos de la IA"
+        for row in cultivos_rows:
+            cultivos.append({
+                "id": row[0],
+                "nombre": row[1],
+                "hectareas": row[2],
+                "formulario": {
+                    "fecha_siembra": row[3],
+                    "notas": row[4],
+                    "etapa_planta": row[6],
+                    "tipo_riego": row[7],
+                    "ultimo_riego": row[8],
+                    "frecuencia_riego": row[9],
+                    "humedad_suelo": row[10],
+                    "textura_suelo": row[11],
+                    "variedad_planta": row[12],
+                    "estado_planta": row[13],
+                    "estres_hidrico": row[14],
+                    "profundidad_radical": row[15],
+                    "densidad_plantacion": row[16],
+                    "tipo_sensor": row[17],
+                    "eficiencia_riego": row[18],
+                    "caudal": row[19],
+                    "ph_agua": row[20],
+                    "acolchado": row[21],
+                    "consejos_ia": row[22] if row[22] else default_consejos,
+                    "created_at": row[23]
+                },
+                "puntos": json.loads(row[5]) if row[5] else [],
+            })
+
+        return cultivos
+
+    except Exception as e:
+        return {"error": str(e)}
+
+
+def service_obtener_cultivos_usuario(correo, pagina=1, limite=20):
+    try:
+        if not service_existe_usuario(correo):
+            return {"error": "Usuario no existe"}
+
+        conexion = get_db_connection()
+        cursor = conexion.cursor()
+
+        # Calcular offset para paginación
+        offset = (pagina - 1) * limite
+
+        # Obtener total de cultivos
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM cultivos
+            WHERE usuario_correo = ?
+        """, (correo,))
+        total = cursor.fetchone()[0]
+
+        # Obtener cultivos paginados
+        cursor.execute("""
+            SELECT id, nombre_cultivo, hectareas, fecha_siembra, notas,
+                puntos, Etapa_planta, Tipo_riego, Ultimo_riego,
+                Frecuencia_Riego, Humedad_Suelo, Textura_suelo,
+                Variedad_planta, Estado_Planta, Estres_Hidrico,
+                Profundidad_radical, Densidad_plantacion, Tipo_Sensor,
+                Eficiencia_riego, Caudal, pH_agua, acolchado,
+                consejos_ia, created_at
+            FROM cultivos
+            WHERE usuario_correo = ?
+            ORDER BY nombre_cultivo
+            LIMIT ? OFFSET ?
+        """, (correo, limite, offset))
 
         cultivos_rows = cursor.fetchall()
         conexion.close()
@@ -406,7 +499,18 @@ def service_obtener_cultivos_usuario(correo):
         if not cultivos:
             return {"mensaje": "Usuario no posee cultivos"}
 
-        return cultivos
+        # Retornar con metadata de paginación
+        return {
+            "cultivos": cultivos,
+            "paginacion": {
+                "pagina_actual": pagina,
+                "limite": limite,
+                "total": total,
+                "total_paginas": (total + limite - 1) // limite,
+                "tiene_siguiente": pagina * limite < total,
+                "tiene_anterior": pagina > 1
+            }
+        }
 
     except Exception as e:
         return {"error": str(e)}
@@ -444,16 +548,7 @@ def service_modificar_region_ciudad_usuario(correo, region, ciudad):
 def service_actualizar_foto_perfil_base64(correo, imagen_base64):
     """Actualizar foto de perfil usando datos Base64"""
     try:
-        # Validar formato Base64
-        if not imagen_base64.startswith('data:image/'):
-            error_msg = "Formato de imagen inválido. Debe ser data:image/..."
-            return {"error": error_msg}
-
-        # Validar tamaño (máximo ~300KB en Base64 = ~225KB imagen)
-        if len(imagen_base64) > 400000:  # ~300KB en Base64
-            return {"error": "Imagen muy grande. Máximo 225KB"}
-
-        # Actualizar en BD
+        # Actualizar en BD (validaciones en UsuarioModificado)
         datos = {"foto_perfil": imagen_base64}
         resultado = service_modificar_usuario(correo, datos)
 
@@ -464,62 +559,6 @@ def service_actualizar_foto_perfil_base64(correo, imagen_base64):
 
     except Exception as e:
         return {"error": str(e)}
-
-
-def service_validar_imagen_base64(imagen_base64):
-    """Validar que la cadena Base64 sea una imagen válida"""
-    try:
-        import base64
-
-        # Verificar formato data:image/...
-        if not imagen_base64.startswith('data:image/'):
-            return {"valida": False, "error": "No es formato data:image/"}
-
-        # Extraer datos Base64 y tipo MIME
-        header, data = imagen_base64.split(',', 1)
-        mime_type = header.split(':')[1].split(';')[0]
-
-        # Verificar tipos MIME soportados
-        tipos_soportados = [
-            'image/jpeg', 'image/jpg', 'image/png',
-            'image/gif', 'image/webp'
-        ]
-
-        if mime_type not in tipos_soportados:
-            error = f"Tipo {mime_type} no soportado"
-            return {"valida": False, "error": error}
-
-        # Decodificar Base64 para verificar validez
-        try:
-            image_data = base64.b64decode(data, validate=True)
-        except Exception:
-            return {"valida": False, "error": "Datos Base64 inválidos"}
-
-        # Verificar que tenga contenido
-        if len(image_data) < 100:  # Muy pequeño para ser imagen
-            error = "Imagen muy pequeña o corrupta"
-            return {"valida": False, "error": error}
-
-        # Verificar tamaños
-        size_kb = len(image_data) / 1024
-        base64_size_kb = len(imagen_base64) / 1024
-
-        # Límite de 300KB para imagen original
-        if size_kb > 300:
-            error = (
-                f"Imagen muy grande: {size_kb:.1f}KB (máx: 300KB)"
-            )
-            return {"valida": False, "error": error}
-
-        return {
-            "valida": True,
-            "tipo": mime_type,
-            "tamaño_kb": round(size_kb, 2),
-            "tamaño_base64_kb": round(base64_size_kb, 2)
-        }
-
-    except Exception as e:
-        return {"valida": False, "error": str(e)}
 
 
 def service_modificar_notificaciones_usuario(correo, notificaciones):
@@ -637,3 +676,328 @@ def obtener_clima_guardado(correo, cultivo_nombre):
 
     except Exception as e:
         return {"error": str(e)}
+
+#Obtiene una lista de correos de usuarios con notificaciones activadas 
+#--------------------------------------------------
+#filtradores
+def filtrar_usuarios_por_notificaciones():
+    
+    try:
+        conexion = get_db_connection()
+        cursor = conexion.cursor()
+
+        cursor.execute("""
+            SELECT correo
+            FROM usuarios
+            WHERE notificaciones = 1
+            AND EXISTS (
+                SELECT 1 
+                FROM cultivos 
+                WHERE cultivos.usuario_correo = usuarios.correo
+            )
+            
+        """)
+
+        resultados = cursor.fetchall()
+        conexion.close()
+
+        correos = [fila[0] for fila in resultados]
+        return correos
+
+    except Exception as e:
+        return {"error": str(e)}
+
+
+# Filtrar cultivos de un usuario por algún parámetro específico
+def service_filtrar_cultivos(
+    correo=None,
+    buscar=None,
+    etapa_planta=None,
+    fecha_siembra_desde=None,
+    fecha_siembra_hasta=None,
+    estado_planta=None,
+    tipo_riego=None,
+    tiene_area=None,
+    tiene_formulario=None,
+    ordenar_por="nombre_cultivo",
+    orden="ASC",
+    pagina=1,
+    limite=20
+):
+    """
+    Método universal para filtrar cultivos con cualquier combinación
+    de criterios. Retorna los cultivos en el mismo formato que
+    service_obtener_cultivos_usuario.
+
+    Todos los parámetros son opcionales.
+    """
+    try:
+        conexion = get_db_connection()
+        cursor = conexion.cursor()
+
+        # Construir query dinámicamente
+        condiciones = []
+        parametros = []
+
+        # Filtro por usuario
+        if correo:
+            condiciones.append("usuario_correo = ?")
+            parametros.append(correo)
+
+        # Búsqueda por nombre
+        if buscar:
+            condiciones.append("nombre_cultivo LIKE ?")
+            parametros.append(f"%{buscar}%")
+
+        # Filtros exactos
+        if etapa_planta:
+            condiciones.append("Etapa_planta = ?")
+            parametros.append(etapa_planta)
+
+        if estado_planta:
+            condiciones.append("Estado_Planta = ?")
+            parametros.append(estado_planta)
+
+        if tipo_riego:
+            condiciones.append("Tipo_riego = ?")
+            parametros.append(tipo_riego)
+
+        # Rango de fechas
+        if fecha_siembra_desde:
+            condiciones.append("fecha_siembra >= ?")
+            parametros.append(fecha_siembra_desde)
+
+        if fecha_siembra_hasta:
+            condiciones.append("fecha_siembra <= ?")
+            parametros.append(fecha_siembra_hasta)
+
+        # Filtros booleanos
+        if tiene_area is not None:
+            if tiene_area:
+                condiciones.append("puntos IS NOT NULL AND puntos != '[]'")
+            else:
+                condiciones.append("(puntos IS NULL OR puntos = '[]')")
+
+        if tiene_formulario is not None:
+            if tiene_formulario:
+                condiciones.append("fecha_siembra IS NOT NULL")
+            else:
+                condiciones.append("fecha_siembra IS NULL")
+
+        # Construir WHERE
+        where_clause = " AND ".join(condiciones) if condiciones else "1=1"
+
+        # Validar campo de ordenamiento
+        campos_validos = [
+            "nombre_cultivo", "hectareas", "fecha_siembra",
+            "Etapa_planta", "created_at"
+        ]
+        if ordenar_por not in campos_validos:
+            ordenar_por = "nombre_cultivo"
+
+        if orden.upper() not in ["ASC", "DESC"]:
+            orden = "ASC"
+
+        # Paginación
+        offset = (pagina - 1) * limite
+
+        # Query principal - MISMOS CAMPOS que service_obtener_cultivos_usuario
+        query = f"""
+            SELECT id, nombre_cultivo, hectareas, fecha_siembra, notas,
+                puntos, Etapa_planta, Tipo_riego, Ultimo_riego,
+                Frecuencia_Riego, Humedad_Suelo, Textura_suelo,
+                Variedad_planta, Estado_Planta, Estres_Hidrico,
+                Profundidad_radical, Densidad_plantacion, Tipo_Sensor,
+                Eficiencia_riego, Caudal, pH_agua, acolchado,
+                consejos_ia, created_at
+            FROM cultivos
+            WHERE {where_clause}
+            ORDER BY {ordenar_por} {orden}
+            LIMIT ? OFFSET ?
+        """
+
+        cursor.execute(query, (*parametros, limite, offset))
+        cultivos_rows = cursor.fetchall()
+
+        # Contar total para paginación
+        query_count = f"""
+            SELECT COUNT(*)
+            FROM cultivos
+            WHERE {where_clause}
+        """
+        cursor.execute(query_count, parametros)
+        total = cursor.fetchone()[0]
+
+        conexion.close()
+
+        # Formatear resultados - MISMA ESTRUCTURA que
+        # service_obtener_cultivos_usuario
+        cultivos = []
+        default_consejos = "Aquí están los consejos de la IA"
+        for row in cultivos_rows:
+            cultivos.append({
+                "id": row[0],
+                "nombre": row[1],
+                "hectareas": row[2],
+                "formulario": {
+                    "fecha_siembra": row[3],
+                    "notas": row[4],
+                    "etapa_planta": row[6],
+                    "tipo_riego": row[7],
+                    "ultimo_riego": row[8],
+                    "frecuencia_riego": row[9],
+                    "humedad_suelo": row[10],
+                    "textura_suelo": row[11],
+                    "variedad_planta": row[12],
+                    "estado_planta": row[13],
+                    "estres_hidrico": row[14],
+                    "profundidad_radical": row[15],
+                    "densidad_plantacion": row[16],
+                    "tipo_sensor": row[17],
+                    "eficiencia_riego": row[18],
+                    "caudal": row[19],
+                    "ph_agua": row[20],
+                    "acolchado": row[21],
+                    "consejos_ia": row[22] if row[22] else default_consejos,
+                    "created_at": row[23]
+                },
+                "puntos": json.loads(row[5]) if row[5] else [],
+            })
+
+        # Si no hay cultivos, retornar mensaje
+        if not cultivos:
+            return {"mensaje": "No se encontraron cultivos con esos filtros"}
+
+        # Retornar solo el arreglo de cultivos (igual que
+        # service_obtener_cultivos_usuario)
+        return cultivos
+
+    except Exception as e:
+        return {"error": str(e)}
+    
+
+def service_filtrar_usuarios(
+    buscar=None,
+    region=None,
+    ciudad=None,
+    notificaciones=None,
+    tiene_cultivos=None,
+    ordenar_por="created_at",
+    orden="DESC",
+    pagina=1,
+    limite=20
+):
+    """
+    Filtrar usuarios con múltiples criterios
+    """
+    try:
+        conexion = get_db_connection()
+        cursor = conexion.cursor()
+
+        condiciones = []
+        parametros = []
+
+        # Búsqueda por nombre o correo
+        if buscar:
+            condiciones.append("(nombre LIKE ? OR correo LIKE ?)")
+            parametros.extend([f"%{buscar}%", f"%{buscar}%"])
+
+        # Filtro por región
+        if region:
+            condiciones.append("region = ?")
+            parametros.append(region)
+
+        # Filtro por ciudad
+        if ciudad:
+            condiciones.append("ciudad = ?")
+            parametros.append(ciudad)
+
+        # Filtro por notificaciones
+        if notificaciones is not None:
+            condiciones.append("notificaciones = ?")
+            parametros.append(1 if notificaciones else 0)
+
+        # Filtro por tiene cultivos (✅ CORRECTO)
+        if tiene_cultivos is not None:
+            if tiene_cultivos:
+                condiciones.append("""
+                    EXISTS (
+                        SELECT 1 
+                        FROM cultivos 
+                        WHERE cultivos.usuario_correo = usuarios.correo
+                    )
+                """)
+            else:
+                condiciones.append("""
+                    NOT EXISTS (
+                        SELECT 1 
+                        FROM cultivos 
+                        WHERE cultivos.usuario_correo = usuarios.correo
+                    )
+                """)
+
+        where_clause = " AND ".join(condiciones) if condiciones else "1=1"
+
+        # Validar ordenamiento
+        campos_validos = ["correo", "nombre", "created_at", "region", "ciudad"]
+        if ordenar_por not in campos_validos:
+            ordenar_por = "created_at"
+
+        if orden.upper() not in ["ASC", "DESC"]:
+            orden = "DESC"
+
+        # Paginación
+        offset = (pagina - 1) * limite
+
+        # Query principal
+        query = f"""
+            SELECT correo, nombre, latitud, longitud, ciudad, region,
+                   foto_perfil, notificaciones, created_at, updated_at
+            FROM usuarios
+            WHERE {where_clause}
+            ORDER BY {ordenar_por} {orden}
+            LIMIT ? OFFSET ?
+        """
+
+        cursor.execute(query, (*parametros, limite, offset))
+        usuarios_rows = cursor.fetchall()
+
+        # Contar total
+        query_count = f"""
+            SELECT COUNT(*)
+            FROM usuarios
+            WHERE {where_clause}
+        """
+        cursor.execute(query_count, parametros)
+        total = cursor.fetchone()[0]
+
+        conexion.close()
+
+        # Formatear resultados
+        usuarios = []
+        for row in usuarios_rows:
+            usuarios.append({
+                "correo": row[0],
+                "nombre": row[1],
+                "ubicacion": {
+                    "latitud": row[2] if row[2] else 0,
+                    "longitud": row[3] if row[3] else 0,
+                    "ciudad": row[4] if row[4] else "",
+                    "region": row[5] if row[5] else ""
+                },
+                "foto_perfil": row[6],
+                "notificaciones": bool(row[7]),
+                "created_at": row[8],
+                "updated_at": row[9]
+            })
+
+        if not usuarios:
+            return {"mensaje": "No se encontraron usuarios con esos filtros"}
+
+        return usuarios
+
+    except Exception as e:
+        return {"error": str(e)}
+        
+    
+       

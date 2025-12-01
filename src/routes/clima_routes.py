@@ -1,22 +1,32 @@
-from fastapi import APIRouter
-from controllers.clima_controller import (
-    clima_hora_controller,
-    clima_hoy_controller,
-    clima_semana_controller)
+from fastapi import APIRouter, Path
+from services.clima_service import (
+    clima_hora_service,
+    clima_hoy_service,
+    clima_semana_service,
+)
 
 router = APIRouter()
 
 
 @router.get("/clima/hora/{lat}/{lon}")
-def ruta_clima_hora(lat, lon):
-    return clima_hora_controller(lat, lon)
+def ruta_clima_hora(
+    lat: float = Path(..., ge=-90, le=90, description="Latitud"),
+    lon: float = Path(..., ge=-180, le=180, description="Longitud")
+):
+    return clima_hora_service(lat, lon)
 
 
 @router.get("/clima/hoy/{lat}/{lon}")
-def ruta_clima_hoy(lat, lon):
-    return clima_hoy_controller(lat, lon)
+def ruta_clima_hoy(
+    lat: float = Path(..., ge=-90, le=90, description="Latitud"),
+    lon: float = Path(..., ge=-180, le=180, description="Longitud")
+):
+    return clima_hoy_service(lat, lon)
 
 
 @router.get("/clima/semana/{lat}/{lon}")
-def ruta_clima_semana(lat, lon):
-    return clima_semana_controller(lat, lon)
+def ruta_clima_semana(
+    lat: float = Path(..., ge=-90, le=90, description="Latitud"),
+    lon: float = Path(..., ge=-180, le=180, description="Longitud")
+):
+    return clima_semana_service(lat, lon)

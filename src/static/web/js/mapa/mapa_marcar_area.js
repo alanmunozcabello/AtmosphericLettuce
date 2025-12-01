@@ -355,22 +355,17 @@ async function guardarArea () {
 
   try {
     // ✅ Crear array de 20 puntos
-    const puntosParaGuardar = Array.from({ length: MAX_PUNTOS }, (_, index) => {
-      if (index < puntosMarcados.length) {
-        return {
-          latitud: puntosMarcados[index].lat,
-          longitud: puntosMarcados[index].lon
-        }
-      } else {
-        return null
-      }
-    })
+    // ✅ Filtrar solo puntos válidos (sin nulls)
+    const puntosParaGuardar = puntosMarcados.map(punto => ({
+      latitud: punto.lat,
+      longitud: punto.lon
+    }))
 
     const areaMetros = poligonoActual
       ? ol.sphere.getArea(poligonoActual.getGeometry(), { projection: 'EPSG:3857' })
       : 0
 
-    const areaHectareas = (areaMetros / 10000).toFixed(2) // ✅ Convertir m^2 a hectáreas
+    const areaHectareas = parseFloat((areaMetros / 10000).toFixed(2)) // ✅ Convertir m^2 a hectáreas y a número
 
     console.log('📤 Enviando al backend:', {
       cultivo: cultivoSeleccionado,
