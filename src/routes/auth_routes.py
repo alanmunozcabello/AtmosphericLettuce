@@ -13,34 +13,34 @@ async def validar_token(authorization: str = Header(None)):
     """
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(
-            status_code=401, 
+            status_code=401,
             detail="Token no proporcionado"
         )
-    
+
     token = authorization.split(" ")[1]
-    
+
     try:
         # Usar la función existente de jwt_service
         correo = verificar_token(token)
-        
+
         if not correo:
             raise HTTPException(
-                status_code=401, 
+                status_code=401,
                 detail="Token inválido"
             )
-        
+
         return {
-            "valido": True, 
+            "valido": True,
             "correo": correo
         }
-    
+
     except JWTError:
         raise HTTPException(
-            status_code=401, 
+            status_code=401,
             detail="Token inválido o expirado"
         )
     except Exception as e:
         raise HTTPException(
-            status_code=401, 
+            status_code=401,
             detail=f"Error validando token: {str(e)}"
         )

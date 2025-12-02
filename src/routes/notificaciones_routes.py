@@ -16,7 +16,7 @@ def ruta_verificar_gmail():
 
 @router.post("/notificaciones/enviar_html")
 def ruta_enviar_html(correo):
-    services_modificar_html(correo) 
+    services_modificar_html(correo)
     return enviar_archivo(correo, "services/Archivos_HTML/salida.html")
 
 

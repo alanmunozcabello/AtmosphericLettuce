@@ -27,7 +27,6 @@ from models import (
     CultivoCreate,
     CultivoDatos,
     AreaCultivoDatos,
-    PuntoCoordenada
 )
 
 
@@ -74,12 +73,12 @@ def ruta_obtener_usuario(
 @router.get("/usuarios/iniciar_sesion/{correo}/{contrasena}")
 def ruta_iniciar_sesion_get(correo: str, contrasena: str):
     resultado = service_iniciar_sesion(correo, contrasena)
-    
+
     if "error" in resultado:
         return resultado
-    
+
     token = crear_token(correo)
-    
+
     return {
         **resultado,
         "token": token
@@ -89,13 +88,15 @@ def ruta_iniciar_sesion_get(correo: str, contrasena: str):
 # Endpoint POST (más seguro, para uso futuro)
 @router.post("/usuarios/login")
 def ruta_iniciar_sesion(credenciales: LoginRequest):
-    resultado = service_iniciar_sesion(credenciales.correo, credenciales.contrasena)
-    
+    resultado = service_iniciar_sesion(
+        credenciales.correo, credenciales.contrasena
+    )
+
     if "error" in resultado:
         return resultado
-    
+
     token = crear_token(credenciales.correo)
-    
+
     return {
         **resultado,
         "token": token
@@ -119,12 +120,12 @@ def ruta_obtener_cultivos_usuario(
 ):
     """
     Obtener cultivos de un usuario con paginación
-    
+
     Parámetros:
     - correo: Email del usuario
     - pagina: Número de página (default: 1)
     - limite: Cantidad de resultados por página (default: 20, máx: 100)
-    
+
     Retorna:
     {
         "cultivos": [...],
@@ -253,8 +254,10 @@ def ruta_filtrar_cultivos(
     - /cultivos/filtrar?correo=user@mail.com
     - /cultivos/filtrar?buscar=tomate&pagina=1&limite=10
     - /cultivos/filtrar?etapa_planta=cosecha&tipo_riego=goteo
-    - /cultivos/filtrar?fecha_siembra_desde=2025-01-01&fecha_siembra_hasta=2025-03-31
-    - /cultivos/filtrar?tiene_area=true&ordenar_por=hectareas&orden=DESC
+    - /cultivos/filtrar?fecha_siembra_desde=2025-01-01&\
+fecha_siembra_hasta=2025-03-31
+    - /cultivos/filtrar?tiene_area=true&\
+ordenar_por=hectareas&orden=DESC
     """
     return service_filtrar_cultivos(
         correo=correo,
