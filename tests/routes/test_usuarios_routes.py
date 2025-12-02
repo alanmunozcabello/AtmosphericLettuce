@@ -1,4 +1,5 @@
 import pytest
+from services.jwt_service import crear_token
 
 def test_registrar_usuario_routes(client):
     "prueba para endpoint de registrar usuario"
@@ -39,18 +40,18 @@ def test_modificar_formulario_cultivo(client):
         "hectareas": 12.5,
         "fecha_siembra": "2025-01-15",
         "notas": "Cultivo de prueba automatizado",
-        "etapa_planta": "Crecimiento",
-        "tipo_riego": "Por goteo",
+        "etapa_planta": "crecimiento-vegetativo",
+        "tipo_riego": "goteo",
         "ultimo_riego": "2025-11-09T08:00:00",
-        "frecuencia_riego": "Diario",
-        "humedad_suelo": "Media",
-        "textura_suelo": "Arcillosa",
+        "frecuencia_riego": "2",
+        "humedad_suelo": "45",
+        "textura_suelo": "arcilloso",
         "variedad_planta": "Tomate Cherry",
         "estado_planta": "Saludable",
         "estres_hidrico": 0,
         "profundidad_radical": 40,
         "densidad_plantacion": 150,
-        "tipo_sensor": "Capacitivo",
+        "tipo_sensor": "capacitancia",
         "eficiencia_riego": 90.0,
         "caudal": 3.2,
         "ph_agua": 6.5,
@@ -87,7 +88,11 @@ def test_obtener_todos_usuarios_routes(client):
 def test_obtener_usuario_routes(client):
     "prueba para endpoint de obtener un usuario específico"
     correo = "ejemplo8@lechuga.com"
-    respuesta = client.get(f"/usuarios/{correo}")
+    token = crear_token(correo)
+    respuesta = client.get(
+        f"/usuarios/{correo}",
+        headers={"Authorization": f"Bearer {token}"}
+    )
     assert respuesta.status_code == 200
     assert "id" in respuesta.json()
     assert respuesta.json()["id"] == correo
