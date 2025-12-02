@@ -85,17 +85,15 @@ def test_obtener_todos_usuarios_routes(client):
     assert "ejemplo8@lechuga.com" in respuesta.json()  # Usuario existe
 
 
-def test_obtener_usuario_routes(client):
-    "prueba para endpoint de obtener un usuario específico"
-    correo = "ejemplo8@lechuga.com"
-    token = crear_token(correo)
+def test_obtener_usuario_routes(client, auth_headers, correo_test):
+    """Prueba para endpoint de obtener un usuario específico"""
     respuesta = client.get(
-        f"/usuarios/{correo}",
-        headers={"Authorization": f"Bearer {token}"}
+        f"/usuarios/{correo_test}",
+        headers=auth_headers(correo_test)
     )
     assert respuesta.status_code == 200
     assert "id" in respuesta.json()
-    assert respuesta.json()["id"] == correo
+    assert respuesta.json()["id"] == correo_test
     assert "nombre" in respuesta.json()  # Verifica estructura
 
 
