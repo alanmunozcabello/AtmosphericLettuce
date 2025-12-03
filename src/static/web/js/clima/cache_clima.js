@@ -111,6 +111,13 @@ function invalidarCacheClima () {
   console.log('🗑️ Cache de clima invalidado')
 }
 
+// ✅ FUNCIÓN PARA ACTUALIZAR COORDENADAS (usada al cambiar ubicación)
+function actualizarCoordsClima (lat, lon) {
+  localStorage.setItem('climaLat', lat)
+  localStorage.setItem('climaLon', lon)
+  console.log(`📍 Coordenadas de clima actualizadas: ${lat}, ${lon}`)
+}
+
 // ✅ FUNCIONES PRINCIPALES CON CACHE
 async function obtenerClimaDia () {
   try {
@@ -121,15 +128,21 @@ async function obtenerClimaDia () {
     }
 
     // 2. Obtener coordenadas del usuario
-    const CORREO = localStorage.getItem('correoUsuario')
-    const usuario = await obtenerUsuario(CORREO)
-    if (!usuario) {
-      console.log('No se pudo obtener datos del usuario')
-      return null
-    }
+    let lat = localStorage.getItem('climaLat')
+    let lon = localStorage.getItem('climaLon')
 
-    const lat = usuario.ubicacion?.latitud ?? usuario.ubicacion?.lat ?? -999
-    const lon = usuario.ubicacion?.longitud ?? usuario.ubicacion?.lon ?? -999
+    // Si no hay coords guardadas, obtener del usuario
+    if (!lat || !lon) {
+      const CORREO = localStorage.getItem('correoUsuario')
+      const usuario = await obtenerUsuario(CORREO)
+      if (!usuario) {
+        console.log('No se pudo obtener datos del usuario')
+        return null
+      }
+
+      lat = usuario.ubicacion?.latitud ?? usuario.ubicacion?.lat ?? -999
+      lon = usuario.ubicacion?.longitud ?? usuario.ubicacion?.lon ?? -999
+    }
 
     if (lat === -999 && lon === -999) {
       console.log('No se pudo obtener latitud y longitud')
@@ -173,15 +186,21 @@ async function obtenerClimaSemana () {
     }
 
     // 2. Obtener coordenadas del usuario
-    const CORREO = localStorage.getItem('correoUsuario')
-    const usuario = await obtenerUsuario(CORREO)
-    if (!usuario) {
-      console.log('No se pudo obtener datos del usuario')
-      return null
-    }
+    let lat = localStorage.getItem('climaLat')
+    let lon = localStorage.getItem('climaLon')
 
-    const lat = usuario.ubicacion?.latitud ?? usuario.ubicacion?.lat ?? -999
-    const lon = usuario.ubicacion?.longitud ?? usuario.ubicacion?.lon ?? -999
+    // Si no hay coords guardadas, obtener del usuario
+    if (!lat || !lon) {
+      const CORREO = localStorage.getItem('correoUsuario')
+      const usuario = await obtenerUsuario(CORREO)
+      if (!usuario) {
+        console.log('No se pudo obtener datos del usuario')
+        return null
+      }
+
+      lat = usuario.ubicacion?.latitud ?? usuario.ubicacion?.lat ?? -999
+      lon = usuario.ubicacion?.longitud ?? usuario.ubicacion?.lon ?? -999
+    }
 
     if (lat === -999 && lon === -999) {
       console.log('No se pudo obtener latitud y longitud')

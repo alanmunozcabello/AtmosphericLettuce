@@ -20,8 +20,6 @@ async function cargarClimaHome () {
   if (typeof obtenerClimaDia !== 'function') {
     console.error('❌ obtenerClimaDia no está disponible')
     mostrarClimaFallback()
-
-    // Marcar como listo
     window.climaCargado = true
     return
   }
@@ -58,7 +56,6 @@ async function cargarClimaHome () {
     console.error('❌ Error cargando clima:', error)
     mostrarClimaFallback()
   } finally {
-    // Marcar como listo
     window.climaCargado = true
   }
 }

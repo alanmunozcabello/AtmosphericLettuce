@@ -12,58 +12,14 @@
   
   <!-- OpenLayers -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.5.2/ol.css">
-  
-  <style>
-    html {
-      display: none;
-    }
-    body { overflow: hidden !important; }
-    body > *:not(.loading-screen) {
-      visibility: hidden !important;
-      opacity: 0 !important;
-    }
-    .loading-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: linear-gradient(135deg, #5db5ff, #55c2a5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 99999;
-    }
-  </style>
 
   <!-- Estilos -->
+  <link rel="stylesheet" href="css/gestor_auth.css">
   <link rel="stylesheet" href="css/homes.css">
   <link rel="stylesheet" href="css/gestor_cultivos.css">
   <link rel="stylesheet" href="css/loading.css">
-  <script>
-    (function() {
-      const token = localStorage.getItem('token')
-      if (!token) {
-        document.documentElement.style.display = 'none'
-        window.location.replace('index.html')
-        return
-      }
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]))
-        if (payload.exp < Math.floor(Date.now() / 1000)) {
-          localStorage.clear()
-          document.documentElement.style.display = 'none'
-          window.location.replace('index.html')
-        } else {
-          document.documentElement.style.display = 'block'
-        }
-      } catch (e) {
-        localStorage.clear()
-        document.documentElement.style.display = 'none'
-        window.location.replace('index.html')
-      }
-    })()
-  </script>
+  
+  <script src="js/core/gestor_auth.js"></script>
 </head>
 <body>
   <!-- ========== LOADING SCREEN ========== -->

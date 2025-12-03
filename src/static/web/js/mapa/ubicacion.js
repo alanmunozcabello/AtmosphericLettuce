@@ -284,11 +284,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (paginaActual.includes('home.html')) {
         alert('✅ Ubicación actualizada correctamente')
         console.log('🔄 Recargando clima en home.html...')
-        
-        // Recargar clima si la función existe
-        // if (typeof cargarClimaHome === 'function') {
-        //   await cargarClimaHome()
-        // }
+
+        // Actualizar las variables de estado de clima con nuevas coordenadas
+        if (typeof actualizarCoordsClima === 'function') {
+          actualizarCoordsClima(latMod, lonMod)
+          console.log('✅ Coordenadas de clima actualizadas')
+        }
+
+        // Recargar clima con nuevas coordenadas
+        if (typeof cargarClimaHome === 'function') {
+          await cargarClimaHome()
+          console.log('✅ Clima reacargado sin recarga de página')
+        }
 
         // Recargar página para actualizar todo
         window.location.reload()

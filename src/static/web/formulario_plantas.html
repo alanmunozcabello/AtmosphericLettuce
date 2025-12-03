@@ -10,61 +10,11 @@
 
     <title>Formulario de plantas</title>
 
-    <style>
-        html {
-             display: none;
-        }
-        /* ✅ Solo bloquear scroll cuando loading está activo */
-        body.loading-active { 
-            overflow: hidden !important; 
-        }
-        body > *:not(.loading-screen) {
-            visibility: hidden !important;
-            opacity: 0 !important;
-        }
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: linear-gradient(135deg, #5db5ff, #55c2a5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 99999;
-        }
-    </style>
-
+    <link rel="stylesheet" href="css/formulario_auth.css">
     <link rel="stylesheet" href="css/formulario_plantas.css">
     <link rel="stylesheet" href="css/loading.css">
 
-    <script>
-      (function() {
-        const token = localStorage.getItem('token')
-        if (!token) {
-          document.documentElement.style.display = 'none'
-          window.location.replace('index.html')
-          return
-        }
-        try {
-          const payload = JSON.parse(atob(token.split('.')[1]))
-          if (payload.exp < Math.floor(Date.now() / 1000)) {
-            localStorage.clear()
-            document.documentElement.style.display = 'none'
-            window.location.replace('index.html')
-          }
-        } catch (e) {
-          localStorage.clear()
-          document.documentElement.style.display = 'none'
-          window.location.replace('index.html')
-        }
-        finally {
-            document.documentElement.style.display = 'block'
-        }
-
-      })()
-    </script>
+    <script src="js/core/formulario_auth.js"></script>
 </head>
 
 <body class="loading-active">

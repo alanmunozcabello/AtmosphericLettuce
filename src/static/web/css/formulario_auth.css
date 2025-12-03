@@ -1,0 +1,27 @@
+/* Auth screen styles for formulario_plantas.html */
+html {
+  display: none;
+}
+
+/* ✅ Solo bloquear scroll cuando loading está activo */
+body.loading-active {
+  overflow: hidden !important;
+}
+
+body > *:not(.loading-screen) {
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #5db5ff, #55c2a5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+}
