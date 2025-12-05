@@ -298,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Recargar página para actualizar todo
-        window.location.reload()
+        // window.location.reload()
         return
       }
 
