@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Recuperar Contraseña - Atmospheric Lettuce</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/loading.css">
+    <style>
+        /* Estilos específicos para ocultar pasos */
+        .step-container {
+            display: none;
+        }
+        #step-solicitar {
+            display: block; /* Primer paso visible */
+        }
+    </style>
+</head>
+<body>
+    <!-- ========== LOADING SCREEN ========== -->
+    <div class="loading-screen" id="loadingScreen" style="display: none;">
+        <div class="loading-spinner">
+            <div class="spinner-leaf"></div>
+            <div class="spinner-leaf"></div>
+            <div class="spinner-leaf"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="izquierda">
+            <img src="img/logo_en_blanco.png" alt="Logo de Atmospheric Lettuce" class="logo">
+        </div>
+
+        <div class="derecha">
+            <!-- PASO 1: SOLICITAR CÓDIGO -->
+            <div id="step-solicitar" class="step-container">
+                <form class="form" id="form-solicitar">
+                    <div class="titulo">Recuperar Contraseña</div>
+                    <p style="margin-bottom: 20px; color: #666;">Ingresa tu correo para recibir un código de verificación.</p>
+
+                    <div class="input-group">
+                        <div class="input">
+                            <input id="email-solicitar" type="email" placeholder="Correo electrónico" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <button type="submit" class="btn">Enviar Código</button>
+                    </div>
+
+                    <div class="registro">
+                        <a href="index.html">Volver al inicio de sesión</a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- PASO 2: VERIFICAR CÓDIGO -->
+            <div id="step-verificar" class="step-container">
+                <form class="form" id="form-verificar">
+                    <div class="titulo">Verificar Código</div>
+                    <p style="margin-bottom: 20px; color: #666;">Hemos enviado un código a tu correo.</p>
+
+                    <div class="input-group">
+                        <div class="input">
+                            <input id="codigo-verificar" type="text" placeholder="Código de 6 dígitos" required maxlength="6">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <button type="submit" class="btn">Verificar</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- PASO 3: CAMBIAR CONTRASEÑA -->
+            <div id="step-cambio" class="step-container">
+                <form class="form" id="form-cambio">
+                    <div class="titulo">Nueva Contraseña</div>
+                    <p style="margin-bottom: 20px; color: #666;">Crea una nueva contraseña segura.</p>
+
+                    <div class="input-group">
+                        <div class="input">
+                            <input id="new-password" type="password" placeholder="Nueva contraseña" required minlength="8">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <div class="input">
+                            <input id="confirm-password" type="password" placeholder="Confirmar contraseña" required minlength="8">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <button type="submit" class="btn">Cambiar Contraseña</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="js/utilidades/utils.js" defer></script>
+    <script src="js/usuario/recuperacion.js" defer></script>
+</body>
+</html>
