@@ -103,6 +103,15 @@ class Migrador:
                     ON UPDATE CASCADE
             )
         ''')
+
+        # Tabla códigos de recuperación
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS codigos_recuperacion (
+                correo TEXT PRIMARY KEY,
+                codigo TEXT NOT NULL,
+                expiracion DATETIME NOT NULL
+            )
+        ''')
         
         # Índices para rendimiento
         cursor.execute('CREATE INDEX IF NOT EXISTS idx_usuarios_nombre ON usuarios(nombre)')

@@ -87,7 +87,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const pass2 = document.getElementById('confirm-password').value;
 
             if (pass1 !== pass2) return mostrarError('Las contraseñas no coinciden');
-            if (pass1.length < 8) return mostrarError('La contraseña debe tener al menos 8 caracteres');
+            if (pass1 !== pass2) return mostrarError('Las contraseñas no coinciden');
+            if (pass1.length < 6) return mostrarError('La contraseña debe tener al menos 6 caracteres');
+            if (/['";]/.test(pass1)) return mostrarError('La contraseña no puede contener caracteres como comillas o punto y coma');
 
             mostrarLoading(true);
             try {
@@ -125,7 +127,23 @@ function cambiarPaso(actual, siguiente) {
 }
 
 function mostrarError(msg) {
-    // Puedes implementar un toast o usar alert por ahora
+    // Si es un array (errores de Pydantic), lo formateamos
+    if (Array.isArray(msg)) {
+        let errores = msg.map(e => {
+            // Si el mensaje es "Value error, nnnn", limpiamos el prefijo
+            return e.msg.replace('Value error, ', '');
+        }).join('\n');
+        alert(errores);
+        return;
+    }
+
+    // Si es un objeto genérico
+    if (typeof msg === 'object') {
+        alert(JSON.stringify(msg));
+        return;
+    }
+
+    // String normal
     alert(msg);
 }
 

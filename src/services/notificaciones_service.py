@@ -74,7 +74,7 @@ def obtener_credenciales_gmail():
         return None
 
 
-def enviar_archivo(destinatario, archivo_path):
+def enviar_archivo(destinatario, archivo_path, codigo=None):
     """Envía un correo con archivo adjunto o HTML según extensión."""
 
     # Obtener credenciales desde variables de entorno
@@ -96,7 +96,10 @@ def enviar_archivo(destinatario, archivo_path):
 
         # Caso especial: enviar código de verificación (sin archivo)
         if archivo_path is None:
-            codigo = random.randint(100000, 999999)
+            # Si no se proporciona código, generar uno
+            if codigo is None:
+                codigo = random.randint(100000, 999999)
+            
             message['subject'] = (
                 "Código de verificación - AtmosphericLettuce"
             )

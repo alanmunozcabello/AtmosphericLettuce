@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from routes import (notificaciones_routes, usuarios_routes, clima_routes,
-                    chat_routes, auth_routes)
+                    chat_routes, auth_routes, recuperacion_routes)
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -43,6 +43,7 @@ app.include_router(clima_routes.router)
 app.include_router(chat_routes.router)
 app.include_router(notificaciones_routes.router)
 app.include_router(auth_routes.router)
+app.include_router(recuperacion_routes.router)
 
 
 # # Montar carpeta de archivos estáticos

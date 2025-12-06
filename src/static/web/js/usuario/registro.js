@@ -11,16 +11,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let arr = [nombre, email, pass, pass2]
   // Al escribir en cualquier input, quita la clase 'invalid' para limpiar estado de error
-    arr.forEach(inp => {
-      inp.addEventListener('input', () => inp.classList.remove('invalid'))
-    })
+  arr.forEach(inp => {
+    inp.addEventListener('input', () => inp.classList.remove('invalid'))
+  })
 
   // Maneja el submit del formulario (crear cuenta)
   form.addEventListener('submit', async (e) => {
     e.preventDefault(); // evita la recarga de la página por el submit HTML
 
     // Limpia estados de error previos
-      arr.forEach(i => i.classList.remove('invalid'))
+    arr.forEach(i => i.classList.remove('invalid'))
 
     // Flags/valores actuales del formulario
     let ok = true
@@ -43,9 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Validación de contraseña:
     if (!vPass ||
-        vPass.length < 6 ||
-        vPass.length > 25 ||
-        !/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/.test(vPass)) {
+      vPass.length < 6 ||
+      vPass.length > 25 ||
+      !/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/.test(vPass) ||
+      /['";]/.test(vPass)) {
       pass.classList.add('invalid')
       ok = false
     }
@@ -97,7 +98,16 @@ document.addEventListener('DOMContentLoaded', () => {
       if (resp.ok) {
         // Si el backend responde con {detail} o {error}, lo mostramos
         if (body && (body.detail || body.error)) {
-          alert(body.detail || body.error || 'Error del servidor')
+          const detail = body.detail || body.error;
+          if (Array.isArray(detail)) {
+            // Formatear errores de Pydantic
+            let errores = detail.map(e => e.msg.replace('Value error, ', '')).join('\n');
+            alert(errores);
+          } else if (typeof detail === 'object') {
+            alert(JSON.stringify(detail));
+          } else {
+            alert(detail);
+          }
         } else {
           console.log('Usuario registrado:', body)
           alert('Cuenta creada correctamente')
