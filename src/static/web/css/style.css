@@ -152,6 +152,130 @@ body{
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* ========== RESPONSIVE DESIGN ========== */
+/* Tablets y pantallas medianas */
+@media (max-width: 1024px) {
+  .form {
+    width: 90%;
+    max-width: 420px;
+  }
+  
+  .logo {
+    width: 300px;
+  }
+}
+
+/* Tablets pequeñas y móviles horizontales */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .izquierda {
+    width: 100%;
+    height: auto;
+    padding: 30px 20px;
+    min-height: 200px;
+  }
+  
+  .derecha {
+    width: 100%;
+    padding: 20px;
+    min-height: auto;
+  }
+  
+  .form {
+    width: 100%;
+    max-width: 380px;
+    padding: 20px;
+    gap: 10px;
+  }
+  
+  .titulo {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+  
+  .logo {
+    width: 250px;
+  }
+  
+  .input input {
+    padding: 10px;
+    font-size: 16px; /* Evita zoom en iOS */
+  }
+  
+  .btn {
+    padding: 10px;
+    font-size: 14px;
+  }
+  
+  .btn-secundario {
+    padding: 10px;
+    font-size: 14px;
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+  .container {
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .izquierda {
+    width: 100%;
+    padding: 20px 15px;
+    min-height: 150px;
+  }
+  
+  .derecha {
+    width: 100%;
+    padding: 15px;
+  }
+  
+  .form {
+    width: 100%;
+    max-width: 100%;
+    padding: 15px;
+    gap: 8px;
+  }
+  
+  .titulo {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+  
+  .logo {
+    width: 180px;
+  }
+  
+  .input input {
+    padding: 10px;
+    font-size: 16px;
+  }
+  
+  .error-msg {
+    font-size: 12px;
+    margin-top: 4px;
+  }
+  
+  .btn {
+    padding: 10px;
+    font-size: 14px;
+  }
+  
+  .btn-secundario {
+    padding: 10px;
+    font-size: 14px;
+  }
+  
+  .registro {
+    font-size: 12px;
+  }
+}
+
 
 
 
