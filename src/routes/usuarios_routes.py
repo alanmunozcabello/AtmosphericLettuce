@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, Path
+from fastapi.responses import FileResponse
 from typing import Optional
 from services.jwt_service import crear_token
 from middleware.autenticacion_mw import verificar_autenticacion
@@ -33,11 +34,10 @@ from models import (
 router = APIRouter()
 
 
-# "pagina inicial"
+# "pagina inicial" - Servir landing page
 @router.get("/")
 def root():
-    # ----------------front
-    return {"mensaje": "Bienvenido a la API"}
+    return FileResponse("static/web/landing.html")
 
 
 # test de mensaje
