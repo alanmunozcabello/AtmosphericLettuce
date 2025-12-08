@@ -144,6 +144,19 @@ async function cargarMasCultivos() {
       listaCultivos.appendChild(indicador)
     }
 
+    // ✅ ACTUALIZAR MAPA Y RESUMEN (INCREMENTAL)
+    // Usamos agregarCultivosAlMapa si existe, para no borrar lo anterior
+    if (typeof window.agregarCultivosAlMapa === 'function') {
+      window.agregarCultivosAlMapa(nuevosCultivos)
+    } else if (typeof window.renderizarMapaPrincipal === 'function') {
+      // Fallback
+      window.renderizarMapaPrincipal()
+    }
+
+    if (typeof actualizarResumen === 'function') {
+      actualizarResumen()
+    }
+
     console.log(`✅ Página ${proximaPagina} cargada (${nuevosCultivos.length} items).`)
 
   } catch (err) {
@@ -215,6 +228,12 @@ function inicializarScrollInfinito() {
       cargarMasCultivos()
     }, 150)
   })
+
+  // Exponer reset para cuando se recarga la lista externamente
+  window.resetearScrollTracker = () => {
+    ultimoScroll = 0
+    console.log('🔄 Tracker de scroll reseteado')
+  }
 
   console.log('✅ Scroll infinito inicializado en #lista-cultivos')
 }

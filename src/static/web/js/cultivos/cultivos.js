@@ -154,6 +154,11 @@ document.addEventListener('DOMContentLoaded', () => {
       window.cultivosState.scrollInfinito.cultivosCargados = 0
       window.cultivosState.cultivosData = {}
 
+      // ✅ Resetear tracker de scroll para evitar bloqueos
+      if (typeof window.resetearScrollTracker === 'function') {
+        window.resetearScrollTracker()
+      }
+
       // Fetch Página 1
       const data = await window.fetchPaginaCultivos(1)
 

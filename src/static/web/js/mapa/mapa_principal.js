@@ -92,6 +92,50 @@ function renderizarMapaPrincipal () {
   }
 }
 
+// ========== AGREGAR CULTIVOS AL MAPA (INCREMENTAL) ==========
+function agregarCultivosAlMapa(nuevosCultivos) {
+  if (!vectorSourcePrincipal) return
+  if (!nuevosCultivos || nuevosCultivos.length === 0) return
+
+  const { colores } = window.cultivosState
+  console.log(`🗺️ Agregando ${nuevosCultivos.length} cultivos al mapa...`)
+
+  nuevosCultivos.forEach((data, index) => {
+    // Usar un hash simple del nombre para asignar color consistente o usar el índice si es confiable
+    // Aquí usaremos aleatorio/secuencial basado en el tamaño actual para variar
+    const colorIndex = (vectorSourcePrincipal.getFeatures().length + index) % colores.length
+    const color = colores[colorIndex]
+
+    const puntos = Array.isArray(data.puntos) ? data.puntos : []
+
+    // ✅ Filtrar puntos null y sin coordenadas válidas
+    const puntosValidos = puntos.filter(p =>
+      p !== null &&
+      p.latitud != null &&
+      p.longitud != null &&
+      !isNaN(p.latitud) &&
+      !isNaN(p.longitud)
+    )
+
+    // ✅ Solo renderizar si hay al menos 3 puntos válidos
+    if (puntosValidos.length >= 3) {
+      const coordenadas = puntosValidos.map(p =>
+        ol.proj.fromLonLat([p.longitud, p.latitud])
+      )
+
+      const poligono = new ol.Feature({
+        geometry: new ol.geom.Polygon([coordenadas]),
+        cultivoNombre: data.nombre,
+        cultivoHectareas: data.hectareas || 0,
+        cultivoColor: color
+      })
+
+      poligono.setStyle(crearEstiloPoligono(color, false))
+      vectorSourcePrincipal.addFeature(poligono)
+    }
+  })
+}
+
 // ========== ESTILO POLÍGONO ==========
 function crearEstiloPoligono (color, seleccionado) {
   return new ol.style.Style({
@@ -211,5 +255,9 @@ function centrarVistaMapa () {
   })
 }
 
+
 // Exponer funciones globales
 window.seleccionarCultivoMapa = seleccionarCultivoMapa
+window.agregarCultivosAlMapa = agregarCultivosAlMapa
+window.renderizarMapaPrincipal = renderizarMapaPrincipal // Asegurar que esta también esté expuesta si no lo estaba explícitamente al final
+

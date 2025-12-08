@@ -146,6 +146,10 @@
     border-radius: 6px;
     border: 1px solid #cbd5e1;
     background: white;
+    max-width: 200px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 /* Contenedor de previews */
