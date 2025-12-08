@@ -8,27 +8,27 @@
  */
 function verificarSesionActiva() {
   const token = localStorage.getItem('token')
-  
+
   if (!token) {
     console.warn('⚠️ No hay token, redirigiendo a login...')
-    window.location.replace('index.html')
+    window.location.replace('login.html')
     return false
   }
 
   try {
     const payload = JSON.parse(atob(token.split('.')[1]))
     const ahora = Math.floor(Date.now() / 1000)
-    
+
     if (payload.exp < ahora) {
       console.warn('⚠️ Token expirado, redirigiendo a login...')
       localStorage.clear()
-      window.location.replace('index.html')
+      window.location.replace('login.html')
       return false
     }
   } catch (e) {
     console.error('❌ Token inválido:', e)
     localStorage.clear()
-    window.location.replace('index.html')
+    window.location.replace('login.html')
     return false
   }
 
@@ -43,9 +43,9 @@ function verificarSesionActiva() {
  */
 async function fetchConToken(url, options = {}) {
   const token = localStorage.getItem('token')
-  
+
   if (!token) {
-    window.location.replace('index.html')
+    window.location.replace('login.html')
     return
   }
 
@@ -61,7 +61,7 @@ async function fetchConToken(url, options = {}) {
     if (response.status === 401) {
       localStorage.clear()
       alert('Tu sesión ha expirado. Inicia sesión nuevamente.')
-      window.location.replace('index.html')
+      window.location.replace('login.html')
       return
     }
 
@@ -80,10 +80,10 @@ function cerrarSesion() {
   localStorage.clear()
   sessionStorage.clear()
   console.log('✅ Sesión cerrada correctamente')
-  if (window.location.pathname.includes('index.html')) {
-    window.location.replace('index.html')
+  if (window.location.pathname.includes('login.html')) {
+    window.location.replace('login.html')
   } else {
-    const urlBase = window.location.origin + window.location.pathname.split('/').slice(0, -1).join('/') + '/index.html'
+    const urlBase = window.location.origin + window.location.pathname.split('/').slice(0, -1).join('/') + '/login.html'
     window.location.replace(urlBase)
   }
 }
@@ -95,7 +95,7 @@ function cerrarSesion() {
 function obtenerCorreoDelToken() {
   const token = localStorage.getItem('token')
   if (!token) return null
-  
+
   try {
     const payload = JSON.parse(atob(token.split('.')[1]))
     return payload.sub
@@ -105,11 +105,11 @@ function obtenerCorreoDelToken() {
 }
 
 // Prevenir navegación hacia atrás después de logout
-window.addEventListener('popstate', function(event) {
+window.addEventListener('popstate', function (event) {
   const token = localStorage.getItem('token')
   if (!token) {
     console.warn('⚠️ Intento de volver atrás sin token')
-    window.history.pushState(null, '', 'index.html')
-    window.location.replace('index.html')
+    window.history.pushState(null, '', 'login.html')
+    window.location.replace('login.html')
   }
 })

@@ -1,8 +1,8 @@
-(function() {
+(function () {
   const token = localStorage.getItem('token')
   if (!token) {
     document.documentElement.style.display = 'none'
-    window.location.replace('index.html')
+    window.location.replace('login.html')
     return
   }
   try {
@@ -10,7 +10,7 @@
     if (payload.exp < Math.floor(Date.now() / 1000)) {
       localStorage.clear()
       document.documentElement.style.display = 'none'
-      window.location.replace('index.html')
+      window.location.replace('login.html')
       return
     }
     // Mostrar html si token valido
@@ -18,6 +18,6 @@
   } catch (e) {
     localStorage.clear()
     document.documentElement.style.display = 'none'
-    window.location.replace('index.html')
+    window.location.replace('login.html')
   }
 })()

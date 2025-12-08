@@ -14,7 +14,7 @@ function showContent() {
   document.body.classList.add('content-visible')
   // ✅ Permitir scroll cuando se oculta el loading
   document.body.classList.remove('loading-active')
-  
+
   const loadingScreen = document.getElementById('loadingScreen')
   if (loadingScreen) {
     loadingScreen.classList.add('hide')
@@ -27,28 +27,28 @@ function showContent() {
 // ========== VALIDAR SESIÓN Y ESPERAR DATOS ==========
 async function validateAndShow() {
   const currentPage = window.location.pathname
-  
+
   // Páginas públicas
-  const publicPages = ['/index.html', '/registro.html', '/landing.html', '/login.html', '/']
-  const isPublicPage = publicPages.some(page => 
+  const publicPages = ['/login.html', '/registro.html', '/landing.html', '/']
+  const isPublicPage = publicPages.some(page =>
     currentPage.endsWith(page) || currentPage === page
   )
-  
+
   if (isPublicPage) {
     // Mostrar HTML inmediatamente en páginas públicas
     document.documentElement.style.display = 'block'
     showContent()
     return
   }
-  
+
   // Páginas privadas: validar token
   const token = localStorage.getItem('token')
-  
+
   if (!token) {
-    window.location.replace('/index.html')
+    window.location.replace('/login.html')
     return
   }
-  
+
   try {
     const response = await fetch('/api/validar-token', {
       method: 'GET',
@@ -59,28 +59,28 @@ async function validateAndShow() {
         'Expires': '0'
       }
     })
-    
+
     if (response.ok) {
       // ESPERAR a que los datos críticos estén listos
       await esperarDatosCriticos()
       showContent()
     } else {
       localStorage.removeItem('token')
-      window.location.replace('/index.html')
+      window.location.replace('/login.html')
     }
   } catch (error) {
     console.error('Error validando token:', error)
     localStorage.removeItem('token')
-    window.location.replace('/index.html')
+    window.location.replace('/login.html')
   }
 }
 
 // ========== Esperar datos según la página ==========
 async function esperarDatosCriticos() {
   const currentPage = window.location.pathname
-  
+
   console.log('⏳ Esperando datos críticos para:', currentPage)
-  
+
   if (currentPage.includes('home.html')) {
     // Esperar clima + usuario (máximo 8 segundos total)
     await Promise.all([
@@ -98,7 +98,7 @@ async function esperarDatosCriticos() {
   } else {
     console.log('ℹ️ Página sin datos específicos')
   }
-  
+
   console.log('✅ Todos los datos críticos están listos')
 }
 
@@ -106,7 +106,7 @@ async function esperarDatosCriticos() {
 function waitFor(condition, nombre = 'Dato', timeout = 5000) {
   return new Promise((resolve) => {
     const startTime = Date.now()
-    
+
     const interval = setInterval(() => {
       if (condition()) {
         clearInterval(interval)

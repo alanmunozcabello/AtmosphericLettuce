@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const logoutButton = document.getElementById('btn-logout')
   logoutButton.addEventListener('click', () => {
     /*localStorage.clear() // limpia todo (sesión, caches, etc.)
-    location.replace('index.html') // redirige reemplazando la entrada del historial
+    location.replace('login.html') // redirige reemplazando la entrada del historial
     */
     cerrarSesion() // <-- Es de la función helper
   })
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const guardarLS = (obj) => localStorage.setItem(LS_KEY, JSON.stringify(obj)) // guarda el objeto perfil como JSON
 
   // --- pintar hace que los datos se vean y guarden en el formuladrio  ---
-  function pintar (data) {
+  function pintar(data) {
     // Vista (labels/valores visibles)
     if (nombreV) nombreV.textContent = data.nombre ?? 'Usuario'
     if (correoV) correoV.textContent = data.correo ?? ''
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- usa cache si existe si no, toma lo que ya está en la vista ---
-  function cargarInicial () {
+  function cargarInicial() {
     const cached = leerLS() // intenta leer el perfil
     const base = cached || { // si no hay cache, arma un objeto base desde la vista/por defecto
       nombre: (nombreV?.textContent || 'Usuario').trim(),
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ---  GET /usuarios/{correo} ---
-  async function syncConBackend () {
+  async function syncConBackend() {
     try {
       const res = await fetchConToken(`/usuarios/${encodeURIComponent(CORREO)}`)
 
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return
       }
       const usuario = await res.json()
-      
+
       const previo = leerLS() || {} // lee lo que ya estaba en cache
 
       // A veces el backend puede mandar "nombre" con un email; lo tratamos para mostrar algo amigable
@@ -156,8 +156,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const esEmail = nombreSrv.includes('@') // detecta si parece correo
       const displayName = esEmail
         ? (previo.nombre && !previo.nombre.includes('@') // si en cache ya teníamos un nombre lo usa
-            ? previo.nombre
-            : (CORREO.split('@')[0] || 'Usuario')) // si no, usa la parte antes de la @ como nombre
+          ? previo.nombre
+          : (CORREO.split('@')[0] || 'Usuario')) // si no, usa la parte antes de la @ como nombre
         : (nombreSrv || previo.nombre || 'Usuario') // si no es correo, usa el del server o el previo
 
       let avatarFinal = null
@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ---  muestra y oculta form y botones según estado ---
-  function modoEdicion (on) {
+  function modoEdicion(on) {
     if (form) form.style.display = on ? 'block' : 'none'
     if (btnGuardar) btnGuardar.style.display = on ? 'inline-block' : 'none'
     if (btnCancelar) btnCancelar.style.display = on ? 'inline-block' : 'none'
@@ -362,7 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
 window.addEventListener('pageshow', (event) => {
   if (event.persisted) {
     console.log('⚠️ Perfil restaurado desde caché (botón Atrás)')
-    
+
     // Verificar sesión activa
     if (!verificarSesionActiva()) {
       return // Redirige automáticamente a login

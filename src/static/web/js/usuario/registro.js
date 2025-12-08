@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           console.log('Usuario registrado:', body)
           alert('Cuenta creada correctamente')
-          window.location.href = 'index.html'
+          window.location.href = 'login.html'
         }
       } else if (resp.status === 400) {
         // Errores típicos de datos inválidos o usuario ya existente

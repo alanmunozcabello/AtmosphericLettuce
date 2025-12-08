@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (response.ok) {
                     alert('Contraseña actualizada exitosamente. Ahora puedes iniciar sesión.');
-                    window.location.href = 'index.html';
+                    window.location.href = 'login.html';
                 } else {
                     mostrarError(data.detail || 'Error al cambiar contraseña');
                 }

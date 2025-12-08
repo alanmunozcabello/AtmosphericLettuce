@@ -1,6 +1,6 @@
 /* global verificarSesionActiva, obtenerCorreoDelToken, cerrarSesion */
 
-(function() {
+(function () {
     'use strict'
 
     function verificarYRedirigir() {
@@ -39,11 +39,11 @@
     })
 
     window.addEventListener('pageshow', (event) => {
-    if (event.persisted) {
-      console.log('⚠️ Página restaurada desde caché (pageshow)')
-      document.body.classList.remove('sesion-validada')
-      verificarYRedirigir()
-    }
+        if (event.persisted) {
+            console.log('⚠️ Página restaurada desde caché (pageshow)')
+            document.body.classList.remove('sesion-validada')
+            verificarYRedirigir()
+        }
     })
 
     document.addEventListener('visibilitychange', () => {
@@ -61,10 +61,10 @@
     }, 10000)
 
     window.addEventListener('popstate', () => {
-    if (!localStorage.getItem('token')) {
-      console.warn('⚠️ Navegación atrás sin token')
-      document.documentElement.style.display = 'none'
-      window.location.replace('index.html')
-    }
-  })
+        if (!localStorage.getItem('token')) {
+            console.warn('⚠️ Navegación atrás sin token')
+            document.documentElement.style.display = 'none'
+            window.location.replace('login.html')
+        }
+    })
 })()

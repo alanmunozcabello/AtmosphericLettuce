@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!CORREO) {
     console.warn('⚠️ Usuario no identificado')
-    window.location.href = 'index.html'
+    window.location.href = 'login.html'
   }
   // commit prueba post actualización
   localStorage.setItem('correoUsuario', CORREO)

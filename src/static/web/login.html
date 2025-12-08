@@ -1,30 +1,67 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirigiendo... - Atmospheric Lettuce</title>
-    <link rel="stylesheet" href="css/redireccion.css">
-    <link rel="stylesheet" href="css/loading.css">
+  <meta charset="UTF-8">
+  <title>Atmospheric Lettuce</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/loading.css">
 </head>
 <body>
-    <!-- ========== LOADING SCREEN ========== -->
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loading-spinner">
-        <div class="spinner-leaf"></div>
-        <div class="spinner-leaf"></div>
-        <div class="spinner-leaf"></div>
-        </div>
+  <!-- ========== LOADING SCREEN ========== -->
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loading-spinner">
+      <div class="spinner-leaf"></div>
+      <div class="spinner-leaf"></div>
+      <div class="spinner-leaf"></div>
     </div>
-    <div class="redirect-container">
-        <div class="spinner"></div>
-        <h2>Redirigiendo...</h2>
-        <p>Serás redirigido automáticamente en <span id="countdown">3</span> segundos.</p>
-        <p><a href="index.html">Haz clic aquí si no eres redirigido automáticamente</a></p>
+  </div>
+  <div class="container">
+    <div class="izquierda">
+      <img src="img/logo_en_blanco.png" alt="Logo de Atmospheric Lettuce" class="logo">
+      </a>
     </div>
 
-    <script src="js/utilidades/utils.js" defer></script>
-    <script src="js/utilidades/redireccion.js"></script>
-    <script src="js/core/loading.js"></script>
+    <div class="derecha">
+      <form class="form" id="login-form" action="#" method="post" novalidate>
+  <div class="titulo">Iniciar Sesión</div>
+
+  <div class="input-group">
+    <div class="input">
+      <input id="email" type="email" name="usuario" placeholder="Correo electrónico" required>
+      <span class="error-msg">⚠️ Ingresa un correo válido</span>
+    </div>
+  </div>
+
+  <div class="input-group">
+    <div class="input" style="position:relative;">
+      <input id="password" type="password" name="contrasena" placeholder="Contraseña" required>
+      <span class="error-msg">⚠️ La contraseña es obligatoria</span>
+      <span class="error-msg">⚠️ La contraseña es incorrecta</span>
+      
+    
+    </div>
+  </div>
+
+  <div class="input-group">
+    <!-- ahora es submit; JS valida y redirige -->
+    <button type="submit" class="btn" id="btn-login">Iniciar Sesión</button>
+  </div>
+
+  <div class="registro">
+    <a href="recuperar_contrasena.html">¿Olvidaste tu contraseña?</a>
+  </div>
+
+  <button type="button" class="btn-secundario" onclick="window.location.href='registro.html'">Crear cuenta</button>
+</form>
+
+<!-- Conecta el JS justo antes de cerrar body -->
+ 
+<script src="js/utilidades/utils.js" defer></script>
+<script src="js/usuario/login.js" defer></script>
+<script src="js/core/loading.js"></script>
+
+
+    </div>
+  </div>
 </body>
 </html>

@@ -9,12 +9,12 @@ const timer = setInterval(() => {
 
   if (countdown <= 0) {
     clearInterval(timer)
-    window.location.href = 'index.html'
+    window.location.href = 'login.html'
   }
 }, 1000)
 
 // También redirigir inmediatamente si se hace clic en cualquier lugar
 document.addEventListener('click', () => {
   clearInterval(timer)
-  window.location.href = 'index.html'
+  window.location.href = 'login.html'
 })
