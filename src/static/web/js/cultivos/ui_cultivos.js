@@ -1,62 +1,52 @@
 /* global window, document */
 
 // ========== RENDERIZAR LISTA INICIAL (primeros 20) ==========
-function renderizarListaInicial () {
+// ========== RENDERIZAR LISTA (Página 1 o reset) ==========
+function renderizarListaInicial(cultivosExplicitos = null) {
   const listaCultivos = document.getElementById('lista-cultivos')
   if (!listaCultivos) return
 
   listaCultivos.innerHTML = ''
 
-  const { cultivosData, scrollInfinito } = window.cultivosState
-  const entries = Object.entries(cultivosData)
-  const totalCultivos = entries.length
+  let cultivosMostrar = []
+  if (cultivosExplicitos) {
+    cultivosMostrar = cultivosExplicitos
+  } else {
+    // Fallback: usar lo que haya en data 
+    cultivosMostrar = Object.values(window.cultivosState.cultivosData)
+  }
 
-  // ✅ Resetear flags PRIMERO
+  const { scrollInfinito } = window.cultivosState
   scrollInfinito.cargando = false
-  scrollInfinito.todosCargados = false
-  scrollInfinito.cultivosCargados = 0
 
   // ✅ Caso: Sin cultivos
-  if (totalCultivos === 0) {
+  if (cultivosMostrar.length === 0) {
     listaCultivos.innerHTML = '<li class="cultivo-item-loading">No tienes cultivos 🌱</li>'
     scrollInfinito.todosCargados = true
-    console.log('ℹ️ No hay cultivos')
     return
   }
 
-  // ✅ Determinar cuántos cargar
-  const cantidadACargar = Math.min(scrollInfinito.cultivosPorCarga, totalCultivos)
-  const cultivosIniciales = entries.slice(0, cantidadACargar)
-  
   // ✅ Agregar cultivos al DOM
-  cultivosIniciales.forEach(([nombre, cultivo]) => {
-    const li = crearElementoCultivo(nombre, cultivo)
+  cultivosMostrar.forEach((cultivo) => {
+    const li = crearElementoCultivo(cultivo.nombre, cultivo)
     listaCultivos.appendChild(li)
   })
 
-  // ✅ Actualizar estado
-  scrollInfinito.cultivosCargados = cantidadACargar
+  // ✅ Actualizar contador
+  scrollInfinito.cultivosCargados = cultivosMostrar.length
 
-  // ✅ CRÍTICO: Determinar si hay más por cargar
-  const hayMasCultivos = cantidadACargar < totalCultivos
-
-  if (hayMasCultivos) {
-    // Hay más cultivos pendientes
-    scrollInfinito.todosCargados = false
+  // ✅ Indicador si hay más páginas
+  if (!scrollInfinito.todosCargados) {
     const indicador = crearIndicadorCargaMas()
     listaCultivos.appendChild(indicador)
-    console.log(`✅ ${cantidadACargar} de ${totalCultivos} cultivos cargados inicialmente`)
-    console.log(`📥 Quedan ${totalCultivos - cantidadACargar} cultivos por cargar`)
+    console.log(`✅ Página 1 renderizada (${cultivosMostrar.length} ítems). Quedan páginas.`)
   } else {
-    // Ya se cargaron todos
-    scrollInfinito.todosCargados = true
-    console.log(`✅ ${cantidadACargar} de ${totalCultivos} cultivos cargados`)
-    console.log('✅ Todos los cultivos ya están cargados')
+    console.log('✅ Todos los cultivos cargados.')
   }
 }
 
 // ========== CREAR ELEMENTO DE CULTIVO (sin tocar DOM global) ==========
-function crearElementoCultivo (nombre, cultivo) {
+function crearElementoCultivo(nombre, cultivo) {
   const hectareas = cultivo.hectareas || 0
   const puntos = cultivo.puntos || []
   const tienePuntos = puntos.length > 0 && puntos.some(p => p !== null)
@@ -82,7 +72,7 @@ function crearElementoCultivo (nombre, cultivo) {
 }
 
 // ========== CREAR INDICADOR "CARGANDO MÁS..." ==========
-function crearIndicadorCargaMas () {
+function crearIndicadorCargaMas() {
   const li = document.createElement('li')
   li.className = 'cultivo-item-loading-more'
   li.id = 'indicador-carga-mas'
@@ -94,91 +84,75 @@ function crearIndicadorCargaMas () {
 }
 
 // ========== CARGAR MÁS CULTIVOS ==========
-function cargarMasCultivos () {
-  const { cultivosData, scrollInfinito } = window.cultivosState
+// ========== CARGAR MÁS CULTIVOS (Página Siguiente) ==========
+async function cargarMasCultivos() {
+  const { scrollInfinito } = window.cultivosState
 
-  // Validaciones más estrictas
-  if (scrollInfinito.cargando) {
-    console.log('⏸️ Ya está cargando cultivos...')
+  if (scrollInfinito.cargando || scrollInfinito.todosCargados) {
     return
   }
 
-  if (scrollInfinito.todosCargados) {
-    console.log('⏸️ Todos los cultivos ya están cargados')
-    return
-  }
-
-  const entries = Object.entries(cultivosData)
-  const totalCultivos = entries.length
-
-  // Validar que realmente hay más por cargar
-  if (scrollInfinito.cultivosCargados >= totalCultivos) {
-    console.log('⏸️ No hay más cultivos por cargar')
-    scrollInfinito.todosCargados = true
-    eliminarIndicadorCargaMas()
-    return
-  }
-
-  // Marcar como cargando ANTES de hacer setTimeout
   scrollInfinito.cargando = true
-  console.log('📥 Cargando más cultivos...')
+  console.log('📥 Cargando siguiente página...')
 
-  // Calcular siguiente batch
-  const inicio = scrollInfinito.cultivosCargados
-  const fin = Math.min(inicio + scrollInfinito.cultivosPorCarga, totalCultivos)
-  const siguientesBatch = entries.slice(inicio, fin)
+  const proximaPagina = scrollInfinito.paginaActual + 1
 
-  console.log(`📊 Cargando cultivos ${inicio + 1}-${fin} de ${totalCultivos}`)
+  try {
+    const data = await window.fetchPaginaCultivos(proximaPagina)
+    const nuevosCultivos = data.cultivos || []
+    const paginacion = data.paginacion
 
-  // Validar que hay cultivos en el batch
-  if (siguientesBatch.length === 0) {
-    console.log('⚠️ Batch vacío, marcando como completado')
-    scrollInfinito.todosCargados = true
-    scrollInfinito.cargando = false
-    eliminarIndicadorCargaMas()
-    return
-  }
-
-  // Simular delay 
-  setTimeout(() => {
     const listaCultivos = document.getElementById('lista-cultivos')
-    if (!listaCultivos) {
-      console.error('❌ No se encontró #lista-cultivos')
+    if (!listaCultivos) return
+
+    // Eliminar indicador viejo
+    eliminarIndicadorCargaMas()
+
+    if (nuevosCultivos.length === 0) {
+      scrollInfinito.todosCargados = true
       scrollInfinito.cargando = false
       return
     }
 
-    // Eliminar indicador antes de agregar
-    eliminarIndicadorCargaMas()
-
-    // Agregar nuevos cultivos
-    siguientesBatch.forEach(([nombre, cultivo]) => {
-      const li = crearElementoCultivo(nombre, cultivo)
+    // Agregar nuevos al DOM
+    nuevosCultivos.forEach((cultivo) => {
+      // Actualizar state global
+      window.cultivosState.cultivosData[cultivo.nombre] = cultivo
+      // Crear elemento
+      const li = crearElementoCultivo(cultivo.nombre, cultivo)
       listaCultivos.appendChild(li)
     })
 
-    // Actualizar contador
-    scrollInfinito.cultivosCargados = fin
-
-    console.log(`✅ ${siguientesBatch.length} cultivos agregados (${scrollInfinito.cultivosCargados}/${totalCultivos})`)
-
-    // Verificar si quedan más por cargar
-    if (scrollInfinito.cultivosCargados >= totalCultivos) {
-      scrollInfinito.todosCargados = true
-      scrollInfinito.cargando = false // Desmarcar ANTES de eliminar indicador
-      console.log('✅ Todos los cultivos cargados')
+    // Actualizar Flags
+    if (paginacion) {
+      scrollInfinito.paginaActual = paginacion.pagina_actual
+      scrollInfinito.todosCargados = !paginacion.tiene_siguiente
+      scrollInfinito.totalPaginas = paginacion.total_paginas
+      scrollInfinito.totalCultivos = paginacion.total
     } else {
-      // Re-agregar indicador al final
+      scrollInfinito.todosCargados = true
+    }
+
+    scrollInfinito.cultivosCargados += nuevosCultivos.length
+    scrollInfinito.cargando = false
+
+    // Si aún hay más, poner indicador al final
+    if (!scrollInfinito.todosCargados) {
       const indicador = crearIndicadorCargaMas()
       listaCultivos.appendChild(indicador)
-      scrollInfinito.cargando = false // Desmarcar DESPUÉS de agregar indicador
-      console.log(`📄 Quedan ${totalCultivos - scrollInfinito.cultivosCargados} cultivos más`)
     }
-  }, 200) // Delay de 200ms
+
+    console.log(`✅ Página ${proximaPagina} cargada (${nuevosCultivos.length} items).`)
+
+  } catch (err) {
+    console.error('Error cargando más cultivos:', err)
+    scrollInfinito.cargando = false
+    eliminarIndicadorCargaMas()
+  }
 }
 
 // ========== ELIMINAR INDICADOR ==========
-function eliminarIndicadorCargaMas () {
+function eliminarIndicadorCargaMas() {
   const indicador = document.getElementById('indicador-carga-mas')
   if (indicador) {
     indicador.remove()
@@ -186,7 +160,7 @@ function eliminarIndicadorCargaMas () {
 }
 
 // ========== INICIALIZAR SCROLL INFINITO ==========
-function inicializarScrollInfinito () {
+function inicializarScrollInfinito() {
   const listaCultivos = document.getElementById('lista-cultivos')
   if (!listaCultivos) {
     console.warn('⚠️ No se encontró #lista-cultivos')
@@ -199,7 +173,7 @@ function inicializarScrollInfinito () {
   listaCultivos.addEventListener('scroll', () => {
     // Debounce: Esperar 150ms después del último evento
     clearTimeout(scrollTimeout)
-    
+
     scrollTimeout = setTimeout(() => {
       const { scrollTop, scrollHeight, clientHeight } = listaCultivos
       const { scrollInfinito } = window.cultivosState
@@ -244,7 +218,7 @@ function inicializarScrollInfinito () {
 }
 
 // ========== ACTUALIZAR RESUMEN ==========
-function actualizarResumen () {
+function actualizarResumen() {
   const { cultivosData } = window.cultivosState
   const totalCultivosEl = document.getElementById('total-cultivos')
   const areaTotalEl = document.getElementById('area-total')
@@ -263,12 +237,12 @@ function actualizarResumen () {
 }
 
 // ========== ALIAS PARA COMPATIBILIDAD ==========
-function renderizarLista () {
-  renderizarListaInicial()
+function renderizarLista(cultivos) {
+  renderizarListaInicial(cultivos)
 }
 
 // ========== FUNCIÓN LEGACY (eliminar después) ==========
-function agregarCultivoALista (nombre, cultivo, reAgregarIndicador = true) {
+function agregarCultivoALista(nombre, cultivo, reAgregarIndicador = true) {
   // Esta función ya no se usa, pero la dejo por compatibilidad
   const listaCultivos = document.getElementById('lista-cultivos')
   if (!listaCultivos) return
@@ -281,7 +255,7 @@ function agregarCultivoALista (nombre, cultivo, reAgregarIndicador = true) {
 function inicializarBusqueda() {
   const inputBuscar = document.getElementById('input-buscar-cultivo')
   const btnLimpiar = document.getElementById('btn-limpiar-busqueda')
-  
+
   if (!inputBuscar) {
     console.warn('⚠️ No se encontró #input-buscar-cultivo')
     return
@@ -290,14 +264,14 @@ function inicializarBusqueda() {
   // Filtrado instantáneo (input event se dispara con cada tecla)
   inputBuscar.addEventListener('input', (e) => {
     const termino = e.target.value.trim()
-    
+
     // Mostrar/ocultar botón de limpiar
     if (termino) {
       btnLimpiar.style.display = 'block'
     } else {
       btnLimpiar.style.display = 'none'
     }
-    
+
     filtrarCultivos(termino)
   })
 
@@ -337,7 +311,7 @@ function filtrarCultivos(termino) {
     scrollInfinito.cultivosCargados = 0
     scrollInfinito.todosCargados = false
     scrollInfinito.cargando = false
-    
+
     // Renderizar primeros 20
     renderizarListaInicial()
     console.log('🔄 Búsqueda limpiada, mostrando todos los cultivos')
@@ -346,7 +320,7 @@ function filtrarCultivos(termino) {
 
   // Caso 2: Con término de búsqueda -> filtrar y mostrar todos los resultados
   const entries = Object.entries(cultivosData)
-  const cultivosFiltrados = entries.filter(([nombre]) => 
+  const cultivosFiltrados = entries.filter(([nombre]) =>
     nombre.toLowerCase().includes(terminoLower)
   )
 

@@ -24,8 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // ========== ESTADO GLOBAL COMPARTIDO ==========
   window.cultivosState = {
     correo: CORREO,
-    usuarioData: null, // ✅ Guardar datos completos del usuario
-    cultivosData: {}, // ✅ Formato: { nombre: cultivoObj }
+    usuarioData: null,
+    cultivosData: {}, // Se mantiene para acceso rápido
     cultivoSeleccionado: null,
     usuarioLatitud: -33.446,
     usuarioLongitud: -70.681,
@@ -34,20 +34,52 @@ document.addEventListener('DOMContentLoaded', () => {
       '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'
     ],
     scrollInfinito: {
-      cultivosPorCarga: 20,
-      cultivosCargados: 0,
+      paginaActual: 1,      // ✅ PAGINACIÓN SERVER
+      totalPaginas: 1,      // ✅ PAGINACIÓN SERVER
+      limite: 20,           // ✅ PAGINACIÓN SERVER
       totalCultivos: 0,
       cargando: false,
       todosCargados: false
     }
   }
 
-  // ========== INICIALIZACIÓN ==========
-  async function inicializar () {
-    console.log('🌾 Inicializando gestor de cultivos...')
+  // ========== FUNCIÓN: FETCH PÁGINA DE CULTIVOS ==========
+  window.fetchPaginaCultivos = async function (pagina = 1) {
+    const { correo, scrollInfinito } = window.cultivosState
+    const { limite } = scrollInfinito
+
+    console.log(`📡 Solicitando página ${pagina}...`)
 
     try {
-      // 1. Obtener datos del usuario
+      const response = await fetchConToken(
+        `/usuarios/${encodeURIComponent(correo)}/cultivos?pagina=${pagina}&limite=${limite}`,
+        { method: 'GET' }
+      )
+
+      if (!response.ok) {
+        throw new Error('Error al obtener cultivos')
+      }
+
+      const data = await response.json()
+
+      if (data.mensaje) {
+        return { cultivos: [], paginacion: null }
+      }
+
+      return data
+
+    } catch (error) {
+      console.error('❌ Error fetchPaginaCultivos:', error)
+      return { cultivos: [], paginacion: null }
+    }
+  }
+
+  // ========== INICIALIZACIÓN ==========
+  async function inicializar() {
+    console.log('🌾 Inicializando gestor de cultivos (Server-Side JS)...')
+
+    try {
+      // 1. Obtener datos datos del usuario (Perfil)
       const usuario = await obtenerUsuario(CORREO)
 
       if (!usuario) {
@@ -55,31 +87,12 @@ document.addEventListener('DOMContentLoaded', () => {
         cerrarSesion()
         return
       }
-        // ✅ Guardar datos completos
+
       window.cultivosState.usuarioData = usuario
 
-        // ✅ Actualizar ubicación con nuevo formato
       if (usuario.ubicacion) {
         window.cultivosState.usuarioLatitud = usuario.ubicacion.latitud || -33.446
         window.cultivosState.usuarioLongitud = usuario.ubicacion.longitud || -70.681
-        console.log('📍 Ubicación:',
-          window.cultivosState.usuarioLatitud,
-          window.cultivosState.usuarioLongitud
-        )
-      }
-
-        // ✅ Convertir array de cultivos a objeto { nombre: cultivoObj }
-      if (Array.isArray(usuario.cultivos)) {
-        window.cultivosState.cultivosData = {}
-        usuario.cultivos.forEach(cultivo => {
-          window.cultivosState.cultivosData[cultivo.nombre] = cultivo
-        })
-
-        // Actualizar total de cultivos
-        window.cultivosState.scrollInfinito.totalCultivos = usuario.cultivos.length
-        window.cultivosState.scrollInfinito.cultivosCargados = 0
-        window.cultivosState.scrollInfinito.todosCargados = false
-        console.log('✅ Total de cultivos:', usuario.cultivos.length)      
       }
 
       // 2. Inicializar mapa principal
@@ -87,18 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
         inicializarMapaPrincipal()
       }
 
-      // 3. Renderizar UI
-      if (typeof renderizarListaInicial === 'function') {
-        renderizarListaInicial()
-      }
-
-      if (typeof renderizarMapaPrincipal === 'function') {
-        renderizarMapaPrincipal()
-      }
-
-      if (typeof actualizarResumen === 'function') {
-        actualizarResumen()
-      }
+      // 3. CARGAR PRIMERA PÁGINA (Sobrescribe cualquier dato previo)
+      await window.recargarCultivos()
 
       // 4. Inicializar eventos de CRUD
       if (typeof inicializarEventosCRUD === 'function') {
@@ -133,50 +136,48 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ========== CARGAR/RECARGAR CULTIVOS ==========
-  async function cargarCultivos () {
-    if (!verificarSesionActiva()) {
-      return
-    }
+  // ========== CARGAR/RECARGAR CULTIVOS (Página 1) ==========
+  async function cargarCultivos() {
+    if (!verificarSesionActiva()) return
 
-    // ✅ NO MOSTRAR PANTALLA DE CARGA si ya estamos mostrando cultivos
     const listaCultivos = document.getElementById('lista-cultivos')
-    const esRecarga = listaCultivos && listaCultivos.children.length > 0 && 
-                      !listaCultivos.innerHTML.includes('Cargando')
-    
-    if (listaCultivos && !esRecarga) {
+
+    // Mostrar loading si está vacío
+    if (listaCultivos && listaCultivos.children.length === 0) {
       listaCultivos.innerHTML = '<li class="cultivo-item-loading">Cargando...</li>'
     }
 
     try {
-      const usuario = await obtenerUsuario(CORREO)
-
-      if (!usuario) {
-        cerrarSesion()
-        return
-      }
-
-      window.cultivosState.usuarioData = usuario
-
-      // ✅ LIMPIAR ANTES DE ACTUALIZAR
+      // Resetear estado paginación
+      window.cultivosState.scrollInfinito.paginaActual = 1
+      window.cultivosState.scrollInfinito.todosCargados = false
+      window.cultivosState.scrollInfinito.cultivosCargados = 0
       window.cultivosState.cultivosData = {}
 
-      if (Array.isArray(usuario.cultivos)) {
-        window.cultivosState.cultivosData = {}
-        usuario.cultivos.forEach(cultivo => {
-          window.cultivosState.cultivosData[cultivo.nombre] = cultivo
-        })
+      // Fetch Página 1
+      const data = await window.fetchPaginaCultivos(1)
 
-        // Resetear estado de scroll
-        window.cultivosState.scrollInfinito.totalCultivos = usuario.cultivos.length
-        window.cultivosState.scrollInfinito.cultivosCargados = 0
-        window.cultivosState.scrollInfinito.todosCargados = false
+      const nuevosCultivos = data.cultivos || []
+      const paginacion = data.paginacion
+
+      // Actualizar estado local
+      nuevosCultivos.forEach(c => {
+        window.cultivosState.cultivosData[c.nombre] = c
+      })
+
+      // Actualizar contadores
+      if (paginacion) {
+        window.cultivosState.scrollInfinito.totalCultivos = paginacion.total
+        window.cultivosState.scrollInfinito.totalPaginas = paginacion.total_paginas
+        window.cultivosState.scrollInfinito.todosCargados = !paginacion.tiene_siguiente
+      } else {
+        window.cultivosState.scrollInfinito.totalCultivos = 0
+        window.cultivosState.scrollInfinito.todosCargados = true
       }
-      
 
-      // Renderizar solo primeros 20 en UI
+      // Renderizar UI (Página 1)
       if (typeof renderizarListaInicial === 'function') {
-        renderizarListaInicial()
+        renderizarListaInicial(nuevosCultivos)
       }
 
       if (typeof renderizarMapaPrincipal === 'function') {
@@ -187,12 +188,11 @@ document.addEventListener('DOMContentLoaded', () => {
         actualizarResumen()
       }
 
-      console.log('✅ Cultivos recargados:', Object.keys(window.cultivosState.cultivosData).length)
+      console.log(`✅ Página 1 cargada: ${nuevosCultivos.length} cultivos`)
+
     } catch (error) {
       console.error('❌ Error en cargarCultivos:', error)
-      if (listaCultivos) {
-        listaCultivos.innerHTML = '<li class="cultivo-item-loading">Error al cargar</li>'
-      }
+      if (listaCultivos) listaCultivos.innerHTML = '<li class="cultivo-item-loading">Error al cargar</li>'
     }
   }
 
