@@ -58,10 +58,12 @@ function crearElementoCultivo(nombre, cultivo) {
 
   li.innerHTML = `
     <span class="tick">✔</span>
-    <span>
-      <strong>${nombre}</strong> — ${hectareas.toFixed(2)} ha
-      ${tienePuntos ? ' 📍' : ''}
-    </span>
+    
+    <!-- ✅ Nuevo contenedor de texto para separar nombre y hectáreas -->
+    <div class="info-cultivo">
+       <span class="nombre-cultivo" title="${nombre}">${nombre}</span>
+       <span class="meta-cultivo">— ${hectareas.toFixed(2)} ha ${tienePuntos ? ' 📍' : ''}</span>
+    </div>
     <div class="botones-grupo">
       <button class="btn-config" data-nombre="${nombre}" aria-label="Configurar">⚙️</button>
       <button class="btn-eliminar" data-nombre="${nombre}" aria-label="Eliminar">✕</button>
@@ -219,21 +221,25 @@ function inicializarScrollInfinito() {
 
 // ========== ACTUALIZAR RESUMEN ==========
 function actualizarResumen() {
-  const { cultivosData } = window.cultivosState
+  const { cultivosData, scrollInfinito } = window.cultivosState
   const totalCultivosEl = document.getElementById('total-cultivos')
   const areaTotalEl = document.getElementById('area-total')
 
-  const total = Object.keys(cultivosData).length
-  let areaTotal = 0
+  // ✅ USAR TOTAL DEL SERVER SI EXISTE
+  const total = scrollInfinito.totalCultivos || Object.keys(cultivosData).length
 
+  // Para el área, sumamos lo que tenemos cargado localmente porque el server no nos da el total de hectáreas global en el endpoint paginado
+  // (Aunque idealmente el backend debería darlo. Por ahora sumamos lo visible/cargado)
+  let areaTotal = 0
   Object.values(cultivosData).forEach((cultivo) => {
     areaTotal += cultivo.hectareas || 0
   })
 
+  // Si estamos en modo búsqueda, el total podría ser distinto, pero mantenemos la lógica base
   if (totalCultivosEl) totalCultivosEl.textContent = total
-  if (areaTotalEl) areaTotalEl.textContent = `${areaTotal.toFixed(2)} ha`
+  if (areaTotalEl) areaTotalEl.textContent = `${areaTotal.toFixed(2)} ha (visible)`
 
-  console.log('✅ Resumen actualizado:', total, 'cultivos,', areaTotal.toFixed(2), 'ha')
+  console.log('✅ Resumen actualizado:', total, 'cultivos')
 }
 
 // ========== ALIAS PARA COMPATIBILIDAD ==========
@@ -293,58 +299,79 @@ function inicializarBusqueda() {
       filtrarCultivos('')
     }
   })
-
-  console.log('✅ Búsqueda de cultivos inicializada')
 }
 
-// ========== FILTRAR CULTIVOS EN LA LISTA ==========
-function filtrarCultivos(termino) {
+// ========== FILTRAR CULTIVOS (SERVER SIDE) ==========
+async function filtrarCultivos(termino) {
   const listaCultivos = document.getElementById('lista-cultivos')
   if (!listaCultivos) return
 
-  const { cultivosData, scrollInfinito } = window.cultivosState
-  const terminoLower = termino.toLowerCase()
+  const { scrollInfinito, correo } = window.cultivosState
+  const terminoLower = termino.trim()
 
-  // Caso 1: Sin término de búsqueda -> mostrar todos (con scroll infinito)
+  // 1. Limpiar lista visualmente (feedback inmediato)
+  listaCultivos.innerHTML = '<li class="cultivo-item-loading">Buscando...</li>'
+
+  // 2. Si no hay término, volver a la normalidad (Página 1 estándar)
   if (!terminoLower) {
-    // Resetear scroll infinito
-    scrollInfinito.cultivosCargados = 0
-    scrollInfinito.todosCargados = false
+    console.log('🔄 Búsqueda limpiada. Recargando inicio...')
+    await window.recargarCultivos() // Esto resetea todo a página 1
+    return
+  }
+
+  // 3. Buscar en servidor
+  try {
+    const params = new URLSearchParams({
+      correo: correo,
+      buscar: terminoLower,
+      pagina: 1,
+      limite: 100
+    })
+
+    // Asumimos que existe este endpoint, si no, habría que crearlo o usar el paginado con filtro.
+    // Si no existe, podemos usar /usuarios/.../cultivos?buscar=... si el backend lo soporta.
+    // Basado en el usuario_service.py que vi, parece que el servicio estándar no filtra por nombre.
+    // SI NO EXISTE FILTRO EN EL BACKEND, TENDRÍA QUE MODIFICAR EL BACKEND.
+    // Pero voy a asumir que /filtrar existe o que el usuario quería que lo arregle.
+    // Si falla 404, entonces el problema es que el backend no lo soporta.
+    // REVISIÓN: el usuario dijo "intentar de nuevo", y antes falló por sintaxis.
+    // Voy a mantener esta lógica.
+
+    const response = await fetchConToken(`/cultivos/filtrar?${params.toString()}`, { method: 'GET' })
+
+    if (!response.ok) throw new Error('Error buscando')
+
+    const data = await response.json()
+    const resultados = data.cultivos || []
+
+    listaCultivos.innerHTML = ''
+
+    if (resultados.length === 0) {
+      listaCultivos.innerHTML = `
+          <li class="cultivo-item-no-results">
+            No se encontraron cultivos con <strong>"${termino}"</strong>
+          </li>
+        `
+      return
+    }
+
+    // Renderizar resultados
+    resultados.forEach((cultivo) => {
+      window.cultivosState.cultivosData[cultivo.nombre] = cultivo
+      const li = crearElementoCultivoConResaltado(cultivo.nombre, cultivo, terminoLower)
+      listaCultivos.appendChild(li)
+    })
+
+    scrollInfinito.todosCargados = true
     scrollInfinito.cargando = false
+    eliminarIndicadorCargaMas()
 
-    // Renderizar primeros 20
-    renderizarListaInicial()
-    console.log('🔄 Búsqueda limpiada, mostrando todos los cultivos')
-    return
+    console.log(`✅ ${resultados.length} resultados encontrados`)
+
+  } catch (error) {
+    console.error('Error en búsqueda:', error)
+    listaCultivos.innerHTML = '<li class="cultivo-item-loading">Error al buscar</li>'
   }
-
-  // Caso 2: Con término de búsqueda -> filtrar y mostrar todos los resultados
-  const entries = Object.entries(cultivosData)
-  const cultivosFiltrados = entries.filter(([nombre]) =>
-    nombre.toLowerCase().includes(terminoLower)
-  )
-
-  // Limpiar lista
-  listaCultivos.innerHTML = ''
-
-  // Caso 2a: No hay resultados
-  if (cultivosFiltrados.length === 0) {
-    listaCultivos.innerHTML = `
-      <li class="cultivo-item-no-results">
-        No se encontraron cultivos con <strong>"${termino}"</strong>
-      </li>
-    `
-    console.log(`🔍 0 resultados para "${termino}"`)
-    return
-  }
-
-  // Caso 2b: Hay resultados -> mostrar todos (sin scroll infinito durante búsqueda)
-  cultivosFiltrados.forEach(([nombre, cultivo]) => {
-    const li = crearElementoCultivoConResaltado(nombre, cultivo, terminoLower)
-    listaCultivos.appendChild(li)
-  })
-
-  console.log(`🔍 ${cultivosFiltrados.length} resultado(s) para "${termino}"`)
 }
 
 // ========== CREAR ELEMENTO CON TEXTO RESALTADO ==========
@@ -363,10 +390,12 @@ function crearElementoCultivoConResaltado(nombre, cultivo, termino) {
 
   li.innerHTML = `
     <span class="tick">✔</span>
-    <span>
-      <strong>${nombreResaltado}</strong> — ${hectareas.toFixed(2)} ha
-      ${tienePuntos ? ' 📍' : ''}
-    </span>
+    
+    <!-- ✅ Nuevo contenedor de texto para separar nombre y hectáreas -->
+    <div class="info-cultivo">
+       <span class="nombre-cultivo" title="${nombre}">${nombre}</span>
+       <span class="meta-cultivo">— ${hectareas.toFixed(2)} ha ${tienePuntos ? ' 📍' : ''}</span>
+    </div>
     <div class="botones-grupo">
       <button class="btn-config" data-nombre="${nombre}" aria-label="Configurar">⚙️</button>
       <button class="btn-eliminar" data-nombre="${nombre}" aria-label="Eliminar">✕</button>

@@ -864,13 +864,8 @@ def service_filtrar_cultivos(
                 "puntos": json.loads(row[5]) if row[5] else [],
             })
 
-        # Si no hay cultivos, retornar mensaje
-        if not cultivos:
-            return {"mensaje": "No se encontraron cultivos con esos filtros"}
-
-        # Retornar solo el arreglo de cultivos (igual que
-        # service_obtener_cultivos_usuario)
-        return cultivos
+        # SIEMPRE retornar un objeto con la lista, aunque esté vacía
+        return {"cultivos": cultivos}
 
     except Exception as e:
         return {"error": str(e)}

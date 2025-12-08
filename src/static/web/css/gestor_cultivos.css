@@ -1,7 +1,8 @@
 /* ========== CONTENEDOR PRINCIPAL ========== */
 #gestor-container {
   width: 100%;
-  height: calc(100vh - 100px); /* Ajustado a altura de barra superior */
+  height: calc(100vh - 100px);
+  /* Ajustado a altura de barra superior */
   display: flex;
   position: relative;
   background: #f5f5f5;
@@ -19,12 +20,12 @@
 /* ========== PANEL LATERAL DERECHO ========== */
 .gestor-panel {
   width: 350px;
-  height: calc(100vh - 60px); 
+  height: calc(100vh - 60px);
   background: white;
   border-left: 2px solid #e3e5ea;
   display: flex;
   flex-direction: column;
-  overflow-y: hidden; 
+  overflow-y: hidden;
   overflow-x: hidden;
 }
 
@@ -65,7 +66,8 @@
 .panel-search input {
   flex: 1;
   padding: 10px 12px;
-  padding-right: 36px; /* Espacio para el botón X */
+  padding-right: 36px;
+  /* Espacio para el botón X */
   border: 2px solid #e3e5ea;
   border-radius: 10px;
   font-size: 14px;
@@ -129,7 +131,7 @@
   background: white;
   border-radius: 8px;
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   border: 1px solid #e3e5ea;
 }
 
@@ -182,7 +184,7 @@
 /* ✅ Focus con color del proyecto */
 #form-cultivo input:focus {
   border-color: #5db5ff;
-  box-shadow: 0 0 0 3px rgba(93,181,255,0.15);
+  box-shadow: 0 0 0 3px rgba(93, 181, 255, 0.15);
 }
 
 /* ✅ Botón con gradiente del proyecto */
@@ -199,14 +201,14 @@
 
 #form-cultivo button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(93,181,255,0.3);
+  box-shadow: 0 4px 12px rgba(93, 181, 255, 0.3);
 }
 
 /* ========== LISTA DE CULTIVOS ========== */
 .panel-content {
   flex: 1;
   padding: 16px;
-  overflow-y: hidden; 
+  overflow-y: hidden;
   display: flex;
   flex-direction: column;
 }
@@ -263,8 +265,39 @@
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s;
-  opacity: 0; /* Inicia invisible para animación */
-  animation: fadeInUp 0.3s ease forwards; /* Animación de entrada */
+  opacity: 0;
+  animation: fadeInUp 0.3s ease forwards;
+  overflow: hidden;
+}
+
+.info-cultivo {
+  flex: 1;
+  /* Ocupa todo el espacio disponible */
+  min-width: 0;
+  /* Permite encogerse */
+  display: flex;
+  /* Flexbox interno */
+  align-items: center;
+  /* Alineado verticalmente */
+  gap: 4px;
+  /* Espacio entre nombre y guión */
+}
+
+/* El NOMBRE se corta con "..." si es largo */
+.nombre-cultivo {
+  font-weight: 700;
+  color: #1f2937;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Las HECTÁREAS siempre se ven (no se encogen) */
+.meta-cultivo {
+  white-space: nowrap;
+  /* Siempre en una línea */
+  flex-shrink: 0;
+  color: #6b7280;
 }
 
 /* Animación de entrada de cultivos */
@@ -273,6 +306,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -289,8 +323,8 @@
 /* ✅ Activo con color del proyecto */
 .item-cultivo.active {
   border-color: #5db5ff;
-  background: linear-gradient(135deg, rgba(93,181,255,0.08), rgba(85,194,165,0.08));
-  box-shadow: 0 0 0 3px rgba(93,181,255,0.1);
+  background: linear-gradient(135deg, rgba(93, 181, 255, 0.08), rgba(85, 194, 165, 0.08));
+  box-shadow: 0 0 0 3px rgba(93, 181, 255, 0.1);
 }
 
 .tick {
@@ -384,7 +418,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ========== ACCIONES ========== */
@@ -421,7 +457,7 @@
 
 .btn-primary:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(93,181,255,0.3);
+  box-shadow: 0 4px 12px rgba(93, 181, 255, 0.3);
 }
 
 .btn-secondary {
@@ -432,7 +468,7 @@
 .btn-secondary:hover:not(:disabled) {
   background: #4b5563;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(107,114,128,0.3);
+  box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
 }
 
 .btn-danger {
@@ -443,7 +479,7 @@
 .btn-danger:hover:not(:disabled) {
   background: #dc2626;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(239,68,68,0.3);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
 .btn-primary:disabled,
@@ -523,7 +559,7 @@
 }
 
 .btn-cerrar-overlay {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
   border: none;
   color: white;
   width: 32px;
@@ -535,7 +571,7 @@
 }
 
 .btn-cerrar-overlay:hover {
-  background: rgba(255,255,255,0.3);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 /* ========== MAPA SUPERFICIE ========== */
@@ -550,7 +586,7 @@
   border-left: 2px solid #e3e5ea;
   display: flex;
   flex-direction: column;
-  box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
 }
 
 .superficie-panel .panel-header {
@@ -621,7 +657,7 @@
   padding: 12px 16px;
   border-radius: 10px;
   border: 2px solid #5db5ff;
-  box-shadow: 0 6px 18px rgba(93,181,255,0.25);
+  box-shadow: 0 6px 18px rgba(93, 181, 255, 0.25);
   min-width: 150px;
   z-index: 100;
 }
@@ -673,7 +709,7 @@
   #gestor-container {
     flex-direction: column;
   }
-  
+
   .gestor-panel {
     width: 100%;
     max-height: 50vh;
