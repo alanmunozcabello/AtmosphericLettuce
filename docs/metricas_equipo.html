@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Métricas de Rendimiento - Equipo Lechuga</title>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4ade80;
+            /* Green similar to project theme */
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-light: #f8fafc;
+            --text-gray: #94a3b8;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background: linear-gradient(180deg, rgba(30, 41, 59, 0) 0%, rgba(74, 222, 128, 0.1) 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            background: -webkit-linear-gradient(45deg, #4ade80, #22d3ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .meta-info {
+            color: var(--text-gray);
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        /* Summary Cards */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-title {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .card-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-light);
+        }
+
+        /* Charts Section */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Chart visual refinements */
+        .chart-container {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            height: 500px;
+            /* Increased height by 100px to allow legend internal padding */
+        }
+
+        .chart-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        /* Table */
+        .table-container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 40px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Team Individual Cards */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .member-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .member-header {
+            background-color: rgba(74, 222, 128, 0.1);
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .member-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .member-role {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+        }
+
+        .member-details {
+            padding: 20px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .impact-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: var(--text-gray);
+        }
+
+        .impact-list li {
+            margin-bottom: 5px;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .impact-list li::before {
+            content: "▹";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+        }
+
+        /* Conclusions */
+        .conclusions {
+            background-color: rgba(74, 222, 128, 0.05);
+            border-left: 4px solid var(--primary);
+            padding: 30px;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .conclusions h3 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>📊 Métricas del Equipo Lechuga</h1>
+            <div class="meta-info">
+                Fecha de Corte: 10/12/2025 • Fase Final
+            </div>
+        </header>
+
+        <!-- Resumen General -->
+        <div class="summary-grid">
+            <div class="card">
+                <div class="card-title">Total Commits</div>
+                <div class="card-value">355</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Pull Requests</div>
+                <div class="card-value">16</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Lead Time Promedio</div>
+                <div class="card-value">8.2 <span style="font-size: 1rem; color: var(--text-gray);">días</span></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Tareas Trello</div>
+                <div class="card-value">85</div>
+            </div>
+        </div>
+
+        <!-- Gráficos Principales -->
+        <div class="charts-grid">
+            <!-- Commits por Miembro -->
+            <div class="chart-container">
+                <div class="chart-title">Commits por Integrante</div>
+                <canvas id="commitsChart"></canvas>
+            </div>
+
+            <!-- Tareas Completadas -->
+            <div class="chart-container">
+                <div class="chart-title">Tareas Completadas</div>
+                <canvas id="tasksChart"></canvas>
+            </div>
+
+            <!-- Lead Time por Miembro -->
+            <div class="chart-container">
+                <div class="chart-title">Lead Time Promedio (Días)</div>
+                <canvas id="leadTimeChart"></canvas>
+            </div>
+
+            <!-- Estado PRs -->
+            <div class="chart-container">
+                <div class="chart-title">Estado de Pull Requests</div>
+                <canvas id="prChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Tabla Detallada -->
+        <div class="table-container">
+            <h3>📈 Historia de Lead Time</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tarea / Funcionalidad</th>
+                        <th>Asignado a</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Lead Time (Días)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Definir Funcionalidades y requisitos funcionales</td>
+                        <td>Todos</td>
+                        <td>15/08</td>
+                        <td>25/08</td>
+                        <td>10</td>
+                    </tr>
+                    <tr>
+                        <td>Definir arquitectura por capas y estructura de carpetas en el repositorio</td>
+                        <td>Todos</td>
+                        <td>20/08</td>
+                        <td>31/08</td>
+                        <td>11</td>
+                    </tr>
+                    <tr>
+                        <td>Implementar capa de persistencia inicial (lectura/escritura en archivos JSON/CSV)</td>
+                        <td>Alan Muñoz</td>
+                        <td>20/08</td>
+                        <td>31/08</td>
+                        <td>11</td>
+                    </tr>
+                    <tr>
+                        <td>Implementar capa de datos (lectura/escritura JSON/CSV) con datos de prueba reales.</td>
+                        <td>Alan Muñoz, Nicolas Urbina</td>
+                        <td>31/08</td>
+                        <td>08/09</td>
+                        <td>8</td>
+                    </tr>
+                    <tr>
+                        <td>Asegurar manejo básico de errores (archivo no encontrado, datos inválidos).</td>
+                        <td>Alan Muñoz, Nicolas Urbina</td>
+                        <td>31/08</td>
+                        <td>08/09</td>
+                        <td>8</td>
+                    </tr>
+                    <tr>
+                        <td>Implementar validaciones básicas en frontend (campos obligatorios, formatos).</td>
+                        <td>John Rojas</td>
+                        <td>31/08</td>
+                        <td>15/09</td>
+                        <td>15</td>
+                    </tr>
+                    <tr>
+                        <td>Crear interfaz navegable con HTML/CSS/JS (mínimo: home, listado, formulario).</td>
+                        <td>John Rojas</td>
+                        <td>31/08</td>
+                        <td>15/09</td>
+                        <td>15</td>
+                    </tr>
+                    <tr>
+                        <td>Implementación del chatbot funcional para soportar mensaje + imágenes + pdfs.</td>
+                        <td>Alan Muñoz, Nicolas Urbina</td>
+                        <td>16/09</td>
+                        <td>24/09</td>
+                        <td>8</td>
+                    </tr>
+                    <tr>
+                        <td>Implementar manejo de la ubicación del usuario con latitud y longitud</td>
+                        <td>Alan Muñoz, Nicolas Urbina</td>
+                        <td>23/09</td>
+                        <td>29/09</td>
+                        <td>6</td>
+                    </tr>
+                    <tr>
+                        <td>Implementación y persistencia del manejo de los cultivos del usuario.</td>
+                        <td>Alan Muñoz, Nicolas Urbina</td>
+                        <td>23/09</td>
+                        <td>30/09</td>
+                        <td>7</td>
+                    </tr>
+                    <tr>
+                        <td>Implementar validaciones básicas en frontend (campos obligatorios, formatos).</td>
+                        <td>John Rojas, Nicolas Urbina</td>
+                        <td>22/09</td>
+                        <td>29/09</td>
+                        <td>7</td>
+                    </tr>
+                    <tr>
+                        <td>Modificar métodos HTTP de las rutas (.post .get .delete .patch .put) a los correctos.</td>
+                        <td>Cristian Aliaga, Alan Muñoz, Nicolas Urbina</td>
+                        <td>23/09</td>
+                        <td>29/09</td>
+                        <td>6</td>
+                    </tr>
+                    <tr>
+                        <td>Integración entre el backend y el frontend</td>
+                        <td>John Rojas, Nicolas Urbina</td>
+                        <td>28/09</td>
+                        <td>30/09</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td>Implementación del sistema de seguridad con contraseñas hasheo y comparación entre
+                            contraseña y contraseña</td>
+                        <td>Cristian Aliaga, Alan Muñoz, Nicolas Urbina</td>
+                        <td>28/09</td>
+                        <td>30/09</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td>Implementación de cerrar sesión.</td>
+                        <td>John Rojas, Alan Muñoz</td>
+                        <td>30/09</td>
+                        <td>30/09</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>Implementación de borrar usuario</td>
+                        <td>Cristian Aliaga, Alan Muñoz</td>
+                        <td>30/09</td>
+                        <td>30/09</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>Migracion a SQL lite</td>
+                        <td>Criastian Aliaga</td>
+                        <td>08/10</td>
+                        <td>08/10</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>Lograr CRUD con la base de datos</td>
+                        <td>Criastian Aliaga</td>
+                        <td>09/10</td>
+                        <td>09/10</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>Implementacion de Deepseek</td>
+                        <td>Alan Muñoz</td>
+                        <td>18/10</td>
+                        <td>18/10</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>Creación de formularios emergentes para la informacion detallada de cada lugar con cultivos
+                        </td>
+                        <td>Alan Muñoz, Nicolas Urbina</td>
+                        <td>06/10</td>
+                        <td>19/10</td>
+                        <td>13</td>
+                    </tr>
+                    <tr>
+                        <td>Implementar persistencia en foto de perfil</td>
+                        <td>Criastian Aliaga</td>
+                        <td>13/10</td>
+                        <td>19/10</td>
+                        <td>6</td>
+                    </tr>
+                    <tr>
+                        <td>Creacion de HTML,CSS,JS para formulario cultivos</td>
+                        <td>Nicolas Urbina</td>
+                        <td>10/10</td>
+                        <td>26/10</td>
+                        <td>16</td>
+                    </tr>
+                    <tr>
+                        <td>Integracion de API externa</td>
+                        <td>Cristian Aliaga</td>
+                        <td>18/10</td>
+                        <td>01/11</td>
+                        <td>14</td>
+                    </tr>
+                    <tr>
+                        <td>Mostrar Datos reales de la API en la interfaz</td>
+                        <td>Alan Muñoz</td>
+                        <td>18/10</td>
+                        <td>01/11</td>
+                        <td>14</td>
+                    </tr>
+                    <tr>
+                        <td>Manejo de timeouts y errores con las API externa</td>
+                        <td>Cristian Aliaga</td>
+                        <td>18/10</td>
+                        <td>03/11</td>
+                        <td>16</td>
+                    </tr>
+                    <tr>
+                        <td>Creacion de tareas automaticas</td>
+                        <td>Nicolas Urbina</td>
+                        <td>01/11</td>
+                        <td>03/11</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td>Configurar y ejecutar linter en el proyecto</td>
+                        <td>Nicolas Urbina</td>
+                        <td>01/11</td>
+                        <td>10/11</td>
+                        <td>9</td>
+                    </tr>
+                    <tr>
+                        <td>Implementar 4 a 6 pruebas unitarias para las API</td>
+                        <td>Cristian Aliaga</td>
+                        <td>01/11</td>
+                        <td>10/11</td>
+                        <td>9</td>
+                    </tr>
+                    <tr>
+                        <td>Creación de la planilla HTML para el Sistema de notificaciones</td>
+                        <td>Nicolas Urbina</td>
+                        <td>23/10</td>
+                        <td>10/11</td>
+                        <td>18</td>
+                    </tr>
+                    <tr>
+                        <td>Autenticación y Seguridad</td>
+                        <td>Crisitan Aliaga, Nicolas Urbina</td>
+                        <td>20/11</td>
+                        <td>XX/12</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Implementación de Búsqueda y Paginación</td>
+                        <td>Cristian Aliaga, Nicolas Urbina</td>
+                        <td>27/11</td>
+                        <td>XX/12</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Separar validaciones de la lógica de negocio</td>
+                        <td>Nicolas Urbina</td>
+                        <td>27/11</td>
+                        <td>XX/12</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Optimización de Performance</td>
+                        <td>Cristian Aliaga, Nicolas Urbina</td>
+                        <td>27/11</td>
+                        <td>XX/12</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Cierre de Issues y Merge Final</td>
+                        <td>Todos</td>
+                        <td>XX/11</td>
+                        <td>XX/12</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td>Finalizar proyecto</td>
+                        <td>Todos</td>
+                        <td>XX/11</td>
+                        <td>XX/12</td>
+                        <td>-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Desglose Individual -->
+        <h2>👤 Desglose Individual</h2>
+        <div class="team-grid">
+            <!-- Alan -->
+            <div class="member-card">
+                <div class="member-header">
+                    <div class="member-name">Alan Muñoz</div>
+                    <div class="member-role">Backend / Frontend / QA</div>
+                </div>
+                <div class="member-details">
+                    <div class="stat-row"><span>Commits:</span> <strong>139</strong></div>
+                    <div class="stat-row"><span>Tareas:</span> <strong>47</strong></div>
+                    <div class="stat-row"><span>Lead Time:</span> <strong>7.1 días</strong></div>
+                    <ul class="impact-list">
+                        <li>Backend Core & Lógica de Negocio</li>
+                        <li>Integración IA (Deepseek) & Chatbot</li>
+                        <li>Manejo de Datos & APIs GIS</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Cristian -->
+            <div class="member-card">
+                <div class="member-header">
+                    <div class="member-name">Cristian Aliaga</div>
+                    <div class="member-role">Líder Técnico / Backend / Frontend</div>
+                </div>
+                <div class="member-details">
+                    <div class="stat-row"><span>Commits:</span> <strong>60</strong></div>
+                    <div class="stat-row"><span>Tareas:</span> <strong>29</strong></div>
+                    <div class="stat-row"><span>Lead Time:</span> <strong>7.0 días</strong></div>
+                    <ul class="impact-list">
+                        <li>Arquitectura & Migración SQLite</li>
+                        <li>Seguridad & Autenticación</li>
+                        <li>Integración APIs Externas Robustas</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- John -->
+            <div class="member-card">
+                <div class="member-header">
+                    <div class="member-name">John Rojas</div>
+                    <div class="member-role">Frontend / QA / Líder Técnico</div>
+                </div>
+                <div class="member-details">
+                    <div class="stat-row"><span>Commits:</span> <strong>47</strong></div>
+                    <div class="stat-row"><span>Tareas:</span> <strong>30</strong></div>
+                    <div class="stat-row"><span>Lead Time:</span> <strong>8.7 días</strong></div>
+                    <ul class="impact-list">
+                        <li>UI/UX & Diseño Frontend</li>
+                        <li>Validaciones de Cliente</li>
+                        <li>Integración Vistas-Backend</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Nicolas -->
+            <div class="member-card">
+                <div class="member-header">
+                    <div class="member-name">Nicolás Urbina</div>
+                    <div class="member-role">QA / Líder Técnico / Backend</div>
+                </div>
+                <div class="member-details">
+                    <div class="stat-row"><span>Commits:</span> <strong>109</strong></div>
+                    <div class="stat-row"><span>Tareas:</span> <strong>46</strong></div>
+                    <div class="stat-row"><span>Lead Time:</span> <strong>8.3 días</strong></div>
+                    <ul class="impact-list">
+                        <li>Puente Backend-Frontend</li>
+                        <li>Calidad (Linter) & Automatización</li>
+                        <li>Refactorización & Notificaciones</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conclusiones -->
+        <div class="conclusions">
+            <h3>📝 Conclusiones</h3>
+            <p>El equipo mantiene una velocidad constante con un Lead Time promedio de 8.2 días. Se observa una alta
+                correlación entre commits (355) y refinamiento de tareas, indicando un desarrollo iterativo saludable.
+            </p>
+            <p>Actualmente el proyecto está en etapa de ESTABILIZACIÓN, con foco en seguridad, testing y optimización
+                final.</p>
+        </div>
+
+    </div>
+
+    <script>
+        // Configuración común
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.font.family = 'Poppins';
+
+        // Add extra padding to default layout to prevent text clipping
+        // explicit padding defaults for all charts
+        Chart.defaults.layout.padding = {
+            top: 20,
+            right: 20,
+            bottom: 40,
+            left: 20
+        };
+
+        const members = ['Alan Muñoz', 'Cristian Aliaga', 'John Rojas', 'Nicolás Urbina'];
+        const colors = ['#4ade80', '#22d3ee', '#f472b6', '#fbbf24'];
+
+        // 1. Commits Chart
+        new Chart(document.getElementById('commitsChart'), {
+            type: 'doughnut',
+            data: {
+                labels: members,
+                datasets: [{
+                    data: [139, 60, 47, 109],
+                    backgroundColor: colors,
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 12,
+                            padding: 15,
+                            font: { size: 11 }
+                        }
+                    }
+                },
+                layout: {
+                    padding: { bottom: 20 }
+                }
+            }
+        });
+
+        // 2. Tasks Chart
+        new Chart(document.getElementById('tasksChart'), {
+            type: 'bar',
+            data: {
+                labels: members,
+                datasets: [{
+                    label: 'Tareas Completadas',
+                    data: [47, 29, 30, 46],
+                    backgroundColor: colors,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { grid: { color: 'rgba(255,255,255,0.1)' } },
+                    x: { grid: { display: false } }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // 3. Lead Time Chart
+        new Chart(document.getElementById('leadTimeChart'), {
+            type: 'line',
+            data: {
+                labels: members,
+                datasets: [{
+                    label: 'Promedio Días',
+                    data: [7.1, 7.0, 8.7, 8.3],
+                    borderColor: '#a78bfa',
+                    backgroundColor: 'rgba(167, 139, 250, 0.2)',
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 6,
+                    pointBackgroundColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    // Increased right padding to 80px to safely fit the last date/label
+                    padding: { right: 80, left: 20, bottom: 20, top: 20 }
+                },
+                scales: {
+                    y: { beginAtZero: false, min: 5, max: 10, grid: { color: 'rgba(255,255,255,0.1)' } },
+                    x: {
+                        ticks: { padding: 10 }
+                    }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // 4. PR Status Chart
+        new Chart(document.getElementById('prChart'), {
+            type: 'pie',
+            data: {
+                labels: ['Mergeados (Directo)', 'Con Cambios', 'Cancelados/Rechazados'],
+                datasets: [{
+                    data: [1, 7, 8],
+                    backgroundColor: ['#4ade80', '#facc15', '#ef4444'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 12,
+                            padding: 10,
+                            font: { size: 10 }
+                        }
+                    }
+                },
+                layout: {
+                    padding: { bottom: 20 }
+                }
+            }
+        });
+    </script>
+
+</body>
+
+</html>

@@ -5,14 +5,29 @@
 ### 🏠 Página Inicial
 - **URL**: `/`
 - **Método**: GET
-- **Descripción**: Retorna un mensaje de bienvenida a la API
-- **Respuesta**: `{"mensaje": "Bienvenido a la API"}`
+- **Descripción**: Landing page
 
 ### 🔄 Test de Conexión
 - **URL**: `/ping`
 - **Método**: GET
 - **Descripción**: Test simple de conectividad
 - **Respuesta**: `{"mensaje": "pong"}`
+
+## 🔐 Autenticación
+
+### 🔑 Validar Token
+- **URL**: `/api/validar-token`
+- **Método**: GET
+- **Descripción**: Valida si un token JWT es válido
+- **Headers**:
+  - `Authorization`: `Bearer <token>`
+- **Respuesta**:
+  ```json
+  {
+    "valido": true,
+    "correo": "usuario@ejemplo.com"
+  }
+  ```
 
 ## 👤 Gestión de Usuarios
 
@@ -28,13 +43,25 @@
 - **Parámetros**:
   - `correo`: Email del usuario
 
-### 🔐 Iniciar Sesión
+### 🔓 Iniciar Sesión (GET - Actualmente utilizado)
 - **URL**: `/usuarios/iniciar_sesion/{correo}/{contrasena}`
 - **Método**: GET
 - **Descripción**: Valida las credenciales de inicio de sesión
 - **Parámetros**:
   - `correo`: Email del usuario
   - `contrasena`: Contraseña del usuario
+
+### 🔐 Iniciar Sesión (POST - Recomendado)
+- **URL**: `/usuarios/login`
+- **Método**: POST
+- **Descripción**: Valida las credenciales de inicio de sesión de forma segura
+- **Body**:
+  ```json
+  {
+    "correo": "usuario@ejemplo.com",
+    "contrasena": "string"
+  }
+  ```
 
 ### 🧾 Registrar Usuario
 - **URL**: `/usuarios/registrar`
@@ -65,12 +92,58 @@
   }
   ```
 
+### 🔔 Modificar Preferencias de Notificaciones
+- **URL**: `/usuarios/{correo}/modificar_notificaciones/{notificaciones}`
+- **Método**: PATCH
+- **Descripción**: Activa o desactiva las notificaciones por correo
+- **Parámetros**:
+  - `correo`: Email del usuario
+  - `notificaciones`: Booleano (`true` o `false`)
+
 ### 🗑️ Eliminar Usuario
 - **URL**: `/usuarios/{correo}`
 - **Método**: DELETE
 - **Descripción**: Elimina un usuario
 - **Parámetros**:
   - `correo`: Email del usuario
+
+## 🔄 Recuperación de Contraseña
+
+### 📧 Solicitar Código
+- **URL**: `/api/recuperacion/solicitar`
+- **Método**: POST
+- **Descripción**: Envía un código de recuperación al correo del usuario
+- **Body**:
+  ```json
+  {
+    "correo": "usuario@ejemplo.com"
+  }
+  ```
+
+### ✅ Verificar Código
+- **URL**: `/api/recuperacion/verificar`
+- **Método**: POST
+- **Descripción**: Verifica si el código ingresado es válido
+- **Body**:
+  ```json
+  {
+    "correo": "usuario@ejemplo.com",
+    "codigo": "123456"
+  }
+  ```
+
+### 🔑 Cambiar Contraseña
+- **URL**: `/api/recuperacion/cambiar`
+- **Método**: POST
+- **Descripción**: Cambia la contraseña del usuario usando un código válido
+- **Body**:
+  ```json
+  {
+    "correo": "usuario@ejemplo.com",
+    "codigo": "123456",
+    "nueva_contrasena": "NuevaPassword123!"
+  }
+  ```
 
 ## 📍 Gestión de Ubicación
 
@@ -97,9 +170,29 @@
 ### 🌾 Obtener Cultivos del Usuario
 - **URL**: `/usuarios/{correo}/cultivos`
 - **Método**: GET
-- **Descripción**: Obtiene todos los cultivos de un usuario
+- **Descripción**: Obtiene los cultivos de un usuario con paginación
 - **Parámetros**:
   - `correo`: Email del usuario
+  - `pagina`: Número de página (Opcional, default: 1)
+  - `limite`: Cantidad por página (Opcional, default: 20)
+
+### 🔍 Filtrar Cultivos
+- **URL**: `/cultivos/filtrar`
+- **Método**: GET
+- **Descripción**: Busca y filtra cultivos con múltiples criterios
+- **Parámetros (Query Params)**:
+  - `correo`: Email del usuario (Opcional)
+  - `buscar`: Texto a buscar en nombre del cultivo (Opcional)
+  - `etapa_planta`: Etapa de crecimiento (Opcional)
+  - `fecha_siembra_desde`: Fecha inicio (YYYY-MM-DD)
+  - `fecha_siembra_hasta`: Fecha fin (YYYY-MM-DD)
+  - `estado_planta`: Estado de salud
+  - `tipo_riego`: Tipo de riego
+  - `tiene_area`: Booleano
+  - `ordenar_por`: Campo para ordenar (default: nombre_cultivo)
+  - `orden`: ASC o DESC
+  - `pagina`: Número de página
+  - `limite`: Resultados por página
 
 ### ➕ Agregar Cultivo
 - **URL**: `/usuarios/{correo}/agregar_cultivo`
@@ -235,6 +328,3 @@
 - **Descripción**: Envía un código de verificación por correo electrónico
 - **Parámetros**:
   - `correo`: Email del destinatario
-
-
-
