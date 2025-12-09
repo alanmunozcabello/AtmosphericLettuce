@@ -238,6 +238,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // ACTUALIZAR CACHÉ DEL USUARIO
+      // ✅ FIX: Invalidar cache local para forzar a obtenerUsuario a ir al backend
+      // De lo contrario, nos devuelve el usuario viejo almacenado en localStorage
+      if (typeof invalidarCache === 'function') {
+        invalidarCache()
+      } else {
+        localStorage.removeItem('usuario')
+        localStorage.removeItem('ultimaActualizacion')
+      }
+
       const usuarioActualizado = await obtenerUsuario(correo)
 
       if (usuarioActualizado) {

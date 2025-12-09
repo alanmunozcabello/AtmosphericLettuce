@@ -23,7 +23,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 # --- DATABASE HELPERS ---
 
-DB_PATH = os.path.join(env_path.parent, "data", "DataBase.db")
+DB_PATH = "data/DataBase.db"
 
 def get_db_connection():
     conn = sqlite3.connect(DB_PATH)
