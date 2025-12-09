@@ -1,0 +1,121 @@
+/* Estilos para el modal de notificaciones */
+.modal-notificaciones-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000; /* Alto z-index para estar sobre todo */
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal-notificaciones-overlay.activo {
+    visibility: visible;
+    opacity: 1;
+}
+
+.modal-notificaciones-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    position: relative;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.modal-notificaciones-content h2 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.modal-notificaciones-content p {
+    color: #555;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.estado-notificaciones {
+    font-weight: bold;
+    margin-bottom: 2rem;
+    display: block;
+    font-size: 1.1rem;
+}
+
+.estado-activo {
+    color: #27ae60;
+}
+
+.estado-inactivo {
+    color: #e74c3c;
+}
+
+.botones-notificaciones {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.btn-noti {
+    border: none;
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 1.5rem;
+    transition: transform 0.2s ease, background 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+}
+
+.btn-noti:hover {
+    transform: scale(1.1);
+}
+
+.btn-activar {
+    background-color: #ecfdf5;
+    border: 2px solid #27ae60;
+    color: #27ae60;
+}
+
+.btn-activar:hover {
+    background-color: #27ae60;
+    color: white;
+}
+
+.btn-desactivar {
+    background-color: #fef2f2;
+    border: 2px solid #e74c3c;
+    color: #e74c3c;
+}
+
+.btn-desactivar:hover {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.btn-cerrar-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #aaa;
+}
+
+.btn-cerrar-modal:hover {
+    color: #333;
+}

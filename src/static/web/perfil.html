@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="css/perfil_auth.css" />
   <link rel="stylesheet" href="css/perfil.css" />
   <link rel="stylesheet" href="css/loading.css">
+  <link rel="stylesheet" href="css/notificaciones.css">
 
   <script src="js/core/perfil_auth.js"></script>
 </head>
@@ -34,11 +35,11 @@
       </a>
     </div>
     <div class="buscador">
-      <input type="text" id="input-ubicacion" placeholder="Introducir ubicación">  
+      <input type="text" id="input-ubicacion" placeholder="Introducir ubicación">
     </div>
     <div class="acciones">
       <a href="gestor_cultivos.html" class="icono">🌾</a>
-      <div class="icono">🔔</div>
+      <div id="btn-notificaciones" class="icono" style="cursor: pointer;">🔔</div>
       <div class="icono">👤</div>
       <button id="btn-logout" class="btn-logout">Cerrar sesión</button>
     </div>
@@ -147,7 +148,7 @@
           <div class="valor" id="valor-region"></div>
         </div>
       </div>
-     
+
 
 
       <!--Formulario oculto de edición -->
@@ -182,21 +183,21 @@
   </div>
 
 
-   <div class="contenedor-delete">
-        <button id="btn-delete" class="btn-delete">Borrar cuenta</button>
-      </div>
+  <div class="contenedor-delete">
+    <button id="btn-delete" class="btn-delete">Borrar cuenta</button>
+  </div>
 
-      <!-- Alerta de confirmación -->
-      <div id="alerta-borrar" class="alerta-borrar">
-        <div class="alerta-contenido">
-          <h2>⚠️ ¿Estás seguro?</h2>
-          <p>Esta acción eliminará tu cuenta permanentemente.</p>
-          <div class="alerta-acciones">
-            <button id="btn-cancelar-borrar" class="btn-cancelar">Cancelar</button>
-            <button id="btn-confirmar-borrar" class="btn-confirmar">Sí, borrar</button>
-          </div>
-        </div>
+  <!-- Alerta de confirmación -->
+  <div id="alerta-borrar" class="alerta-borrar">
+    <div class="alerta-contenido">
+      <h2>⚠️ ¿Estás seguro?</h2>
+      <p>Esta acción eliminará tu cuenta permanentemente.</p>
+      <div class="alerta-acciones">
+        <button id="btn-cancelar-borrar" class="btn-cancelar">Cancelar</button>
+        <button id="btn-confirmar-borrar" class="btn-confirmar">Sí, borrar</button>
       </div>
+    </div>
+  </div>
 
   <!-- Conecta el JavaScript -->
   <script src="js/utilidades/autenticacion.js" defer></script>
@@ -209,6 +210,7 @@
   <script src="js/usuario/perfil.js" defer></script>
   <script src="js/usuario/borrar_cuenta.js" defer></script>
   <script src="js/core/loading.js"></script>
+  <script src="js/usuario/notificaciones.js" defer></script>
 
 
 </body>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,9 +8,9 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  
+
   <title>Gestor de Cultivos - Atmospheric Lettuce</title>
-  
+
   <!-- OpenLayers -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.5.2/ol.css">
 
@@ -18,9 +19,11 @@
   <link rel="stylesheet" href="css/homes.css">
   <link rel="stylesheet" href="css/gestor_cultivos.css">
   <link rel="stylesheet" href="css/loading.css">
-  
+  <link rel="stylesheet" href="css/notificaciones.css">
+
   <script src="js/core/gestor_auth.js"></script>
 </head>
+
 <body>
   <!-- ========== LOADING SCREEN ========== -->
   <div class="loading-screen" id="loadingScreen">
@@ -30,7 +33,7 @@
       <div class="spinner-leaf"></div>
     </div>
   </div>
-  
+
   <!-- Barra superior (igual que home) -->
   <div class="barra-superior">
     <div class="logo">
@@ -41,20 +44,20 @@
     </div>
     <div class="acciones">
       <a href="home.html" class="icono" title="Inicio">🏠</a>
-      <div class="icono">🔔</div>
+      <div id="btn-notificaciones" class="icono" style="cursor: pointer;">🔔</div>
       <a href="perfil.html" class="icono" title="Perfil">👤</a>
     </div>
   </div>
 
   <!-- Contenedor principal: Mapa + Panel -->
   <div id="gestor-container">
-    
+
     <!-- MAPA (ocupa la mayor parte) -->
     <div id="map-gestor" class="map-container"></div>
-    
+
     <!-- PANEL LATERAL DERECHO -->
     <div class="gestor-panel">
-      
+
       <!-- Header del panel -->
       <div class="panel-header">
         <h4>🌱 Mis Cultivos</h4>
@@ -74,12 +77,7 @@
 
       <!-- Barra de búsqueda -->
       <div class="panel-search">
-        <input 
-          type="text" 
-          id="input-buscar-cultivo" 
-          placeholder="Buscar cultivo..." 
-          autocomplete="off"
-        >
+        <input type="text" id="input-buscar-cultivo" placeholder="Buscar cultivo..." autocomplete="off">
         <button id="btn-limpiar-busqueda" class="btn-limpiar-busqueda" style="display: none;">✕</button>
       </div>
 
@@ -87,21 +85,9 @@
       <div class="panel-form">
         <h5>➕ Agregar/Modificar Cultivo</h5>
         <form id="form-cultivo" autocomplete="off">
-          <input 
-            id="input-cultivo" 
-            type="text" 
-            placeholder="Nombre del cultivo" 
-            required
-          >
-          <input 
-            id="input-hectareas" 
-            type="number" 
-            placeholder="Hectáreas" 
-            min="0.01" 
-            max="100000" 
-            step="0.01" 
-            required
-          >
+          <input id="input-cultivo" type="text" placeholder="Nombre del cultivo" required>
+          <input id="input-hectareas" type="number" placeholder="Hectáreas" min="0.01" max="100000" step="0.01"
+            required>
           <button type="submit" class="btn-primary">Guardar</button>
         </form>
       </div>
@@ -136,7 +122,7 @@
   <!-- ✅ OVERLAY PARA MARCAR ÁREA (reutilizamos estructura de area_cultivo.html) -->
   <div id="overlay-marcar-area" class="overlay-marcar" style="display: none;">
     <div class="overlay-content-marcar">
-      
+
       <!-- Header -->
       <div class="overlay-header-marcar">
         <h3>📐 Marcar Área del Cultivo</h3>
@@ -146,35 +132,35 @@
       <!-- Mapa para marcar -->
       <div id="mapa-superficie-container" style="width: 100%; height: calc(100% - 60px);">
         <div id="map-superficie" class="map-container"></div>
-        
+
         <div class="superficie-panel">
           <div class="panel-header">
             <h4>📐 Información del área</h4>
           </div>
-          
+
           <div class="panel-content">
             <div class="info-item">
               <span class="info-label">📍 Puntos marcados:</span>
               <span class="info-value" id="puntos-count">0 / 20</span>
             </div>
-            
+
             <div class="info-item">
               <span class="info-label">📏 Área aproximada:</span>
               <span class="info-value" id="area-superficie">0 m²</span>
             </div>
-            
+
             <div class="info-item">
               <span class="info-label">🌱 Cultivo:</span>
               <span class="info-value" id="cultivo-actual">-</span>
             </div>
           </div>
-          
+
           <div class="panel-actions">
             <button id="btn-deshacer" class="btn-secondary" disabled>↩️ Deshacer</button>
             <button id="btn-limpiar" class="btn-danger" disabled>🗑️ Limpiar todo</button>
             <button id="btn-completar" class="btn-primary" disabled>✅ Guardar área</button>
           </div>
-          
+
           <div class="panel-status" id="panel-status-marcar">
             👆 Haz clic en el mapa para marcar los límites
           </div>
@@ -196,6 +182,8 @@
   <script src="js/mapa/mapa_principal.js"></script>
   <script src="js/mapa/mapa_marcar_area.js"></script>
   <script src="js/core/loading.js"></script>
+  <script src="js/usuario/notificaciones.js" defer></script>
 
 </body>
+
 </html>
