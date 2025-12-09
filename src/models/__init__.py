@@ -8,7 +8,8 @@ from .usuario import (
     UsuarioModificado,
     UsuarioResponse,
     Coordenadas,
-    NotificacionesConfig
+    NotificacionesConfig,
+    UbicacionUsuario
 )
 
 from .cultivo import (

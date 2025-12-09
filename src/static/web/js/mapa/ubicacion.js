@@ -121,6 +121,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (panelRegion) panelRegion.textContent = 'Cargando...'
       if (panelPais) panelPais.textContent = 'Cargando...'
 
+      // Deshabilitar botón mientras carga
+      const originalText = btnConfirmar.textContent
+      btnConfirmar.disabled = true
+      btnConfirmar.textContent = 'Obteniendo dirección...'
+
       // ✅ MOSTRAR EN CONSOLA COMO ANTES
       console.log('📍 Latitud:', lat)
       console.log('📍 Longitud:', lon)
@@ -137,6 +142,10 @@ document.addEventListener('DOMContentLoaded', () => {
           ciudad = data.address.city || data.address.town || data.address.village || 'Desconocida'
           region = data.address.state || 'Desconocida'
           pais = data.address.country || 'Desconocido'
+        } else {
+          ciudad = 'Desconocida'
+          region = 'Desconocida'
+          pais = 'Desconocido'
         }
 
         // ✅ ACTUALIZAR PANEL CON LA INFORMACIÓN
@@ -155,6 +164,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (panelCiudad) panelCiudad.textContent = 'Error'
         if (panelRegion) panelRegion.textContent = 'Error'
         if (panelPais) panelPais.textContent = 'Error'
+
+        ciudad = 'Desconocida'
+        region = 'Desconocida'
+      } finally {
+        // Habilitar botón nuevamente
+        btnConfirmar.disabled = false
+        btnConfirmar.textContent = originalText || 'Confirmar Ubicación'
       }
     })
   })
@@ -201,11 +217,18 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       console.log('📤 Enviando ubicación al backend...')
 
-      // 1. Actualizar coordenadas
+      // 1. Actualizar coordenadas (lat/lon via Body con UbicacionUsuario)
       const respuesta1 = await fetchConToken(
-        `/usuarios/${encodeURIComponent(correo)}/ubicacion/${latMod}/${lonMod}/modificar`,
+        `/usuarios/${encodeURIComponent(correo)}/ubicacion/modificar`,
         {
-          method: 'PATCH'
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            latitud: latMod,
+            longitud: lonMod
+          })
         }
       )
 
@@ -282,11 +305,25 @@ document.addEventListener('DOMContentLoaded', () => {
       // detectar en que pagina se llamó
       const paginaActual = window.location.pathname
 
-      // si es desde el perfil se recarga la pestaña
+      // si es desde el perfil se actualiza la vista manualmente sin recargar
       if (paginaActual.includes('perfil.html')) {
-        console.log('🔄 Recargando perfil.html...')
+        console.log('🔄 Actualizando vista perfil.html...')
         alert('✅ Ubicación actualizada correctamente')
-        window.location.reload()
+
+        // Actualizar elementos del DOM en perfil.html
+        const valorCiudad = document.getElementById('valor-cuidad') // Nota: el ID en HTML es 'valor-cuidad' (sic)
+        const valorRegion = document.getElementById('valor-region')
+        const inpUbicacion = document.getElementById('inp-ubicacion') // Input del form
+        const inpRegion = document.getElementById('inp-region') // Input del form
+
+        if (valorCiudad) valorCiudad.textContent = ciudad
+        if (valorRegion) valorRegion.textContent = region
+
+        // También actualizar los inputs del formulario si existen
+        if (inpUbicacion) inpUbicacion.value = ciudad
+        if (inpRegion) inpRegion.value = region
+
+        return
       }
 
       // si es desde el home se recargan los cultivos
@@ -317,10 +354,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeof cargarClimaHome === 'function') {
           await cargarClimaHome(true)  // true = forzar datos frescos
           console.log('✅ Clima reacargado sin recarga de página')
-          
+
           // Pequeño delay para asegurar que los datos estén frescos
           await new Promise(resolve => setTimeout(resolve, 500))
-          
+
           // Explícitamente recargar consejos CON los nuevos datos
           if (typeof cargarConsejosClima === 'function') {
             await cargarConsejosClima()

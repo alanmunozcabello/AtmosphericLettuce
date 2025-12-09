@@ -29,6 +29,7 @@ from models import (
     CultivoCreate,
     CultivoDatos,
     AreaCultivoDatos,
+    UbicacionUsuario,
 )
 
 
@@ -219,17 +220,16 @@ def ruta_modificar_usuario(
     return modificar_usuario(correo, usuarioMOD)
 
 
-@router.patch("/usuarios/{correo}/ubicacion/{lat}/{lon}/modificar")
+@router.patch("/usuarios/{correo}/ubicacion/modificar")
 def ruta_modificar_ubicacion_usuario(
     correo: str,
-    lat: float = Path(..., ge=-90, le=90, description="Latitud"),
-    lon: float = Path(..., ge=-180, le=180, description="Longitud"),
+    ubicacion: UbicacionUsuario,
     correo_token: str = Depends(verificar_autenticacion)
 ):
     verificar_propietario(correo, correo_token)
-    return modificar_usuario(correo, UsuarioModificado(
-        ubicacion={"latitud": lat, "longitud": lon}
-    ))
+    # Pasar el objeto UbicacionUsuario (que tiene latitud/longitud) directamente
+    # ya que modificar_usuario ahora acepta Union[UsuarioModificado, UbicacionUsuario]
+    return modificar_usuario(correo, ubicacion)
 
 
 @router.patch(
@@ -242,8 +242,10 @@ def ruta_modificar_region_ciudad_usuario(
     correo_token: str = Depends(verificar_autenticacion)
 ):
     verificar_propietario(correo, correo_token)
+    # corregido: pasar los argumentos directamente, no en un dict anidado 'ubicacion'
     return modificar_usuario(correo, UsuarioModificado(
-        ubicacion={"region": region, "ciudad": ciudad}
+        region=region,
+        ciudad=ciudad
     ))
 
 

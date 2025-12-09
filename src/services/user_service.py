@@ -1,9 +1,9 @@
 import sqlite3
 from datetime import datetime
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Union
 
 from services.auth_service import hash_password_simple, verify_password
-from models.usuario import UsuarioRegistro, UsuarioModificado, UsuarioResponse
+from models.usuario import UsuarioRegistro, UsuarioModificado, UsuarioResponse, UbicacionUsuario
 
 import os
 
@@ -108,7 +108,7 @@ def obtener_perfil_usuario(correo: str) -> Dict[str, Any]:
     except Exception as e:
         return {"error": str(e)}
 
-def modificar_usuario(correo: str, datos: UsuarioModificado) -> Dict[str, Any]:
+def modificar_usuario(correo: str, datos: Union[UsuarioModificado, UbicacionUsuario]) -> Dict[str, Any]:
     try:
         if not usuario_existe(correo):
             return {"error": "Usuario no existe"}
