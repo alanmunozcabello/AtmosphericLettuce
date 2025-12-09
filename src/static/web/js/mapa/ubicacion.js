@@ -378,6 +378,44 @@ document.addEventListener('DOMContentLoaded', () => {
         return
       }
 
+      // si es desde dias.html se recarga el clima semanal
+      if (paginaActual.includes('dias.html')) {
+        alert('✅ Ubicación actualizada correctamente')
+        console.log('🔄 Recargando clima en dias.html...')
+
+        // Mostrar pantalla de carga
+        const loadingScreen = document.getElementById('loadingScreen')
+        if (loadingScreen) {
+          loadingScreen.classList.remove('hide')
+          loadingScreen.style.display = 'flex'
+        }
+
+        // Invalidar cache del clima para forzar nuevos datos
+        if (typeof invalidarCacheClima === 'function') {
+          invalidarCacheClima()
+        }
+
+        // Actualizar las variables de estado de clima con nuevas coordenadas
+        if (typeof actualizarCoordsClima === 'function') {
+          actualizarCoordsClima(latMod, lonMod)
+        }
+
+        // Recargar clima semanal
+        if (typeof cargarClimaSemana === 'function') {
+          await cargarClimaSemana()
+          console.log('✅ Clima semanal recargado')
+        }
+
+        // Ocultar pantalla de carga después de cargar
+        if (loadingScreen) {
+          loadingScreen.classList.add('hide')
+          setTimeout(() => {
+            loadingScreen.style.display = 'none'
+          }, 300)
+        }
+        return
+      }
+
       alert('✅ Ubicación actualizada correctamente')
       console.log('✅ Ubicación confirmada y guardada')
     } catch (error) {
