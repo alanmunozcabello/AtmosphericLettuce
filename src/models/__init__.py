@@ -34,22 +34,22 @@ __all__ = [
     "UsuarioResponse",
     "Coordenadas",
     "NotificacionesConfig",
-    
+
     # Cultivo models
     "CultivoCreate",
     "CultivoDatos",
     "AreaCultivoDatos",
     "PuntoCoordenada",
-    
+
     # Enums
     "EtapaPlanta",
     "TipoRiego",
     "TexturaSuelo",
     "TipoSensor",
-    
+
     # Chat models
     "ChatConsulta",
-    
+
     # Clima models
     "ClimaRequest",
 ]
