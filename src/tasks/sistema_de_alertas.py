@@ -1,7 +1,5 @@
-from services.usuarios_service import (
-    service_obtener_usuario_para_frontend,
-    obtener_clima_guardado
-)
+from services.user_service import obtener_perfil_usuario as service_obtener_usuario_para_frontend
+from services.clima_service import obtener_clima_guardado
 from services.clima_service import clima_hoy_service
 
 

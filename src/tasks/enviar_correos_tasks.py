@@ -1,8 +1,6 @@
-from services.usuarios_service import (
-    service_leer_usuarios,
-    service_obtener_info_cultivo,
-    guardar_clima_semanal
-)
+from services.user_service import obtener_todos_usuarios as service_leer_usuarios
+from services.cultivo_service import obtener_detalle_cultivo as service_obtener_info_cultivo
+from services.clima_service import guardar_clima_semanal
 from services.notification_service import (
     enviar_archivo,
     generar_dashboard_completo,

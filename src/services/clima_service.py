@@ -1,8 +1,17 @@
 import json
 import requests
 import os
+import sqlite3
 import datetime
 from dotenv import load_dotenv
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DB_PATH = os.path.join(BASE_DIR, "data", "DataBase.db")
+
+def get_db_connection():
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute("PRAGMA foreign_keys = ON")
+    return conn
 
 # Prueba de respuesta de la API
 # OBS: funciona bien, dependiendo de la cantidad de información se demora
@@ -533,3 +542,61 @@ def clima_semana_service(lat, lon):
             "error_message": f"Error inesperado: {str(e)}",
             "status_code": 500
         }
+
+
+def guardar_clima_semanal(
+        correo, cultivo_nombre, latitud, longitud, clima_dict):
+    """
+    Guarda o actualiza el clima semanal de un cultivo en la base de datos
+    """
+    try:
+        conexion = get_db_connection()
+        cursor = conexion.cursor()
+
+        clima_json = json.dumps(clima_dict)
+
+        cursor.execute("""
+            INSERT OR REPLACE INTO clima_guardado
+            (correo, cultivo_nombre, latitud, longitud,
+             clima_json, fecha_guardado)
+            VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+        """, (correo, cultivo_nombre, latitud, longitud, clima_json))
+
+        conexion.commit()
+        conexion.close()
+
+        return {"mensaje": f"Clima guardado para {cultivo_nombre}"}
+
+    except Exception as e:
+        return {"error": str(e)}
+
+
+def obtener_clima_guardado(correo, cultivo_nombre):
+    """Obtiene el clima guardado de un cultivo específico"""
+    try:
+        conexion = get_db_connection()
+        cursor = conexion.cursor()
+
+        cursor.execute("""
+            SELECT clima_json, fecha_guardado, latitud, longitud
+            FROM clima_guardado
+            WHERE correo = ? AND cultivo_nombre = ?
+        """, (correo, cultivo_nombre))
+
+        resultado = cursor.fetchone()
+        conexion.close()
+
+        if not resultado:
+            return {"error": "No hay clima guardado para este cultivo"}
+
+        clima_dict = json.loads(resultado[0])
+
+        return {
+            "clima": clima_dict,
+            "fecha_guardado": resultado[1],
+            "latitud": resultado[2],
+            "longitud": resultado[3]
+        }
+
+    except Exception as e:
+        return {"error": str(e)}

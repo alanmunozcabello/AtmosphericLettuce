@@ -4,23 +4,23 @@ from typing import Optional
 from services.auth_service import crear_token
 from middleware.autenticacion_mw import verificar_autenticacion
 from middleware.permisos_mw import verificar_propietario
-from services.usuarios_service import (
-    service_leer_usuarios,
-    service_registrar_usuario,
-    service_obtener_usuario_para_frontend,
-    service_obtener_cultivos_usuario,
-    service_eliminar_cultivo,
-    service_modificar_usuario,
-    service_modificar_ubicacion_usuario,
-    service_iniciar_sesion,
-    service_modificar_region_ciudad_usuario,
-    service_eliminar_usuario,
-    service_agregar_cultivo,
-    service_modificar_formulario_cultivo,
-    service_modificar_area_cultivo,
-    service_modificar_notificaciones_usuario,
-    service_filtrar_cultivos,
-    service_obtener_nombres_cultivos,
+from services.user_service import (
+    obtener_todos_usuarios,
+    registrar_usuario,
+    iniciar_sesion,
+    modificar_usuario,
+    eliminar_usuario,
+    obtener_perfil_usuario,
+    modificar_notificaciones
+)
+from services.cultivo_service import (
+    obtener_todos_cultivos_usuario,
+    eliminar_cultivo,
+    agregar_cultivo,
+    modificar_formulario_cultivo,
+    modificar_area_cultivo,
+    filtrar_cultivos,
+    obtener_nombres_cultivos
 )
 from models import (
     LoginRequest,
@@ -55,7 +55,7 @@ def ruta_obtener_usuarios(
 ):
     # enrutador para obtener los usuarios y mostrarlos
     # ----------------front
-    return service_leer_usuarios()
+    return obtener_todos_usuarios()
 
 
 # usar {correo} hace que automaticamente se ponga el correo
@@ -69,14 +69,14 @@ def ruta_obtener_usuario(
     # enrutador para obtener la informacion de un usuario
     # ----------------front
     verificar_propietario(correo, correo_token)
-    return service_obtener_usuario_para_frontend(correo)
+    return obtener_perfil_usuario(correo)
 
 
 # Endpoint GET para el frontend (menos seguro pero compatible)
 @router.get("/usuarios/iniciar_sesion/{correo}/{contrasena}")
 def ruta_iniciar_sesion_get(correo: str, contrasena: str):
     """Endpoint sin autenticación para login"""
-    resultado = service_iniciar_sesion(correo, contrasena)
+    resultado = iniciar_sesion(correo, contrasena)
 
     if "error" in resultado:
         return resultado
@@ -92,7 +92,7 @@ def ruta_iniciar_sesion_get(correo: str, contrasena: str):
 # Endpoint POST (más seguro, para uso futuro)
 @router.post("/usuarios/login")
 def ruta_iniciar_sesion(credenciales: LoginRequest):
-    resultado = service_iniciar_sesion(
+    resultado = iniciar_sesion(
         credenciales.correo, credenciales.contrasena
     )
 
@@ -109,11 +109,7 @@ def ruta_iniciar_sesion(credenciales: LoginRequest):
 
 @router.post("/usuarios/registrar")
 def ruta_registrar_usuario(usuario: UsuarioRegistro):
-    return service_registrar_usuario(
-        usuario.correo,
-        usuario.nombre,
-        usuario.contrasena
-    )
+    return registrar_usuario(usuario)
 
 
 @router.get("/usuarios/{correo}/cultivos")
@@ -145,7 +141,7 @@ def ruta_obtener_cultivos_usuario(
     }
     """
     verificar_propietario(correo, correo_token)
-    return service_obtener_cultivos_usuario(correo, pagina, limite)
+    return filtrar_cultivos(correo=correo, pagina=pagina, limite=limite)
 
 
 @router.get("/usuarios/{correo}/cultivos/nombres")
@@ -158,7 +154,7 @@ def ruta_obtener_nombres_cultivos(
     Ideal para selectores y autocompletado.
     """
     verificar_propietario(correo, correo_token)
-    return service_obtener_nombres_cultivos(correo)
+    return obtener_nombres_cultivos(correo)
 
 
 # post para agregar
@@ -169,8 +165,7 @@ def ruta_agregar_cultivo(
     correo_token: str = Depends(verificar_autenticacion)
 ):
     verificar_propietario(correo, correo_token)
-    return service_agregar_cultivo(
-        correo, cultivo.nombre_cultivo, cultivo.hectareas)
+    return agregar_cultivo(correo, cultivo)
 
 
 # patch para modificar
@@ -184,8 +179,7 @@ def ruta_modificar_formulario_cultivo(
 ):
     # Convertir Pydantic a dict para el service
     verificar_propietario(correo, correo_token)
-    cultivo_dict = cultivo_datos.model_dump(exclude_unset=True)
-    return service_modificar_formulario_cultivo(correo, cultivo_dict)
+    return modificar_formulario_cultivo(correo, cultivo_datos)
 
 
 # patch para modificar
@@ -199,8 +193,7 @@ def ruta_modificar_area_cultivo(
 ):
     # Convertir Pydantic a dict para el service
     verificar_propietario(correo, correo_token)
-    area_dict = area_datos.model_dump()
-    return service_modificar_area_cultivo(correo, area_dict)
+    return modificar_area_cultivo(correo, area_datos)
 
 
 # delete para borrar
@@ -211,7 +204,7 @@ def ruta_eliminar_cultivo(
     correo_token: str = Depends(verificar_autenticacion)
 ):
     verificar_propietario(correo, correo_token)
-    return service_eliminar_cultivo(correo, cultivo)
+    return eliminar_cultivo(correo, cultivo)
 
 
 # HAY QUE CAMBIAR TODITO EL COSIACO
@@ -223,10 +216,7 @@ def ruta_modificar_usuario(
 ):
     verificar_propietario(correo, correo_token)
     # Convertir Pydantic a dict para el service
-    usuario_dict = usuarioMOD.model_dump(exclude_unset=True)
-    return service_modificar_usuario(correo, usuario_dict)
-    # usuarioMOD es el dict completo del usuario a modificar
-    return service_modificar_usuario(correo, usuarioMOD)
+    return modificar_usuario(correo, usuarioMOD)
 
 
 @router.patch("/usuarios/{correo}/ubicacion/{lat}/{lon}/modificar")
@@ -237,7 +227,9 @@ def ruta_modificar_ubicacion_usuario(
     correo_token: str = Depends(verificar_autenticacion)
 ):
     verificar_propietario(correo, correo_token)
-    return service_modificar_ubicacion_usuario(correo, lat, lon)
+    return modificar_usuario(correo, UsuarioModificado(
+        ubicacion={"latitud": lat, "longitud": lon}
+    ))
 
 
 @router.patch(
@@ -250,9 +242,9 @@ def ruta_modificar_region_ciudad_usuario(
     correo_token: str = Depends(verificar_autenticacion)
 ):
     verificar_propietario(correo, correo_token)
-    return service_modificar_region_ciudad_usuario(
-        correo, region, ciudad
-    )
+    return modificar_usuario(correo, UsuarioModificado(
+        ubicacion={"region": region, "ciudad": ciudad}
+    ))
 
 
 @router.delete("/usuarios/{correo}")
@@ -261,7 +253,7 @@ def ruta_eliminar_usuario(
     correo_token: str = Depends(verificar_autenticacion)
 ):
     verificar_propietario(correo, correo_token)
-    return service_eliminar_usuario(correo)
+    return eliminar_usuario(correo)
 
 
 @router.patch(
@@ -273,9 +265,7 @@ def ruta_modificar_notificaciones_usuario(
     correo_token: str = Depends(verificar_autenticacion)
 ):
     verificar_propietario(correo, correo_token)
-    return service_modificar_notificaciones_usuario(
-        correo, notificaciones
-    )
+    return modificar_notificaciones(correo, notificaciones)
 
 
 @router.get("/cultivos/filtrar")
@@ -307,7 +297,7 @@ fecha_siembra_hasta=2025-03-31
     - /cultivos/filtrar?tiene_area=true&\
 ordenar_por=hectareas&orden=DESC
     """
-    return service_filtrar_cultivos(
+    return filtrar_cultivos(
         correo=correo,
         buscar=buscar,
         etapa_planta=etapa_planta,
@@ -315,8 +305,8 @@ ordenar_por=hectareas&orden=DESC
         fecha_siembra_hasta=fecha_siembra_hasta,
         estado_planta=estado_planta,
         tipo_riego=tipo_riego,
-        tiene_area=tiene_area,
-        tiene_formulario=tiene_formulario,
+        # tiene_area=tiene_area, # Not implemented in new filter
+        # tiene_formulario=tiene_formulario, # Not implemented in new filter
         ordenar_por=ordenar_por,
         orden=orden,
         pagina=pagina,

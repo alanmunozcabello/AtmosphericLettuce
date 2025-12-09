@@ -394,3 +394,31 @@ def filtrar_cultivos(
 
     except Exception as e:
         return {"error": str(e)}
+
+def obtener_nombres_cultivos(correo: str) -> List[str] | Dict[str, str]:
+    """
+    Obtiene solo los nombres de los cultivos para selectores ligeros.
+    Retorna lista simple de strings: ["Tomate", "Lechuga", ...]
+    """
+    try:
+        if not usuario_existe(correo):
+            return {"error": "Usuario no existe"}
+
+        conexion = get_db_connection()
+        cursor = conexion.cursor()
+
+        cursor.execute("""
+            SELECT nombre_cultivo
+            FROM cultivos
+            WHERE usuario_correo = ?
+            ORDER BY nombre_cultivo ASC
+        """, (correo,))
+
+        rows = cursor.fetchall()
+        conexion.close()
+
+        # Retornar lista plana
+        return [row[0] for row in rows]
+
+    except Exception as e:
+        return {"error": str(e)}
