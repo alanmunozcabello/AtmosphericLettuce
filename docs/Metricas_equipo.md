@@ -9,7 +9,7 @@
 
 | Métrica | Total Equipo | Promedio por Integrante |
 |:---|:---:|:---:|
-| **Total Commits** | 355 | 88.75 |
+| **Total Commits** | 359 | 89.75 |
 | **Total Pull Requests (PRs)** | 16 | 4 |
 | **Lead Time Promedio** | 8.2 días | - |
 | **Tareas Completadas (Trello)** | 74 + 11 | 21.25 |
@@ -24,7 +24,7 @@
 
 ### 1. Alan Muñoz
 * **Rol Principal:** Backend / Frontend / QA
-* **Commits:** 139
+* **Commits:** 141
 * **Pull Requests (PRs):** 4
 * **Tareas Completadas (Trello):** 40 + 7
 * **Lead Time Promedio:** 7.1 días
@@ -36,7 +36,7 @@
 
 ### 2. Cristian Aliaga
 * **Rol Principal:** Líder Técnico / Backend / Frontend
-* **Commits:** 60
+* **Commits:** 62
 * **Pull Requests (PRs):** 0
 * **Tareas Completadas (Trello):** 23 + 6
 * **Lead Time Promedio:** 7.0 días
@@ -47,7 +47,7 @@
 
 ### 3. John Rojas
 * **Rol Principal:** Frontend / QA / Líder Técnico
-* **Commits:** 47
+* **Commits:** 50
 * **Pull Requests (PRs):** 0
 * **Tareas Completadas (Trello):** 27 + 3
 * **Lead Time Promedio:** 8.7 días
@@ -58,7 +58,7 @@
 
 ### 4. Nicolás Urbina
 * **Rol Principal:** QA / Líder Técnico / Backend
-* **Commits:** 109
+* **Commits:** 106
 * **Pull Requests (PRs):** 12
 * **Tareas Completadas (Trello):** 39 + 7
 * **Lead Time Promedio:** 8.3 días
@@ -104,12 +104,13 @@
 | Configurar y ejecutar linter en el proyecto | Nicolas Urbina | 01/11 | 10/11 | 9 |
 | Implementar 4 a 6 pruebas unitarias para las API | Cristian Aliaga | 01/11 | 10/11 | 9 |
 | Creación de la planilla HTML para el Sistema de notificaciones | Nicolas Urbina | 23/10 | 10/11 | 18 |
-| Autenticación y Seguridad | Crisitan Aliaga, Nicolas Urbina | 20/11 | XX/12 | - |
-| Implementación de Búsqueda y Paginación | Cristian Aliaga, Nicolas Urbina | 27/11 | XX/12 | - |
-| Separar validaciones de la lógica de negocio | Nicolas Urbina | 27/11 | XX/12 | - |
-| Optimización de Performance | Cristian Aliaga, Nicolas Urbina | 27/11 | XX/12 | - |
-| Cierre de Issues y Merge Final | Todos | XX/11 | XX/12 | - |
-| Finalizar proyecto | Todos | XX/11 | XX/12 | - |
+| Implementar sistema de recuperación de cuentas. | Alan Muñoz | 05/12 | 08/12 | 3 |
+| Autenticación y Seguridad | Crisitan Aliaga, Nicolas Urbina | 20/11 | 09/12 | 19 |
+| Implementación de Búsqueda y Paginación | Cristian Aliaga, Nicolas Urbina | 27/11 | 09/12 | 12 |
+| Separar validaciones de la lógica de negocio | Nicolas Urbina | 27/11 | 09/12 | 12 |
+| Optimización de Performance | Cristian Aliaga, Nicolas Urbina | 27/11 | 09/12 | 12 |
+| Cierre de Issues y Merge Final | Todos | XX/12 | XX/12 | - |
+| Finalizar proyecto | Todos | XX/12 | XX/12 | - |
 
 
 ---
@@ -128,7 +129,7 @@
 ## 📝 Conclusiones del Análisis
 
 1. **Velocidad:** El equipo mantiene un Lead Time promedio de **8.2 días**, lo cual es consistente con la complejidad de las tareas abordadas.
-2. **Calidad:** Se observa un alto número de commits (355) en relación a los PRs (16), indicando un trabajo iterativo y de refinamiento constante.
+2. **Calidad:** Se observa un alto número de commits (359) en relación a los PRs (16), indicando un trabajo iterativo y de refinamiento constante.
 3. **Distribución:** La carga de trabajo está distribuida, con Alan y Nicolás liderando en cantidad de commits y tareas transversales, mientras que Cristian y John aportan en áreas críticas de arquitectura y frontend.
 4. **Evolución Tecnológica:** El proyecto muestra una clara maduración técnica, migrando de una persistencia básica en archivos JSON hacia una base de datos relacional (SQLite) y escalando hacia la integración de IA (Deepseek) y APIs externas.
 5. **Foco Actual:** El equipo se encuentra en una etapa de **estabilización y optimización**, priorizando actualmente la seguridad (autenticación), el rendimiento (paginación, timeouts) y la calidad del código (linter, pruebas unitarias) para el cierre del proyecto.

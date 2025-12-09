@@ -62,6 +62,15 @@
     "contrasena": "string"
   }
   ```
+- **Respuesta**:
+  ```json
+  {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5c...",
+    "id": "usuario@ejemplo.com",
+    "nombre": "Usuario",
+    "...": "..."
+  }
+  ```
 
 ### 🧾 Registrar Usuario
 - **URL**: `/usuarios/registrar`
@@ -176,6 +185,13 @@
   - `pagina`: Número de página (Opcional, default: 1)
   - `limite`: Cantidad por página (Opcional, default: 20)
 
+### 📋 Obtener Nombres de Cultivos (Lista Ligera)
+- **URL**: `/usuarios/{correo}/cultivos/nombres`
+- **Método**: GET
+- **Descripción**: Obtiene una lista simple solo con los nombres de los cultivos del usuario. Ideal para selectores.
+- **Parámetros**:
+  - `correo`: Email del usuario
+
 ### 🔍 Filtrar Cultivos
 - **URL**: `/cultivos/filtrar`
 - **Método**: GET
@@ -189,6 +205,7 @@
   - `estado_planta`: Estado de salud
   - `tipo_riego`: Tipo de riego
   - `tiene_area`: Booleano
+  - `tiene_formulario`: Booleano (Filtrar si el formulario está completo)
   - `ordenar_por`: Campo para ordenar (default: nombre_cultivo)
   - `orden`: ASC o DESC
   - `pagina`: Número de página
