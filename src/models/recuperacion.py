@@ -1,11 +1,14 @@
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
+
 class SolicitudRecuperacion(BaseModel):
     correo: EmailStr
+
 
 class VerificacionCodigo(BaseModel):
     correo: EmailStr
     codigo: str
+
 
 class CambioContrasena(BaseModel):
     correo: EmailStr

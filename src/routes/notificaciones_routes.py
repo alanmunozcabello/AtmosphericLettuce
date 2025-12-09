@@ -34,6 +34,7 @@ def ruta_enviar_codigo(
 ):
     return enviar_archivo(correo, None)
 
+
 @router.post("/notificaciones/verificar_estado_notificaciones")
 def ruta_verificar_estado_notificaciones(
     correo,

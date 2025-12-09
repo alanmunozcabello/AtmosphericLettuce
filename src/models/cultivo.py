@@ -111,7 +111,7 @@ class CultivoDatos(BaseModel):
     hectareas: Optional[float] = Field(None, description="Hectáreas (opcional para modificar formulario)")
     fecha_siembra: Optional[str] = Field(None, description="Fecha en formato ISO")
     notas: Optional[str] = Field(None, max_length=1000)
-    
+
     # Etapa y riego
     etapa_planta: Optional[EtapaPlanta] = Field(
         None,
@@ -123,21 +123,21 @@ class CultivoDatos(BaseModel):
     )
     ultimo_riego: Optional[str] = Field(None, description="Última vez que se regó (datetime)")
     frecuencia_riego: Optional[str] = Field(None, description="Frecuencia de riego en días")
-    
+
     # Suelo
     humedad_suelo: Optional[str] = Field(None, description="Porcentaje de humedad del suelo")
     textura_suelo: Optional[TexturaSuelo] = Field(
         None,
         description="Textura del suelo"
     )
-    
+
     # Planta
     variedad_planta: Optional[str] = Field(None, max_length=100)
     estado_planta: Optional[str] = Field(None, max_length=200, description="Observación visual")
     estres_hidrico: Optional[int] = Field(None, ge=0, le=1, description="0=No, 1=Sí")
     profundidad_radical: Optional[int] = Field(None, gt=0, description="Profundidad en cm")
     densidad_plantacion: Optional[int] = Field(None, gt=0, description="Plantas por hectárea")
-    
+
     # Sistema de riego
     tipo_sensor: Optional[TipoSensor] = Field(
         None,
