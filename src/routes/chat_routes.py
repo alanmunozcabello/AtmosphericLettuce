@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from middleware.autenticacion_mw import verificar_autenticacion
-from services.chat_service import procesar_consulta
+from services.ai_integration_service import procesar_consulta_chat
 from models import ChatConsulta
 
 router = APIRouter()
@@ -13,7 +13,7 @@ def hacer_consulta(
 ):
     # Convertir a dict para mantener compatibilidad con chat_service
     return {
-        "respuesta": procesar_consulta(
+        "respuesta": procesar_consulta_chat(
             payload.model_dump(exclude_none=True)
         )
     }

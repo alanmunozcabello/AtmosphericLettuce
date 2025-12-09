@@ -1,5 +1,5 @@
 from fastapi import Header, HTTPException
-from services.jwt_service import verificar_token
+from services.auth_service import verificar_token
 
 def verificar_autenticacion(authorization: str = Header(None)):
     """

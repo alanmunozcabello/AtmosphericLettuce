@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends
 from middleware.autenticacion_mw import verificar_autenticacion
-from services.notificaciones_service import (
+from services.notification_service import (
     enviar_archivo,
     verificar_conexion_gmail,
+    generar_dashboard_completo  
 )
-from services.modificadora_service import services_modificar_html
 
 router = APIRouter()
 
@@ -22,7 +22,7 @@ def ruta_enviar_html(
     correo,
     correo_token: str = Depends(verificar_autenticacion)
 ):
-    services_modificar_html(correo)
+    generar_dashboard_completo(correo)
     return enviar_archivo(correo, "services/Archivos_HTML/salida.html")
 
 

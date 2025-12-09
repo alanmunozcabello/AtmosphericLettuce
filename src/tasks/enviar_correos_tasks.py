@@ -3,13 +3,13 @@ from services.usuarios_service import (
     service_obtener_info_cultivo,
     guardar_clima_semanal
 )
-from services.notificaciones_service import enviar_archivo
-from services.modificadora_service import (
-    services_modificar_html,
-    modificar_warning_html
+from services.notification_service import (
+    enviar_archivo,
+    generar_dashboard_completo,
+    generar_html_warning
 )
 from services.clima_service import clima_semana_service
-from services.ai_services import deepseek_para_correos
+from services.ai_integration_service import deepseek_para_correos
 from tasks.sistema_de_alertas import analizar_condiciones_adversas
 import json
 
@@ -90,7 +90,7 @@ def enviar_correos_a_todos():
                         "consejo": consejo
                     })
 
-                    services_modificar_html(correo)
+                    generar_dashboard_completo(correo)
                     enviar_archivo(
                         correo, "services/Archivos_HTML/salida.html"
                     )
@@ -185,7 +185,7 @@ def enviar_correos_de_advertencia(correo, usuario, alertas, consejos):
             condiciones_actuales.append(alerta.get("clima_actual", {}))
 
         # Modificar HTML con las alertas
-        modificar_warning_html(
+        generar_html_warning(
             correo,
             usuario,
             cultivos_alertas,

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Header, HTTPException
-from services.jwt_service import verificar_token
+from services.auth_service import verificar_token
 from jose import JWTError
 
 router = APIRouter()

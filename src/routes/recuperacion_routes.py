@@ -1,7 +1,7 @@
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, EmailStr, Field
-from services.recuperacion_service import generar_codigo_recuperacion, verificar_codigo, cambiar_contrasena_recuperacion
+from services.auth_service import generar_codigo_recuperacion, verificar_codigo, cambiar_contrasena_recuperacion
 from models.recuperacion import SolicitudRecuperacion, VerificacionCodigo, CambioContrasena
 
 router = APIRouter(prefix="/api/recuperacion", tags=["Recuperación de Contraseña"])

@@ -2,7 +2,7 @@ import sqlite3
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 
-from services.security_service import hash_password_simple, verify_password
+from services.auth_service import hash_password_simple, verify_password
 from models.usuario import UsuarioRegistro, UsuarioModificado, UsuarioResponse
 
 import os
