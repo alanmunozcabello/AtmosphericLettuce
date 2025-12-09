@@ -41,6 +41,14 @@ source venv/bin/activate
 ```bash
 pip install -r src/requirements.txt
 ```
+**Configuración de PIP en el PATH**
+Si el comando `pip` no es reconocido directamente, puede deberse a que la carpeta `Scripts` de tu instalación de Python no está en las variables de entorno (PATH) del sistema.
+1. Localiza la carpeta donde se instaló Python (ej. `C:\Users\TuUsuario\AppData\Local\Programs\Python\Python314`).
+2. Busca la subcarpeta `Scripts` dentro de ella (ej. `...\Python314\Scripts`). Aquí es donde se encuentra el ejecutable `pip.exe`.
+3. Copia la ruta completa de esa carpeta `Scripts`.
+4. En Windows, busca "Editar las variables de entorno del sistema", ve a "Variables de entorno", busca la variable `Path` en "Variables de usuario" o "Variables del sistema", selecciona "Editar" y agrega una "Nueva" entrada pegando la ruta copiada.
+5. Reinicia tu terminal. Ahora podrás usar `pip install` directamente sin necesitar `python -m pip`.
+
 
 ### 4. Configurar Variables de Entorno
 
