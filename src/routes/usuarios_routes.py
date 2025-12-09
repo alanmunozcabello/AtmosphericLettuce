@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Path
+from fastapi import APIRouter, Depends
 from fastapi.responses import FileResponse
 from typing import Optional
 from services.auth_service import crear_token
@@ -14,7 +14,6 @@ from services.user_service import (
     modificar_notificaciones
 )
 from services.cultivo_service import (
-    obtener_todos_cultivos_usuario,
     eliminar_cultivo,
     agregar_cultivo,
     modificar_formulario_cultivo,
