@@ -1,31 +1,14 @@
 from services.user_service import obtener_perfil_usuario as service_obtener_usuario_para_frontend
 from services.clima_service import obtener_clima_guardado
 from services.clima_service import clima_hoy_service
+from services.cultivo_service import obtener_nombres_cultivos
 
 
 def analizar_condiciones_adversas(correo):
     """
     Analiza condiciones climáticas adversas comparando clima guardado
     vs actual.
-
-    Detecta 5 situaciones adversas:
-    1. Lluvia no pronosticada
-    2. Temperaturas máximas más altas de lo esperado (>10°C)
-    3. Temperaturas mínimas más bajas de lo esperado (>10°C)
-    4. Viento fuerte no pronosticado (>30 km/h)
-    5. Cambio drástico de estado climático (Soleado → Tormenta)
-
-    Returns:
-        dict: {
-            "alertas": [
-                {
-                    "cultivo": "nombre",
-                    "tipo_alerta": "descripción",
-                    "clima_inicial": {...},
-                    "clima_actual": {...}
-                }
-            ]
-        }
+    ...
     """
     usuario = service_obtener_usuario_para_frontend(correo)
 
@@ -39,6 +22,14 @@ def analizar_condiciones_adversas(correo):
             "error": "Usuario no tiene coordenadas configuradas",
             "alertas": []
         }
+    
+    # FIX: Inyectar cultivos ya que perfil no los trae
+    nombres_cultivos = obtener_nombres_cultivos(correo)
+    if isinstance(nombres_cultivos, list):
+        usuario["cultivos"] = [{"nombre": n} for n in nombres_cultivos]
+    else:
+        usuario["cultivos"] = []
+
     condiciones_actuales_response = clima_hoy_service(lat, lon)
     if not condiciones_actuales_response.get("success"):
         return {
@@ -49,8 +40,7 @@ def analizar_condiciones_adversas(correo):
     condiciones_actuales = condiciones_actuales_response.get("data", {})
     alertas = []
 
-    print(
-        f"📋 DEBUG - Usuario tiene {len(usuario.get('cultivos', []))} cultivos")
+    print(f"📋 DEBUG - Usuario tiene {len(usuario.get('cultivos', []))} cultivos")
 
     for cultivo in usuario.get("cultivos", []):
         # El cultivo puede tener "nombre" o "nombre_cultivo" dependiendo de la
