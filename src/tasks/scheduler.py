@@ -1,16 +1,24 @@
+import threading
+import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
 from tasks.enviar_correos_tasks import (
     enviar_correos_a_todos,
     verificar_y_enviar_alertas_diarias
 )
 
-scheduler = BackgroundScheduler()
+scheduler = BackgroundScheduler(daemon=True)
+scheduler_thread = None
 
 
 def start_scheduler():
-
+    """Inicia el scheduler en un thread separado del proceso principal"""
+    global scheduler_thread
+    
     if scheduler.running:
-        return
+        print("⚠️  Scheduler ya está corriendo")
+        return scheduler
+    
+    print("\n🚀 Iniciando scheduler en thread separado...")
 
     # ========== PRODUCCIÓN ==========
 
@@ -37,7 +45,39 @@ def start_scheduler():
        replace_existing=True
     )
     print("⚠️  Job de alertas: se ejecutará MAR-DOM a las 9:00 AM")
-    scheduler.start()
+    
+    # Iniciar scheduler en thread separado
+    def run_scheduler():
+        """Función que ejecuta el scheduler en el thread"""
+        try:
+            scheduler.start()
+            print("✅ Scheduler iniciado correctamente en thread separado")
+            print(f"🧵 Thread ID: {threading.current_thread().ident}")
+            print("📋 Jobs activos:", [job.id for job in scheduler.get_jobs()])
+        except Exception as e:
+            print(f"❌ Error al iniciar scheduler: {e}")
+    
+    # Crear y iniciar thread daemon (se cierra cuando el proceso principal termina)
+    scheduler_thread = threading.Thread(
+        target=run_scheduler,
+        name="SchedulerThread",
+        daemon=True  # Thread daemon se cierra automáticamente al cerrar la app
+    )
+    scheduler_thread.start()
+    
+    # Registrar función de limpieza al cerrar la aplicación
+    atexit.register(stop_scheduler)
+    
+    return scheduler
+
+
+def stop_scheduler():
+    """Detiene el scheduler de forma limpia"""
+    global scheduler
+    if scheduler and scheduler.running:
+        print("\n⏹️  Deteniendo scheduler...")
+        scheduler.shutdown(wait=False)
+        print("✅ Scheduler detenido correctamente")
 
     # ========== MODO DE PRUEBA ==========
 

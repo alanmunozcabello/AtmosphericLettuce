@@ -60,7 +60,7 @@ class UsuarioRegistro(BaseModel):
     )
     contrasena: str = Field(
         ...,
-        min_length=6,
+        min_length=8,
         max_length=25,
         description="Contraseña del usuario (6-25 caracteres)",
         example="MiContraseña123!"

@@ -50,10 +50,22 @@ app.include_router(recuperacion_routes.router)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
-# Iniciar scheduler de tareas
+# ========== LIFECYCLE DEL SCHEDULER ==========
 @app.on_event("startup")
 def startup_event():
+    """Iniciar scheduler en thread separado al arrancar el servidor"""
+    print("\n🌱 Iniciando servidor AtmosphericLettuce...")
     start_scheduler()
+    print("🟢 Servidor listo para recibir peticiones\n")
+
+
+@app.on_event("shutdown")
+def shutdown_event():
+    """Detener scheduler al cerrar el servidor"""
+    from tasks.scheduler import stop_scheduler
+    print("\n🔴 Cerrando servidor...")
+    stop_scheduler()
+    print("👋 Servidor cerrado correctamente\n")
 
 
 # Comandos útiles:
