@@ -342,15 +342,76 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   })
 
-  // Al seleccionar un archivo, lo lee como DataURL (base64) y lo muestra en <img>
-  inpAvatar?.addEventListener('change', () => {
-    const file = inpAvatar.files?.[0] // toma el primer archivo seleccionado
-    if (!file) return // si no hay archivo, no hace nada
-    const reader = new FileReader() // lector de archivos del navegador
-    reader.onload = () => { // cuando termina de leer
-      if (avatarV) avatarV.src = reader.result // coloca la imagen en el <img>
+  // Función helper para comprimir imágenes
+  const comprimirImagen = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = (event) => {
+        const img = new Image()
+        img.src = event.target.result
+        img.onload = () => {
+          const canvas = document.createElement('canvas')
+          const ctx = canvas.getContext('2d')
+
+          // Configuración de compresión
+          const MAX_WIDTH = 800
+          const MAX_HEIGHT = 800
+          let width = img.width
+          let height = img.height
+
+          // Redimensionar manteniendo aspecto
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width
+              width = MAX_WIDTH
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height
+              height = MAX_HEIGHT
+            }
+          }
+
+          canvas.width = width
+          canvas.height = height
+          ctx.drawImage(img, 0, 0, width, height)
+
+          // Comprimir a JPEG con calidad 0.7
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.7)
+          resolve(dataUrl)
+        }
+        img.onerror = (err) => reject(err)
+      }
+      reader.onerror = (err) => reject(err)
+    })
+  }
+
+  // Al seleccionar un archivo, lo comprime y muestra
+  inpAvatar?.addEventListener('change', async () => {
+    const file = inpAvatar.files?.[0]
+    if (!file) return
+
+    try {
+      console.log(`Tamaño original: ${(file.size / 1024).toFixed(2)} KB`)
+
+      // Comprobar si es imagen antes de comprimir
+      if (!file.type.startsWith('image/')) {
+        alert('Por favor selecciona un archivo de imagen válido')
+        return
+      }
+
+      const compressedDataUrl = await comprimirImagen(file)
+
+      // Calcular tamaño comprimido aproximado
+      const compressedSize = Math.round((compressedDataUrl.length * 3) / 4)
+      console.log(`Tamaño comprimido: ${(compressedSize / 1024).toFixed(2)} KB`)
+
+      if (avatarV) avatarV.src = compressedDataUrl
+    } catch (error) {
+      console.error('Error al comprimir imagen:', error)
+      alert('Hubo un error al procesar la imagen')
     }
-    reader.readAsDataURL(file) // lee el archivo como base64 (data URL)
   })
 
   // --- inicializacion al cargar pagina---

@@ -153,8 +153,8 @@ class UsuarioModificado(BaseModel):
             raise ValueError('La foto debe estar en formato Base64 (data:image/...)')
         
         # Validar tamaño
-        if len(v) > 500000:  # ~375KB en Base64
-            raise ValueError('La imagen es muy grande (máximo ~375KB)')
+        if len(v) > 10000000:  # ~7.5MB en Base64
+            raise ValueError('La imagen es muy grande (máximo ~7.5MB)')
         
         # Validar tipos MIME permitidos
         mime_pattern = r'^data:image/(jpeg|jpg|png|gif|webp);base64,'
