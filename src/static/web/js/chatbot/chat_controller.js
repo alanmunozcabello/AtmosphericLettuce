@@ -199,9 +199,8 @@ document.getElementById('enviarBtn').addEventListener('click', async () => {
 
   // Enviar al backend
   try {
-    const respuesta = await fetch('/chat/consulta', {
+    const respuesta = await fetchConToken('/chat/consulta', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     })
 

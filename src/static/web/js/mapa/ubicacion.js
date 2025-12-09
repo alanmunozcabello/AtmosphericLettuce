@@ -285,16 +285,46 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('✅ Ubicación actualizada correctamente')
         console.log('🔄 Recargando clima en home.html...')
 
+        // Mostrar pantalla de carga
+        const loadingScreen = document.getElementById('loadingScreen')
+        if (loadingScreen) {
+          loadingScreen.classList.remove('hide')
+          loadingScreen.style.display = 'flex'
+        }
+
+        // Invalidar cache del clima para forzar nuevos datos
+        if (typeof invalidarCacheClima === 'function') {
+          invalidarCacheClima()
+          console.log('✅ Cache de clima invalidado')
+        }
+
         // Actualizar las variables de estado de clima con nuevas coordenadas
         if (typeof actualizarCoordsClima === 'function') {
           actualizarCoordsClima(latMod, lonMod)
           console.log('✅ Coordenadas de clima actualizadas')
         }
 
-        // Recargar clima con nuevas coordenadas
+        // Recargar clima con nuevas coordenadas (ahora sin cache)
         if (typeof cargarClimaHome === 'function') {
-          await cargarClimaHome()
+          await cargarClimaHome(true)  // true = forzar datos frescos
           console.log('✅ Clima reacargado sin recarga de página')
+          
+          // Pequeño delay para asegurar que los datos estén frescos
+          await new Promise(resolve => setTimeout(resolve, 500))
+          
+          // Explícitamente recargar consejos CON los nuevos datos
+          if (typeof cargarConsejosClima === 'function') {
+            await cargarConsejosClima()
+            console.log('✅ Consejos regenerados con nuevos datos de clima')
+          }
+        }
+
+        // Ocultar pantalla de carga después de cargar
+        if (loadingScreen) {
+          loadingScreen.classList.add('hide')
+          setTimeout(() => {
+            loadingScreen.style.display = 'none'
+          }, 300)
         }
 
         // Recargar página para actualizar todo

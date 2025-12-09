@@ -1,4 +1,4 @@
-/* global localStorage, obtenerUsuario */
+/* global localStorage, obtenerUsuario, fetchConToken */
 // aquí gestionaré el clima en local storage
 // problematica -> para obtener la temp actual min y max de hoy necesito hacer la llamada a clima hoy y clima semana
 // solucion -> guardar en localstorage la informacion completa de el clima en el formato siguiente:
@@ -119,6 +119,59 @@ function actualizarCoordsClima (lat, lon) {
 }
 
 // ✅ FUNCIONES PRINCIPALES CON CACHE
+async function obtenerClimaDiaFresco () {
+  try {
+    // ✅ OBTENER DATOS FRESCOS SIN CACHE (para cuando cambia ubicación)
+    // 2. Obtener coordenadas del usuario
+    let lat = localStorage.getItem('climaLat')
+    let lon = localStorage.getItem('climaLon')
+
+    // Si no hay coords guardadas, obtener del usuario
+    if (!lat || !lon) {
+      const CORREO = localStorage.getItem('correoUsuario')
+      const usuario = await obtenerUsuario(CORREO)
+      if (!usuario) {
+        console.log('No se pudo obtener datos del usuario')
+        return null
+      }
+
+      lat = usuario.ubicacion?.latitud ?? usuario.ubicacion?.lat ?? -999
+      lon = usuario.ubicacion?.longitud ?? usuario.ubicacion?.lon ?? -999
+    }
+
+    if (lat === -999 && lon === -999) {
+      console.log('No se pudo obtener latitud y longitud')
+      return null
+    }
+
+    // 3. Hacer fetch al backend SIN CACHE
+    const url = `/clima/hoy/${lat}/${lon}`
+    console.log('🌐 ⚡ Obteniendo clima FRESCO del día desde backend (sin cache)')
+
+    const respuesta = await fetchConToken(url, { method: 'GET' })
+    if (!respuesta.ok) {
+      console.log(`Error ${respuesta.status}: ${respuesta.statusText}`)
+      return null
+    }
+
+    const resp = await respuesta.json()
+    if (!resp.success) {
+      return
+    }
+
+    const clima = resp.data
+    console.log('✅ Clima FRESCO del día obtenido:', clima)
+
+    // 4. Guardar en cache
+    guardarClimaCacheDia(clima)
+
+    return clima
+  } catch (error) {
+    console.log('Error obteniendo datos de clima día fresco:', error)
+    return null
+  }
+}
+
 async function obtenerClimaDia () {
   try {
     // 1. Intentar cache primero
@@ -153,7 +206,7 @@ async function obtenerClimaDia () {
     const url = `/clima/hoy/${lat}/${lon}`
     console.log('🌐 Obteniendo clima del día desde backend')
 
-    const respuesta = await fetch(url, { method: 'GET' })
+    const respuesta = await fetchConToken(url, { method: 'GET' })
     if (!respuesta.ok) {
       console.log(`Error ${respuesta.status}: ${respuesta.statusText}`)
       return null
@@ -211,7 +264,7 @@ async function obtenerClimaSemana () {
     const url = `/clima/semana/${lat}/${lon}`
     console.log('🌐 Obteniendo clima semanal desde backend')
 
-    const respuesta = await fetch(url, { method: 'GET' })
+    const respuesta = await fetchConToken(url, { method: 'GET' })
     if (!respuesta.ok) {
       console.log(`Error ${respuesta.status}: ${respuesta.statusText}`)
       return null
@@ -252,10 +305,11 @@ async function obtenerClimaHora () {
       return null
     }
 
+    const token = localStorage.getItem('token')
     const url = `/clima/hora/${lat}/${lon}`
     console.log('🌐 Obteniendo clima por horas desde backend')
 
-    const respuesta = await fetch(url, { method: 'GET' })
+    const respuesta = await fetchConToken(url, { method: 'GET' })
     if (!respuesta.ok) {
       console.log(`Error ${respuesta.status}: ${respuesta.statusText}`)
       return null

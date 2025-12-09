@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 })
 
-async function cargarClimaHome () {
-  console.log('🌤️ Iniciando carga de clima para home...')
+async function cargarClimaHome (forzarFresco = false) {
+  console.log('🌤️ Iniciando carga de clima para home...', forzarFresco ? '⚡ (datos frescos)' : '')
 
   // Verificar que la función existe
   if (typeof obtenerClimaDia !== 'function') {
@@ -32,8 +32,8 @@ async function cargarClimaHome () {
   if (descripcion) descripcion.textContent = 'Obteniendo clima...'
 
   try {
-    // Obtener datos del clima (con cache incluido)
-    const clima = await obtenerClimaDia()
+    // Obtener datos del clima (con cache incluido, o frescos si se pide)
+    const clima = forzarFresco ? await obtenerClimaDiaFresco() : await obtenerClimaDia()
     const climaSemana = await obtenerClimaSemana()
 
     // ✅ VALIDAR que climaSemana tiene datos antes de acceder
@@ -57,6 +57,11 @@ async function cargarClimaHome () {
     mostrarClimaFallback()
   } finally {
     window.climaCargado = true
+    
+    // ✅ Recargar consejos cuando se actualiza el clima
+    if (typeof cargarConsejosClima === 'function') {
+      await cargarConsejosClima()
+    }
   }
 }
 
@@ -149,7 +154,8 @@ async function cargarConsejosClima() {
   console.log('💡 Cargando consejos del clima...')
   
   try {
-    const datosClimaDia = await obtenerClimaDia()
+    // Obtener datos frescos del clima (sin usar cache si es posible)
+    let datosClimaDia = await obtenerClimaDiaFresco()
     
     if (!datosClimaDia) {
       console.warn('⚠️ No hay datos de clima para generar consejos')
@@ -157,7 +163,35 @@ async function cargarConsejosClima() {
       return
     }
 
+    console.log('🔍 Datos de clima para consejos:', datosClimaDia)
+
+    // ✅ Si no tenemos temperatura, intentar obtener del DOM
+    if (!datosClimaDia.temp) {
+      const tempElement = document.querySelector('.clima-card .temperatura')
+      if (tempElement) {
+        const tempText = tempElement.textContent.replace('°C', '').trim()
+        datosClimaDia.temp = parseFloat(tempText) || 0
+      }
+    }
+    
+    // ✅ Si no tenemos humedad/viento, intentar obtener del DOM
+    if (!datosClimaDia.humidity) {
+      const humElement = document.querySelector('.detalles .info-detalles .humedad')
+      if (humElement) {
+        datosClimaDia.humidity = parseFloat(humElement.textContent) || 0
+      }
+    }
+    
+    if (!datosClimaDia.wind_kmh) {
+      const vientoElement = document.querySelector('.detalles .info-detalles .viento')
+      if (vientoElement) {
+        datosClimaDia.wind_kmh = parseFloat(vientoElement.textContent) || 0
+      }
+    }
+
+    console.log('✅ Datos finales para generar consejos:', datosClimaDia)
     const consejos = generarConsejos(datosClimaDia)
+    console.log(`📝 Consejos generados (${consejos.length}):`, consejos)
     mostrarConsejos(consejos)
 
   } catch (error) {

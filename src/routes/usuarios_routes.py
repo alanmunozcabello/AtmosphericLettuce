@@ -49,7 +49,9 @@ def hacer_ping():
 
 # get es para dar información
 @router.get("/usuarios")
-def ruta_obtener_usuarios():
+def ruta_obtener_usuarios(
+    correo_token: str = Depends(verificar_autenticacion)
+):
     # enrutador para obtener los usuarios y mostrarlos
     # ----------------front
     return service_leer_usuarios()
@@ -72,6 +74,7 @@ def ruta_obtener_usuario(
 # Endpoint GET para el frontend (menos seguro pero compatible)
 @router.get("/usuarios/iniciar_sesion/{correo}/{contrasena}")
 def ruta_iniciar_sesion_get(correo: str, contrasena: str):
+    """Endpoint sin autenticación para login"""
     resultado = service_iniciar_sesion(correo, contrasena)
 
     if "error" in resultado:
@@ -115,6 +118,7 @@ def ruta_registrar_usuario(usuario: UsuarioRegistro):
 @router.get("/usuarios/{correo}/cultivos")
 def ruta_obtener_cultivos_usuario(
     correo: str,
+    correo_token: str = Depends(verificar_autenticacion),
     pagina: int = 1,
     limite: int = 20
 ):
@@ -139,12 +143,18 @@ def ruta_obtener_cultivos_usuario(
         }
     }
     """
+    verificar_propietario(correo, correo_token)
     return service_obtener_cultivos_usuario(correo, pagina, limite)
 
 
 # post para agregar
 @router.post("/usuarios/{correo}/agregar_cultivo")
-def ruta_agregar_cultivo(correo: str, cultivo: CultivoCreate):
+def ruta_agregar_cultivo(
+    correo: str,
+    cultivo: CultivoCreate,
+    correo_token: str = Depends(verificar_autenticacion)
+):
+    verificar_propietario(correo, correo_token)
     return service_agregar_cultivo(
         correo, cultivo.nombre_cultivo, cultivo.hectareas)
 
@@ -155,9 +165,11 @@ def ruta_agregar_cultivo(correo: str, cultivo: CultivoCreate):
 )
 def ruta_modificar_formulario_cultivo(
     correo: str,
-    cultivo_datos: CultivoDatos
+    cultivo_datos: CultivoDatos,
+    correo_token: str = Depends(verificar_autenticacion)
 ):
     # Convertir Pydantic a dict para el service
+    verificar_propietario(correo, correo_token)
     cultivo_dict = cultivo_datos.model_dump(exclude_unset=True)
     return service_modificar_formulario_cultivo(correo, cultivo_dict)
 
@@ -168,16 +180,23 @@ def ruta_modificar_formulario_cultivo(
 )
 def ruta_modificar_area_cultivo(
     correo: str,
-    area_datos: AreaCultivoDatos
+    area_datos: AreaCultivoDatos,
+    correo_token: str = Depends(verificar_autenticacion)
 ):
     # Convertir Pydantic a dict para el service
+    verificar_propietario(correo, correo_token)
     area_dict = area_datos.model_dump()
     return service_modificar_area_cultivo(correo, area_dict)
 
 
 # delete para borrar
 @router.delete("/usuarios/{correo}/{cultivo}/eliminar")
-def ruta_eliminar_cultivo(correo, cultivo):
+def ruta_eliminar_cultivo(
+    correo,
+    cultivo,
+    correo_token: str = Depends(verificar_autenticacion)
+):
+    verificar_propietario(correo, correo_token)
     return service_eliminar_cultivo(correo, cultivo)
 
 
@@ -200,22 +219,34 @@ def ruta_modificar_usuario(
 def ruta_modificar_ubicacion_usuario(
     correo: str,
     lat: float = Path(..., ge=-90, le=90, description="Latitud"),
-    lon: float = Path(..., ge=-180, le=180, description="Longitud")
+    lon: float = Path(..., ge=-180, le=180, description="Longitud"),
+    correo_token: str = Depends(verificar_autenticacion)
 ):
+    verificar_propietario(correo, correo_token)
     return service_modificar_ubicacion_usuario(correo, lat, lon)
 
 
 @router.patch(
     "/usuarios/{correo}/ubicacion/region/{region}/{ciudad}/modificar"
 )
-def ruta_modificar_region_ciudad_usuario(correo, region, ciudad):
+def ruta_modificar_region_ciudad_usuario(
+    correo,
+    region,
+    ciudad,
+    correo_token: str = Depends(verificar_autenticacion)
+):
+    verificar_propietario(correo, correo_token)
     return service_modificar_region_ciudad_usuario(
         correo, region, ciudad
     )
 
 
 @router.delete("/usuarios/{correo}")
-def ruta_eliminar_usuario(correo):
+def ruta_eliminar_usuario(
+    correo,
+    correo_token: str = Depends(verificar_autenticacion)
+):
+    verificar_propietario(correo, correo_token)
     return service_eliminar_usuario(correo)
 
 
@@ -224,8 +255,10 @@ def ruta_eliminar_usuario(correo):
 )
 def ruta_modificar_notificaciones_usuario(
     correo,
-    notificaciones: bool
+    notificaciones: bool,
+    correo_token: str = Depends(verificar_autenticacion)
 ):
+    verificar_propietario(correo, correo_token)
     return service_modificar_notificaciones_usuario(
         correo, notificaciones
     )
@@ -233,6 +266,7 @@ def ruta_modificar_notificaciones_usuario(
 
 @router.get("/cultivos/filtrar")
 def ruta_filtrar_cultivos(
+    correo_token: str = Depends(verificar_autenticacion),
     correo: Optional[str] = None,
     buscar: Optional[str] = None,
     etapa_planta: Optional[str] = None,
