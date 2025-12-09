@@ -257,3 +257,18 @@ def generar_dashboard_completo(correo):
     except Exception as e:
         print(f"Error orquestando dashboard: {e}")
         return None
+
+def verificar_estado_notificaciones(correo):
+    """Verifica el estado de las notificaciones del usuario."""
+    from services.user_service import obtener_perfil_usuario
+    try:
+        usuario = obtener_perfil_usuario(correo)
+        if "error" in usuario:
+            print(f"Error usuario: {usuario}")
+            return False
+        
+        # Ensure strict boolean return
+        return bool(usuario.get("notificaciones"))
+    except Exception as e:
+        print(f"Error verificando estado: {e}")
+        return False

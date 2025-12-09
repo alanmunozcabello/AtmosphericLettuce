@@ -3,7 +3,8 @@ from middleware.autenticacion_mw import verificar_autenticacion
 from services.notification_service import (
     enviar_archivo,
     verificar_conexion_gmail,
-    generar_dashboard_completo  
+    generar_dashboard_completo
+    verificar_estado_notificaciones  
 )
 
 router = APIRouter()
@@ -32,3 +33,10 @@ def ruta_enviar_codigo(
     correo_token: str = Depends(verificar_autenticacion)
 ):
     return enviar_archivo(correo, None)
+
+@router.post("/notificaciones/verificar_estado_notificaciones")
+def ruta_verificar_estado_notificaciones(
+    correo,
+    correo_token: str = Depends(verificar_autenticacion)
+):
+    return verificar_estado_notificaciones(correo)
