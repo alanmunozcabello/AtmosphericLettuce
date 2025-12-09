@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const vPass2 = pass2.value.trim()
 
     // Validación de nombre:
-    if (!vNombre || vNombre.length < 1 || vNombre.length > 60 || !/^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s]+$/.test(vNombre)) {
+    if (!vNombre || vNombre.length < 1 || vNombre.length > 60 || !/^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ'\s]+$/.test(vNombre)) {
       nombre.classList.add('invalid')
       ok = false
     }

@@ -246,9 +246,9 @@ document.addEventListener('DOMContentLoaded', () => {
       inpNombre.classList.add('invalid')
       alert('El nombre debe tener entre 1 y 60 caracteres')
       valido = false
-    } else if (!/^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s]+$/.test(nombreNuevo)) {
+    } else if (!/^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ'\s]+$/.test(nombreNuevo)) {
       inpNombre.classList.add('invalid')
-      alert('El nombre solo puede contener letras y espacios')
+      alert('El nombre solo puede contener letras (tildes permitidos), espacios y apóstrofes')
       valido = false
     }
 
@@ -261,16 +261,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Ciudad : solo letras y espacios
-    if (ciudadNueva && !/^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s]*$/.test(ciudadNueva)) {
+    if (ciudadNueva && !/^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ'\s]*$/.test(ciudadNueva)) {
       inpUbic.classList.add('invalid')
-      alert('La ciudad solo puede contener letras y espacios')
+      alert('La ciudad solo puede contener letras (tildes permitidos), espacios y apóstrofes')
       valido = false
     }
 
     // Región : solo letras y espacios
-    if (regionNueva && !/^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s]*$/.test(regionNueva)) {
+    if (regionNueva && !/^[a-záéíóúüñA-ZÁÉÍÓÚÜÑ'\s]*$/.test(regionNueva)) {
       inpRegion.classList.add('invalid')
-      alert('La región solo puede contener letras y espacios')
+      alert('La región solo puede contener letras (tildes permitidos), espacios y apóstrofes')
       valido = false
     }
 

@@ -58,6 +58,14 @@ class UsuarioRegistro(BaseModel):
         description="Nombre completo del usuario",
         example="Juan Pérez"
     )
+
+    @field_validator('nombre')
+    @classmethod
+    def validar_nombre(cls, v):
+        import re
+        if not re.match(r"^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ'\s]+$", v):
+            raise ValueError('El nombre contiene caracteres inválidos (permitidos: letras, tildes, espacios, \')')
+        return v
     contrasena: str = Field(
         ...,
         min_length=8,
@@ -115,6 +123,16 @@ class UsuarioModificado(BaseModel):
         max_length=100,
         description="Región/Estado del usuario"
     )
+
+    @field_validator('nombre', 'ciudad', 'region')
+    @classmethod
+    def validar_texto_generico(cls, v):
+        if v is None:
+            return v
+        import re
+        if not re.match(r"^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ'\s]*$", v):
+            raise ValueError('El campo contiene caracteres inválidos (permitidos: letras, tildes, espacios, \')')
+        return v
     foto_perfil: Optional[str] = Field(
         None,
         description="Foto de perfil en formato Base64"
