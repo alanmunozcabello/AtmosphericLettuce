@@ -3,8 +3,8 @@ from middleware.autenticacion_mw import verificar_autenticacion
 from services.notification_service import (
     enviar_archivo,
     verificar_conexion_gmail,
-    generar_dashboard_completo
-    verificar_estado_notificaciones  
+    generar_dashboard_completo,
+    verificar_estado_notificaciones
 )
 
 router = APIRouter()
