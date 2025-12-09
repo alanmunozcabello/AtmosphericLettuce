@@ -45,7 +45,7 @@ def registrar_usuario(usuario: UsuarioRegistro) -> Dict[str, Any]:
         """, (
             usuario.correo, usuario.nombre,
             contrasena_hash, None, None, None, None, None,
-            datetime.now().isoformat(), datetime.now().isoformat(), True
+            datetime.now().isoformat(), datetime.now().isoformat(), False
         ))
         conexion.commit()
         conexion.close()
