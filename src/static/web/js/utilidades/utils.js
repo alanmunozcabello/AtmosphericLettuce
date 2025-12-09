@@ -95,7 +95,26 @@ async function obtenerUsuario (correo) {
   }
 }
 
-function actualizarCacheUsuario (nuevosdatos) {
+async function obtenerNombresCultivos(correo) {
+  if (!verificarSesionActiva()) return []
+
+  try {
+    const res = await fetchConToken(`/usuarios/${encodeURIComponent(correo)}/cultivos/nombres`)
+
+    if (!res || !res.ok) {
+      throw new Error('Error al obtener nombres de cultivos')
+    }
+
+    const nombres = await res.json()
+    return Array.isArray(nombres) ? nombres : []
+
+  } catch (error) {
+    console.error('❌ Error obteniendo nombres de cultivos:', error)
+    return []
+  }
+}
+
+function actualizarCacheUsuario(nuevosdatos) {
   try {
     const usuarioActual = JSON.parse(localStorage.getItem('usuario') || '{}')
     const usuarioActualizado = { ...usuarioActual, ...nuevosdatos }

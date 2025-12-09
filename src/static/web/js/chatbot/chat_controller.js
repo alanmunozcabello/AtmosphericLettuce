@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   })
 
-// Auto-resize del textarea
+  // Auto-resize del textarea
   textoInput.addEventListener('input', function() {
     this.style.height = 'auto'
     this.style.height = Math.min(this.scrollHeight, 120) + 'px'
@@ -108,7 +108,7 @@ document.getElementById('enviarBtn').addEventListener('click', async () => {
   const textoInput = document.getElementById('textoInput')
   const texto = textoInput.value.trim()
   const cultivoSeleccionado = document.getElementById("cultivoSelect").value
-  
+
   const CORREO = obtenerCorreoDelToken()
   // const inputArchivos = document.getElementById('fileInput');
 
@@ -135,14 +135,14 @@ document.getElementById('enviarBtn').addEventListener('click', async () => {
 
   if (archivosSeleccionados.length > 0) {
     mensajeHTML += '<div class="archivo-previews">'
-    
+
     for (let archivo of archivosSeleccionados) {
       console.log(archivo.name, archivo.type)
       // Caso 2: hay archivo
       if (archivo.type === 'image/png' || archivo.type === 'image/jpeg') {
         const imagenBase64 = await leerArchivoBase64(archivo)
         payload.imagen.push(imagenBase64)
-        
+
         // Preview de imagen pequeña
         mensajeHTML += `
           <div class="file-preview image-preview">
@@ -151,11 +151,11 @@ document.getElementById('enviarBtn').addEventListener('click', async () => {
                  title="${archivo.name}">
           </div>
         `
-      } 
+      }
       else if (archivo.type === 'application/pdf') {
         const pdfBase64 = await leerArchivoBase64(archivo)
         payload.pdf.push(pdfBase64)
-        
+
         // Preview de PDF con ícono
         mensajeHTML += `
           <div class="file-preview pdf-preview">
@@ -181,9 +181,9 @@ document.getElementById('enviarBtn').addEventListener('click', async () => {
   document.getElementById('chatBox').innerHTML += mensajeHTML
 
   if(cultivoSeleccionado &&
-     cultivoSeleccionado !== '' &&
-     cultivoSeleccionado !== '(Sin cultivo)' &&
-     CORREO) {
+    cultivoSeleccionado !== '' &&
+    cultivoSeleccionado !== '(Sin cultivo)' &&
+    CORREO) {
     payload.cultivo = cultivoSeleccionado
     payload.correo = CORREO
   }
@@ -232,13 +232,13 @@ document.getElementById('enviarBtn').addEventListener('click', async () => {
   } catch (error) {
     console.error('❌ Error en chatbot:', error)
     hideLoader()
-    
+
     document.getElementById('chatBox').innerHTML += `
       <p><b>Lechuguin:</b> ❌ Error de conexión. Por favor, intenta nuevamente.</p>
     `
   } finally {
-  // Resetear altura del textarea siempre
-  textoInput.style.height = 'auto'
+    // Resetear altura del textarea siempre
+    textoInput.style.height = 'auto'
   }
 })
 
@@ -267,43 +267,34 @@ async function cargarCultivosEnSelector() {
   }
   // Obtener correo del usuario
   const CORREO = obtenerCorreoDelToken()
-  
+
   if (!CORREO) {
     console.warn('⚠️ No hay correo de usuario')
     return
   }
 
   try {
-    // Obtener datos del usuario desde el backend
-    const usuario = await obtenerUsuario(CORREO)
-    
-    if (!usuario) {
-      console.warn('⚠️ No se encontró usuario')
-      return
-    }
-
-    // Obtener array de cultivos
-    const cultivos = usuario.cultivos || []
+    // Obtener array de nombres de cultivos (Optimizado)
+    const nombresCultivos = await obtenerNombresCultivos(CORREO)
 
     // Limpiar selector (mantener solo "Sin cultivo")
     select.innerHTML = '<option value="">(Sin cultivo)</option>'
 
     // ✅ Validar si hay cultivos
-    if (!Array.isArray(cultivos) && cultivos.mensaje === 'Usuario no posee cultivos') {
+    if (!nombresCultivos || nombresCultivos.length === 0) {
       console.log('ℹ️ Usuario sin cultivos registrados')
       return
     }
 
     // Agregar cada cultivo al selector
-    cultivos.forEach(cultivo => {
+    nombresCultivos.forEach(nombre => {
       const option = document.createElement('option')
-      const nombreCultivo = cultivo.nombre_cultivo || cultivo.nombre
-      option.value = nombreCultivo
-      option.textContent = nombreCultivo
+      option.value = nombre
+      option.textContent = nombre
       select.appendChild(option)
     })
 
-    console.log(`✅ ${cultivos.length} cultivos cargados en el selector`)
+    console.log(`✅ ${nombresCultivos.length} cultivos cargados en el selector (Optimizado)`)
 
   } catch (error) {
     console.error('❌ Error cargando cultivos:', error)

@@ -20,6 +20,7 @@ from services.usuarios_service import (
     service_modificar_area_cultivo,
     service_modificar_notificaciones_usuario,
     service_filtrar_cultivos,
+    service_obtener_nombres_cultivos,
 )
 from models import (
     LoginRequest,
@@ -145,6 +146,19 @@ def ruta_obtener_cultivos_usuario(
     """
     verificar_propietario(correo, correo_token)
     return service_obtener_cultivos_usuario(correo, pagina, limite)
+
+
+@router.get("/usuarios/{correo}/cultivos/nombres")
+def ruta_obtener_nombres_cultivos(
+    correo: str,
+    correo_token: str = Depends(verificar_autenticacion)
+):
+    """
+    Endpoint ligero para obtener solo nombres de cultivos.
+    Ideal para selectores y autocompletado.
+    """
+    verificar_propietario(correo, correo_token)
+    return service_obtener_nombres_cultivos(correo)
 
 
 # post para agregar

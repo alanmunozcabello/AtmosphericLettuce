@@ -53,14 +53,21 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.disabled = true
 
     try {
-      // Codifica email y pass para usarlos en la URL
-      const emailEnc = encodeURIComponent(vEmail)
-      const passEnc = encodeURIComponent(vPass)
-      // Endpoint de login (método GET con credenciales en la ruta)
-      const LOGIN_URL = `/usuarios/iniciar_sesion/${emailEnc}/${passEnc}`
+      // Endpoint de login (método POST más seguro)
+      const LOGIN_URL = '/usuarios/login'
 
       // Realiza la petición al backend; pide JSON en la respuesta
-      const resp = await fetch(LOGIN_URL, { method: 'GET', headers: { Accept: 'application/json' } })
+      const resp = await fetch(LOGIN_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          correo: vEmail,
+          contrasena: vPass
+        })
+      })
 
       // Si la respuesta HTTP no es OK, maneja distintos códigos
       if (!resp.ok) {

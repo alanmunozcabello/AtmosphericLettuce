@@ -427,6 +427,35 @@ def service_obtener_todos_cultivos_usuario(correo):
         return {"error": str(e)}
 
 
+def service_obtener_nombres_cultivos(correo):
+    """
+    Obtiene solo los nombres de los cultivos para selectores ligeros.
+    Retorna lista simple de strings: ["Tomate", "Lechuga", ...]
+    """
+    try:
+        if not service_existe_usuario(correo):
+            return {"error": "Usuario no existe"}
+
+        conexion = get_db_connection()
+        cursor = conexion.cursor()
+
+        cursor.execute("""
+            SELECT nombre_cultivo
+            FROM cultivos
+            WHERE usuario_correo = ?
+            ORDER BY nombre_cultivo ASC
+        """, (correo,))
+
+        rows = cursor.fetchall()
+        conexion.close()
+
+        # Retornar lista plana
+        return [row[0] for row in rows]
+
+    except Exception as e:
+        return {"error": str(e)}
+
+
 def service_obtener_cultivos_usuario(correo, pagina=1, limite=20):
     try:
         if not service_existe_usuario(correo):
