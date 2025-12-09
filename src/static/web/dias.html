@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
-  
+
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -12,9 +13,11 @@
   <link rel="stylesheet" href="css/dias.css">
   <link rel="stylesheet" href="css/chat_bot.css">
   <link rel="stylesheet" href="css/loading.css">
+  <link rel="stylesheet" href="css/notificaciones.css">
 
   <script src="js/core/dias_auth.js"></script>
 </head>
+
 <body>
   <!-- ========== LOADING SCREEN ========== -->
   <div class="loading-screen" id="loadingScreen">
@@ -28,102 +31,102 @@
   <div class="barra-superior">
     <div class="logo">
       <a href="home.html">
-      <img src="img/logo.png" alt="Logo de la empresa">
+        <img src="img/logo.png" alt="Logo de la empresa">
       </a>
     </div>
     <div class="buscador">
-      <input type="text" placeholder="Introducir ubicación">  
+      <input type="text" placeholder="Introducir ubicación">
     </div>
     <div class="acciones">
-      <div class="icono">🔔</div>
+      <div id="btn-notificaciones" class="icono" style="cursor: pointer;">🔔</div>
       <a id="btn-usuario" class="icono" href="perfil.html" aria-label="Perfil">👤</a>
-      
+
     </div>
   </div>
 
-<div class="pronostico">
-  <div class="tarjeta clima-card">
-    <div class="dia">Lunes</div>
-    <div class="temperatura">--°C</div>
-    <div class="minmax">
-      <span class="max">Máx: --°C</span>
-      <span class="min">Mín: --°C</span>
-    </div>
-    <div class="descripcion">Cargando...</div>
-    <div class="icono-clima"></div>
-  </div>
-
-  <div class="tarjeta clima-card">
-    <div class="dia">Martes</div>
-    <div class="temperatura">--°C</div>
-    <div class="minmax">
-      <span class="max">Máx: --°C</span>
-      <span class="min">Mín: --°C</span>
-    </div>
-    <div class="descripcion">Cargando...</div>
-    <div class="icono-clima"></div>
-  </div>
-
-  <div class="tarjeta clima-card">
-    <div class="dia">Miércoles</div>
-    <div class="temperatura">--°C</div>
-    <div class="minmax">
-      <span class="max">Máx: --°C</span>
-      <span class="min">Mín: --°C</span>
-    </div>
-    <div class="descripcion">Cargando...</div>
-    <div class="icono-clima"></div>
-  </div>
-
-  <div class="tarjeta clima-card">
-    <div class="dia">Jueves</div>
-    <div class="temperatura">--°C</div>
-    <div class="minmax">
-      <span class="max">Máx: --°C</span>
-      <span class="min">Mín: --°C</span>
-    </div>
-    <div class="descripcion">Cargando...</div>
-    <div class="icono-clima"></div>
-  </div>
-
-  <div class="tarjeta clima-card">
-    <div class="dia">Viernes</div>
-    <div class="temperatura">--°C</div>
-    <div class="minmax">
-      <span class="max">Máx: --°C</span>
-      <span class="min">Mín: --°C</span>
-    </div>
-    <div class="descripcion">Cargando...</div>
-    <div class="icono-clima"></div>
-  </div>
-
-  <div class="tarjeta clima-card">
-    <div class="dia">Sabado</div>
-    <div class="temperatura">--°C</div>
-    <div class="minmax">
-      <span class="max">Máx: --°C</span>
-      <span class="min">Mín: --°C</span>
-    </div>
-    <div class="descripcion">Cargando...</div>
-    <div class="icono-clima"></div>
-  </div>
+  <div class="pronostico">
     <div class="tarjeta clima-card">
-        <div class="dia">Domingo</div>
-        <div class="temperatura">--°C</div>
-        <div class="minmax">
+      <div class="dia">Lunes</div>
+      <div class="temperatura">--°C</div>
+      <div class="minmax">
         <span class="max">Máx: --°C</span>
         <span class="min">Mín: --°C</span>
-        </div>
-        <div class="descripcion">Cargando...</div>
-        <div class="icono-clima"></div>
-</div>
-</div>
+      </div>
+      <div class="descripcion">Cargando...</div>
+      <div class="icono-clima"></div>
+    </div>
+
+    <div class="tarjeta clima-card">
+      <div class="dia">Martes</div>
+      <div class="temperatura">--°C</div>
+      <div class="minmax">
+        <span class="max">Máx: --°C</span>
+        <span class="min">Mín: --°C</span>
+      </div>
+      <div class="descripcion">Cargando...</div>
+      <div class="icono-clima"></div>
+    </div>
+
+    <div class="tarjeta clima-card">
+      <div class="dia">Miércoles</div>
+      <div class="temperatura">--°C</div>
+      <div class="minmax">
+        <span class="max">Máx: --°C</span>
+        <span class="min">Mín: --°C</span>
+      </div>
+      <div class="descripcion">Cargando...</div>
+      <div class="icono-clima"></div>
+    </div>
+
+    <div class="tarjeta clima-card">
+      <div class="dia">Jueves</div>
+      <div class="temperatura">--°C</div>
+      <div class="minmax">
+        <span class="max">Máx: --°C</span>
+        <span class="min">Mín: --°C</span>
+      </div>
+      <div class="descripcion">Cargando...</div>
+      <div class="icono-clima"></div>
+    </div>
+
+    <div class="tarjeta clima-card">
+      <div class="dia">Viernes</div>
+      <div class="temperatura">--°C</div>
+      <div class="minmax">
+        <span class="max">Máx: --°C</span>
+        <span class="min">Mín: --°C</span>
+      </div>
+      <div class="descripcion">Cargando...</div>
+      <div class="icono-clima"></div>
+    </div>
+
+    <div class="tarjeta clima-card">
+      <div class="dia">Sabado</div>
+      <div class="temperatura">--°C</div>
+      <div class="minmax">
+        <span class="max">Máx: --°C</span>
+        <span class="min">Mín: --°C</span>
+      </div>
+      <div class="descripcion">Cargando...</div>
+      <div class="icono-clima"></div>
+    </div>
+    <div class="tarjeta clima-card">
+      <div class="dia">Domingo</div>
+      <div class="temperatura">--°C</div>
+      <div class="minmax">
+        <span class="max">Máx: --°C</span>
+        <span class="min">Mín: --°C</span>
+      </div>
+      <div class="descripcion">Cargando...</div>
+      <div class="icono-clima"></div>
+    </div>
+  </div>
 
 
   <!-- Botón flotante -->
 
-    <div class="chatbot" id="chatToggle">🥬</div>
-  
+  <div class="chatbot" id="chatToggle">🥬</div>
+
   <!-- Ventana del chat flotante -->
   <div class="chat-window" id="chatWindow">
     <div class="chat-header">
@@ -132,15 +135,15 @@
     </div>
 
     <div class="chat-body" id="chatBox"></div>
-    
+
     <!-- Aqí se añaden los archivos seleccionados (feedback para el usuario) -->
     <div id="fileFeedback" style="display:flex; flex-wrap:wrap; gap:4px; padding:4px;"></div>
-    
+
     <!-- Aquí va el selector de cultivos -->
     <div id="chat-cultivo-selector" class="chat-cultivo-selector">
       <label for="cultivoSelect">Cultivo:</label>
       <select id="cultivoSelect">
-          <option value="">(Sin cultivo)</option>
+        <option value="">(Sin cultivo)</option>
       </select>
     </div>
 
@@ -152,7 +155,8 @@
       <button id="enviarBtn">Enviar</button>
 
       <!-- Inputs de archivo ocultos -->
-      <input type="file" id="fileInput" accept="image/*,application/pdf" multiple style="display:none"> <!--ahora se pueden subir multiples archivos con los formatos permitidos-->
+      <input type="file" id="fileInput" accept="image/*,application/pdf" multiple style="display:none">
+      <!--ahora se pueden subir multiples archivos con los formatos permitidos-->
     </div>
   </div>
   <script src="js/utilidades/autenticacion.js" defer></script>
@@ -164,6 +168,7 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="js/chatbot/chat_controller.js" defer></script>
   <script src="js/core/loading.js"></script>
+  <script src="js/usuario/notificaciones.js" defer></script>
 
   <!-- <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -177,4 +182,5 @@
   </script> -->
 
 </body>
+
 </html>
