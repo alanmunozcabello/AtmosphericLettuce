@@ -21,7 +21,30 @@
   <link rel="stylesheet" href="css/loading.css">
   <link rel="stylesheet" href="css/notificaciones.css">
 
-  <script src="js/core/gestor_auth.js"></script>
+  <script>
+    (function () {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        document.documentElement.style.display = 'none'
+        window.location.replace('login.html')
+        return
+      }
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]))
+        if (payload.exp < Math.floor(Date.now() / 1000)) {
+          localStorage.clear()
+          document.documentElement.style.display = 'none'
+          window.location.replace('login.html')
+        } else {
+          document.documentElement.style.display = 'block'
+        }
+      } catch (e) {
+        localStorage.clear()
+        document.documentElement.style.display = 'none'
+        window.location.replace('login.html')
+      }
+    })()
+  </script>
 </head>
 
 <body>
@@ -175,7 +198,7 @@
   <script src="js/utilidades/proteger_pagina.js" defer></script>
   <script src="js/utilidades/utils.js"></script>
   <script src="js/usuario/nav_correo.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/ol@v7.5.2/dist/ol.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ol@v7.5.2/dist/ol.js" defer></script>
   <script src="js/cultivos/cultivos.js"></script>
   <script src="js/cultivos/ui_cultivos.js"></script>
   <script src="js/cultivos/crud_cultivos.js"></script>
