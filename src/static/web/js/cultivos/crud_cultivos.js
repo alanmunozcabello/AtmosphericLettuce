@@ -1,7 +1,7 @@
 /* global fetchConToken, verificarSesionActiva, obtenerCorreoDelToken, cerrarSesion */
 
 // ========== INICIALIZAR EVENTOS CRUD ==========
-function inicializarEventosCRUD () {
+function inicializarEventosCRUD() {
   const form = document.getElementById('form-cultivo')
   const listaCultivos = document.getElementById('lista-cultivos')
 
@@ -15,11 +15,10 @@ function inicializarEventosCRUD () {
     listaCultivos.addEventListener('click', manejarClickLista)
   }
 
-  console.log('✅ Eventos CRUD inicializados')
 }
 
 // ========== AGREGAR CULTIVO ==========
-async function agregarCultivo (e) {
+async function agregarCultivo(e) {
   e.preventDefault()
 
   if (!verificarSesionActiva()) {
@@ -43,7 +42,6 @@ async function agregarCultivo (e) {
     const cultivoExiste = cultivosData.hasOwnProperty(nombre)
 
     const accionTexto = cultivoExiste ? 'Modificando' : 'Agregando'
-    console.log(`${accionTexto} cultivo:`, nombre)
 
     const response = await fetchConToken(
       `/usuarios/${encodeURIComponent(correo)}/agregar_cultivo`,
@@ -62,7 +60,6 @@ async function agregarCultivo (e) {
     }
 
     const data = await response.json()
-    console.log('✅', data.mensaje || 'Cultivo guardado')
 
     if (window.invalidarCache) {
       window.invalidarCache()
@@ -89,7 +86,7 @@ async function agregarCultivo (e) {
 }
 
 // ========== ELIMINAR CULTIVO ==========
-async function eliminarCultivo (e) {
+async function eliminarCultivo(e) {
   const btn = e.target.closest('.btn-eliminar')
   if (!btn) return
 
@@ -107,19 +104,17 @@ async function eliminarCultivo (e) {
       `/usuarios/${encodeURIComponent(correo)}/${encodeURIComponent(nombre)}/eliminar`,
       { method: 'DELETE' }
     )
-    
+
     if (!response || !response.ok) {
       const data = await response.json().catch(() => ({}))
       throw new Error(data.error || data.detail || 'Error en el servidor')
     }
 
     const data = await response.json()
-    console.log('✅', data.mensaje || 'Cultivo eliminado del servidor')
 
     // si estaba seleccionado se limpia al seleccion
     if (cultivoSeleccionado === nombre) {
       window.cultivosState.cultivoSeleccionado = null
-      console.log('🔄 Cultivo seleccionado limpiado')
 
       // limpiar seleccion de la lista
       document.querySelectorAll('.item-cultivo').forEach(item => {
@@ -136,9 +131,7 @@ async function eliminarCultivo (e) {
 
     // recargar cultivos
     if (window.recargarCultivos) {
-      console.log('🔄 Recargando datos...')
       await window.recargarCultivos()
-      console.log('🔍 Cultivos después:', Object.keys(window.cultivosState.cultivosData))
     }
 
     alert('✅ Cultivo eliminado correctamente')
@@ -149,7 +142,7 @@ async function eliminarCultivo (e) {
 }
 
 // funcion modular para manejar lso clicks de la lista
-function manejarClickLista (e) {
+function manejarClickLista(e) {
   // Eliminar
   if (e.target.classList.contains('btn-eliminar')) {
     eliminarCultivo(e)

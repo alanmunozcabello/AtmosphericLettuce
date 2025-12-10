@@ -1,7 +1,6 @@
 /* global verificarSesionActiva, obtenerCorreoDelToken, cerrarSesion, obtenerUsuario, location, localStorage */
 
 window.recargarCultivos = async function () {
-  console.log('⚠️ recargarCultivos llamado antes de inicializar')
   return Promise.resolve()
 }
 
@@ -48,8 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const { correo, scrollInfinito } = window.cultivosState
     const { limite } = scrollInfinito
 
-    console.log(`📡 Solicitando página ${pagina}...`)
-
     try {
       const response = await fetchConToken(
         `/usuarios/${encodeURIComponent(correo)}/cultivos?pagina=${pagina}&limite=${limite}`,
@@ -76,14 +73,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ========== INICIALIZACIÓN ==========
   async function inicializar() {
-    console.log('🌾 Inicializando gestor de cultivos (Server-Side JS)...')
-
     try {
       // 1. Obtener datos datos del usuario (Perfil)
       const usuario = await obtenerUsuario(CORREO)
 
       if (!usuario) {
-        console.warn('⚠️ No se pudo obtener datos del usuario')
         cerrarSesion()
         return
       }
@@ -192,8 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (typeof actualizarResumen === 'function') {
         actualizarResumen()
       }
-
-      console.log(`✅ Página 1 cargada: ${nuevosCultivos.length} cultivos`)
 
     } catch (error) {
       console.error('❌ Error en cargarCultivos:', error)

@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   })
 
   // Auto-resize del textarea
-  textoInput.addEventListener('input', function() {
+  textoInput.addEventListener('input', function () {
     this.style.height = 'auto'
     this.style.height = Math.min(this.scrollHeight, 120) + 'px'
   })
@@ -89,7 +89,7 @@ document.getElementById('fileFeedback').addEventListener('click', (e) => {
 const enviarBtn = document.getElementById('enviarBtn')
 
 // Funciones para mostrar/ocultar loader en el botón
-function showLoader () {
+function showLoader() {
   // HTML From Uiverse.io by Shoh2008 (ENCAPSULADO EN EL JS PARA TENERLO DENTRO DEL BOTON Y NO COMO DIV APARTE)
   enviarBtn.innerHTML = `
     <div class="lds-ellipsis">
@@ -99,7 +99,7 @@ function showLoader () {
   enviarBtn.disabled = true
 }
 
-function hideLoader () {
+function hideLoader() {
   enviarBtn.innerHTML = 'Enviar'
   enviarBtn.disabled = false
 }
@@ -128,7 +128,6 @@ document.getElementById('enviarBtn').addEventListener('click', async () => {
     payload.texto = texto
     mensajeHTML += texto
   }
-  // console.log(inputArchivos.files[0].name);
 
   textoInput.value = ''
   textoInput.style.height = 'auto'
@@ -137,7 +136,6 @@ document.getElementById('enviarBtn').addEventListener('click', async () => {
     mensajeHTML += '<div class="archivo-previews">'
 
     for (let archivo of archivosSeleccionados) {
-      console.log(archivo.name, archivo.type)
       // Caso 2: hay archivo
       if (archivo.type === 'image/png' || archivo.type === 'image/jpeg') {
         const imagenBase64 = await leerArchivoBase64(archivo)
@@ -180,7 +178,7 @@ document.getElementById('enviarBtn').addEventListener('click', async () => {
   // Mostrar mensaje con previews
   document.getElementById('chatBox').innerHTML += mensajeHTML
 
-  if(cultivoSeleccionado &&
+  if (cultivoSeleccionado &&
     cultivoSeleccionado !== '' &&
     cultivoSeleccionado !== '(Sin cultivo)' &&
     CORREO) {
@@ -194,8 +192,6 @@ document.getElementById('enviarBtn').addEventListener('click', async () => {
     hideLoader() // terminar animacion de carga
     return
   }
-
-  // console.log(payload);
 
   // Enviar al backend
   try {
@@ -242,7 +238,7 @@ document.getElementById('enviarBtn').addEventListener('click', async () => {
   }
 })
 
-function leerArchivoBase64 (archivo) { // comvertir archivo imagen o pdf a base64
+function leerArchivoBase64(archivo) { // comvertir archivo imagen o pdf a base64
   return new Promise((resolve, reject) => {
     const lector = new FileReader()
     lector.onloadend = () => {
@@ -257,19 +253,16 @@ function leerArchivoBase64 (archivo) { // comvertir archivo imagen o pdf a base6
 async function cargarCultivosEnSelector() {
   const select = document.getElementById('cultivoSelect')
   if (!select) {
-    console.warn('⚠️ No se encontró el selector de cultivos')
     return
   }
 
   if (typeof verificarSesionActiva === 'function' && !verificarSesionActiva()) {
-    console.warn('⚠️ No hay sesión activa')
     return
   }
   // Obtener correo del usuario
   const CORREO = obtenerCorreoDelToken()
 
   if (!CORREO) {
-    console.warn('⚠️ No hay correo de usuario')
     return
   }
 
@@ -282,7 +275,6 @@ async function cargarCultivosEnSelector() {
 
     // ✅ Validar si hay cultivos
     if (!nombresCultivos || nombresCultivos.length === 0) {
-      console.log('ℹ️ Usuario sin cultivos registrados')
       return
     }
 
@@ -293,8 +285,6 @@ async function cargarCultivosEnSelector() {
       option.textContent = nombre
       select.appendChild(option)
     })
-
-    console.log(`✅ ${nombresCultivos.length} cultivos cargados en el selector (Optimizado)`)
 
   } catch (error) {
     console.error('❌ Error cargando cultivos:', error)

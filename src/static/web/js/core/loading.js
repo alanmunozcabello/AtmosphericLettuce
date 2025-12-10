@@ -79,8 +79,6 @@ async function validateAndShow() {
 async function esperarDatosCriticos() {
   const currentPage = window.location.pathname
 
-  console.log('⏳ Esperando datos críticos para:', currentPage)
-
   if (currentPage.includes('home.html')) {
     // Esperar clima + usuario (máximo 8 segundos total)
     await Promise.all([
@@ -95,11 +93,7 @@ async function esperarDatosCriticos() {
     await waitFor(() => window.cultivosCargados, 'Cultivos', 6000)  // Más tiempo para scroll infinito
   } else if (currentPage.includes('formulario_plantas.html')) {
     await waitFor(() => window.formularioCargado, 'Formulario', 2000)
-  } else {
-    console.log('ℹ️ Página sin datos específicos')
   }
-
-  console.log('✅ Todos los datos críticos están listos')
 }
 
 // ========== Helper: Esperar hasta que una condición sea true ==========
@@ -110,10 +104,8 @@ function waitFor(condition, nombre = 'Dato', timeout = 5000) {
     const interval = setInterval(() => {
       if (condition()) {
         clearInterval(interval)
-        console.log(`✅ ${nombre} cargado`)
         resolve()
       } else if (Date.now() - startTime > timeout) {
-        console.warn(`⚠️ Timeout esperando: ${nombre}`)
         clearInterval(interval)
         resolve() // Continuar de todos modos para no bloquear
       }
@@ -130,6 +122,5 @@ if (document.readyState === 'loading') {
 
 // ========== FALLBACK ==========
 setTimeout(() => {
-  console.warn('⚠️ Timeout general del loading screen (10s)')
   showContent()
 }, 10000) // 10 segundos máximo

@@ -40,42 +40,42 @@ document.addEventListener('DOMContentLoaded', function () {
   const correo = correoToken
 
   function actualizarProgreso() {
-      // Selecciona TODOS los campos (visibles e invisibles)
-      // Excluye campos opcionales como "otro_riego"
-      const todosCampos = Array.from(document.querySelectorAll("input, select, textarea"))
-        .filter(el => el.id !== 'otro_riego' && el.id !== 'btnRegresar'); // Excluir campos opcionales y botones
+    // Selecciona TODOS los campos (visibles e invisibles)
+    // Excluye campos opcionales como "otro_riego"
+    const todosCampos = Array.from(document.querySelectorAll("input, select, textarea"))
+      .filter(el => el.id !== 'otro_riego' && el.id !== 'btnRegresar'); // Excluir campos opcionales y botones
 
-      let total = 0;
-      let completados = 0;
-      const radioGroups = new Set();
+    let total = 0;
+    let completados = 0;
+    const radioGroups = new Set();
 
-      todosCampos.forEach(el => {
-        if (el.type === "radio") {
-          if (!radioGroups.has(el.name)) {
-            radioGroups.add(el.name);
-            total++;
-            const checked = document.querySelector(`input[name="${el.name}"]:checked`);
-            if (checked) completados++;
-          }
-        } else {
+    todosCampos.forEach(el => {
+      if (el.type === "radio") {
+        if (!radioGroups.has(el.name)) {
+          radioGroups.add(el.name);
           total++;
-          if (el.value.trim() !== "") completados++;
+          const checked = document.querySelector(`input[name="${el.name}"]:checked`);
+          if (checked) completados++;
         }
-      });
+      } else {
+        total++;
+        if (el.value.trim() !== "") completados++;
+      }
+    });
 
-      const progreso = total > 0 ? Math.round((completados / total) * 100) : 0;
-      barra.style.width = `${progreso}%`;
-      texto.textContent = `${progreso}%`;
-    }
+    const progreso = total > 0 ? Math.round((completados / total) * 100) : 0;
+    barra.style.width = `${progreso}%`;
+    texto.textContent = `${progreso}%`;
+  }
 
-    // --- Escuchar cambios en los campos ---
-    document.addEventListener("input", actualizarProgreso);
-    document.addEventListener("change", actualizarProgreso);
+  // --- Escuchar cambios en los campos ---
+  document.addEventListener("input", actualizarProgreso);
+  document.addEventListener("change", actualizarProgreso);
 
-    // --- Detectar cuando se abre/cierra "Datos adicionales" ---
-    // No se recalcula aquí porque ya contamos todos los campos (visibles e invisibles)
+  // --- Detectar cuando se abre/cierra "Datos adicionales" ---
+  // No se recalcula aquí porque ya contamos todos los campos (visibles e invisibles)
 
-    actualizarProgreso(); // cálculo inicial
+  actualizarProgreso(); // cálculo inicial
 
   // Si viene de la página de cultivos, mostrar información específica
   if (cultivo && correo) {
@@ -161,8 +161,6 @@ document.addEventListener('DOMContentLoaded', function () {
       acolchado: formData.get('acolchado') ? (formData.get('acolchado') === 'si' ? 1 : 0) : null
     }
 
-    console.log('Datos del formulario mapeados:', datosParaBackend)
-
     // Enviar al backend
     fetchConToken(`/usuarios/${encodeURIComponent(correo)}/cultivos/modificar_formulario_cultivo`, {
       method: 'PATCH',
@@ -177,7 +175,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return response.json()
       })
       .then(data => {
-        console.log('Respuesta del servidor:', data)
         if (data.mensaje) {
           alert(`✅ ${data.mensaje}`)
           window.location.href = 'gestor_cultivos.html'
@@ -190,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function () {
         alert(`❌ Error al guardar la configuración del cultivo: ${error.message}`)
       })
   })
-  
+
   // Marcar como listo
   window.formularioCargado = true
 })

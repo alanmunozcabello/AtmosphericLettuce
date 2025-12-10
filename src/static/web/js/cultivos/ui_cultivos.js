@@ -39,9 +39,6 @@ function renderizarListaInicial(cultivosExplicitos = null) {
   if (!scrollInfinito.todosCargados) {
     const indicador = crearIndicadorCargaMas()
     listaCultivos.appendChild(indicador)
-    console.log(`✅ Página 1 renderizada (${cultivosMostrar.length} ítems). Quedan páginas.`)
-  } else {
-    console.log('✅ Todos los cultivos cargados.')
   }
 }
 
@@ -95,7 +92,6 @@ async function cargarMasCultivos() {
   }
 
   scrollInfinito.cargando = true
-  console.log('📥 Cargando siguiente página...')
 
   const proximaPagina = scrollInfinito.paginaActual + 1
 
@@ -157,8 +153,6 @@ async function cargarMasCultivos() {
       actualizarResumen()
     }
 
-    console.log(`✅ Página ${proximaPagina} cargada (${nuevosCultivos.length} items).`)
-
   } catch (err) {
     console.error('Error cargando más cultivos:', err)
     scrollInfinito.cargando = false
@@ -178,7 +172,6 @@ function eliminarIndicadorCargaMas() {
 function inicializarScrollInfinito() {
   const listaCultivos = document.getElementById('lista-cultivos')
   if (!listaCultivos) {
-    console.warn('⚠️ No se encontró #lista-cultivos')
     return
   }
 
@@ -224,7 +217,6 @@ function inicializarScrollInfinito() {
       }
 
       // TODO OK: Cargar más
-      console.log(`🔽 Scroll detectado en lista: ${scrollBottom}px del final`)
       cargarMasCultivos()
     }, 150)
   })
@@ -232,10 +224,7 @@ function inicializarScrollInfinito() {
   // Exponer reset para cuando se recarga la lista externamente
   window.resetearScrollTracker = () => {
     ultimoScroll = 0
-    console.log('🔄 Tracker de scroll reseteado')
   }
-
-  console.log('✅ Scroll infinito inicializado en #lista-cultivos')
 }
 
 // ========== ACTUALIZAR RESUMEN ==========
@@ -257,8 +246,6 @@ function actualizarResumen() {
   // Si estamos en modo búsqueda, el total podría ser distinto, pero mantenemos la lógica base
   if (totalCultivosEl) totalCultivosEl.textContent = total
   if (areaTotalEl) areaTotalEl.textContent = `${areaTotal.toFixed(2)} ha (visible)`
-
-  console.log('✅ Resumen actualizado:', total, 'cultivos')
 }
 
 // ========== ALIAS PARA COMPATIBILIDAD ==========
@@ -281,10 +268,7 @@ function inicializarBusqueda() {
   const inputBuscar = document.getElementById('input-buscar-cultivo')
   const btnLimpiar = document.getElementById('btn-limpiar-busqueda')
 
-  if (!inputBuscar) {
-    console.warn('⚠️ No se encontró #input-buscar-cultivo')
-    return
-  }
+  if (!inputBuscar) return
 
   // Filtrado instantáneo (input event se dispara con cada tecla)
   inputBuscar.addEventListener('input', (e) => {
@@ -333,7 +317,6 @@ async function filtrarCultivos(termino) {
 
   // 2. Si no hay término, volver a la normalidad (Página 1 estándar)
   if (!terminoLower) {
-    console.log('🔄 Búsqueda limpiada. Recargando inicio...')
     await window.recargarCultivos() // Esto resetea todo a página 1
     return
   }
@@ -384,8 +367,6 @@ async function filtrarCultivos(termino) {
     scrollInfinito.todosCargados = true
     scrollInfinito.cargando = false
     eliminarIndicadorCargaMas()
-
-    console.log(`✅ ${resultados.length} resultados encontrados`)
 
   } catch (error) {
     console.error('Error en búsqueda:', error)

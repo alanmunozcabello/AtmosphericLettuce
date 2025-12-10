@@ -10,7 +10,7 @@ const MAX_PUNTOS = 20
 const MIN_PUNTOS = 3
 
 // ========== INICIALIZAR EVENTOS ==========
-function inicializarEventosMarcarArea () {
+function inicializarEventosMarcarArea() {
   const btnMarcar = document.getElementById('btn-marcar-area')
   const btnCerrar = document.getElementById('cerrar-overlay-marcar')
   const btnDeshacer = document.getElementById('btn-deshacer')
@@ -36,12 +36,10 @@ function inicializarEventosMarcarArea () {
   if (btnCompletar) {
     btnCompletar.addEventListener('click', guardarArea)
   }
-
-  console.log('✅ Eventos de marcar área inicializados')
 }
 
 // ========== ABRIR OVERLAY ==========
-function abrirOverlayMarcar () {
+function abrirOverlayMarcar() {
   const { cultivoSeleccionado, cultivosData } = window.cultivosState
 
   if (!cultivoSeleccionado || !cultivosData[cultivoSeleccionado]) {
@@ -60,7 +58,7 @@ function abrirOverlayMarcar () {
 }
 
 // ========== CERRAR OVERLAY ==========
-function cerrarOverlayMarcar () {
+function cerrarOverlayMarcar() {
   // limpiar cultivo seleccionado
   window.cultivosState.cultivoSeleccionado = null
 
@@ -80,10 +78,8 @@ function cerrarOverlayMarcar () {
 }
 
 // ========== INICIALIZAR MAPA ==========
-function inicializarMapaMarcarArea () {
+function inicializarMapaMarcarArea() {
   const { cultivoSeleccionado, cultivosData, usuarioLatitud, usuarioLongitud } = window.cultivosState
-
-  console.log('🗺️ Inicializando mapa de marcar área para:', cultivoSeleccionado)
 
   // Actualizar UI
   const cultivoActual = document.getElementById('cultivo-actual')
@@ -122,8 +118,6 @@ function inicializarMapaMarcarArea () {
 
       centroLat = sumLat / puntosExistentes.length
       centroLon = sumLon / puntosExistentes.length
-
-      console.log('📍 Centrando en cultivo existente:', centroLat.toFixed(6), centroLon.toFixed(6))
     }
   }
 
@@ -163,11 +157,10 @@ function inicializarMapaMarcarArea () {
   // Eventos
   mapSuperficie.on('click', manejarClicMapaSuperficie)
 
-  console.log('✅ Mapa de marcar área listo con', puntosMarcados.length, 'puntos')
 }
 
 // ========== MANEJADOR DE CLIC ==========
-function manejarClicMapaSuperficie (evt) {
+function manejarClicMapaSuperficie(evt) {
   if (puntosMarcados.length >= MAX_PUNTOS) {
     mostrarEstadoMarcar('⚠️ Límite de 20 puntos alcanzado', 'error')
     return
@@ -186,7 +179,7 @@ function manejarClicMapaSuperficie (evt) {
 }
 
 // ========== AGREGAR PUNTO ==========
-function agregarPuntoSuperficie (coordenadas, lat, lon) {
+function agregarPuntoSuperficie(coordenadas, lat, lon) {
   const punto = new ol.Feature({
     geometry: new ol.geom.Point(coordenadas),
     tipo: 'punto',
@@ -205,7 +198,7 @@ function agregarPuntoSuperficie (coordenadas, lat, lon) {
 }
 
 // ========== ACTUALIZAR POLÍGONO ==========
-function actualizarPoligonoSuperficie () {
+function actualizarPoligonoSuperficie() {
   if (poligonoActual) {
     vectorSourceSuperficie.removeFeature(poligonoActual)
   }
@@ -222,7 +215,7 @@ function actualizarPoligonoSuperficie () {
 }
 
 // ========== CALCULAR ÁREA ==========
-function calcularAreaSuperficie () {
+function calcularAreaSuperficie() {
   if (!poligonoActual) return
 
   const geometria = poligonoActual.getGeometry()
@@ -237,7 +230,7 @@ function calcularAreaSuperficie () {
 }
 
 // ========== ESTILOS ==========
-function estiloFeatureSuperficie (feature) {
+function estiloFeatureSuperficie(feature) {
   const tipo = feature.get('tipo')
 
   if (tipo === 'punto') {
@@ -265,7 +258,7 @@ function estiloFeatureSuperficie (feature) {
 }
 
 // ========== ACTUALIZAR INTERFAZ ==========
-function actualizarInterfazMarcar () {
+function actualizarInterfazMarcar() {
   const numPuntos = puntosMarcados.length
 
   const puntosCount = document.getElementById('puntos-count')
@@ -293,7 +286,7 @@ function actualizarInterfazMarcar () {
 }
 
 // ========== MOSTRAR ESTADO ==========
-function mostrarEstadoMarcar (mensaje, tipo = 'info') {
+function mostrarEstadoMarcar(mensaje, tipo = 'info') {
   const panel = document.getElementById('panel-status-marcar')
   if (panel) {
     panel.textContent = mensaje
@@ -302,7 +295,7 @@ function mostrarEstadoMarcar (mensaje, tipo = 'info') {
 }
 
 // ========== DESHACER ==========
-function deshacerUltimoPunto () {
+function deshacerUltimoPunto() {
   if (puntosMarcados.length === 0) return
 
   const ultimoPunto = puntosMarcados.pop()
@@ -321,7 +314,7 @@ function deshacerUltimoPunto () {
 }
 
 // ========== LIMPIAR ==========
-function limpiarPuntos () {
+function limpiarPuntos() {
   if (!confirm('¿Limpiar todos los puntos?')) return
 
   vectorSourceSuperficie.clear()
@@ -335,7 +328,7 @@ function limpiarPuntos () {
 }
 
 // ========== GUARDAR ÁREA ==========
-async function guardarArea () {
+async function guardarArea() {
   if (puntosMarcados.length < MIN_PUNTOS) {
     alert('⚠️ Necesitas al menos 3 puntos')
     return
@@ -367,12 +360,6 @@ async function guardarArea () {
 
     const areaHectareas = parseFloat((areaMetros / 10000).toFixed(2)) // ✅ Convertir m^2 a hectáreas y a número
 
-    console.log('📤 Enviando al backend:', {
-      cultivo: cultivoSeleccionado,
-      area: areaHectareas,
-      puntos: puntosParaGuardar
-    })
-
     const response = await fetchConToken(
       `/usuarios/${encodeURIComponent(correo)}/cultivo/modificar_area_cultivo`,
       {
@@ -392,15 +379,12 @@ async function guardarArea () {
 
     const data = await response.json()
 
-    console.log('✅', data.mensaje || 'Área guardada')
-
     cerrarOverlayMarcar()
 
     // ✅ Recargar cultivos completos
     await window.recargarCultivos?.()
 
     alert('✅ Área guardada correctamente')
-    console.log('💾 Área guardada')
 
     renderizarMapaPrincipal()
   } catch (error) {

@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const usuario = await obtenerUsuario(CORREO)
 
     if (!usuario) {
-      console.warn('⚠️ No se pudo obtener datos del usuario')
       cerrarSesion()
       return
     }
@@ -49,8 +48,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       zoom: 16
     })
   })
-
-  console.log(latUsuario, lonUsuario)
 
   // Capa para marcadores
   const vectorSource = new ol.source.Vector()

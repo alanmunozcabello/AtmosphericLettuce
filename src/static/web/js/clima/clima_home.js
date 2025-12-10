@@ -13,8 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 })
 
-async function cargarClimaHome (forzarFresco = false) {
-  console.log('🌤️ Iniciando carga de clima para home...', forzarFresco ? '⚡ (datos frescos)' : '')
+async function cargarClimaHome(forzarFresco = false) {
 
   // Verificar que la función existe
   if (typeof obtenerClimaDia !== 'function') {
@@ -38,7 +37,6 @@ async function cargarClimaHome (forzarFresco = false) {
 
     // ✅ VALIDAR que climaSemana tiene datos antes de acceder
     if (!climaSemana || !climaSemana['1']) {
-      console.warn('⚠️ climaSemana no tiene datos válidos:', climaSemana)
       mostrarClimaFallback()
       window.climaCargado = true
       return
@@ -57,7 +55,7 @@ async function cargarClimaHome (forzarFresco = false) {
     mostrarClimaFallback()
   } finally {
     window.climaCargado = true
-    
+
     // ✅ Recargar consejos cuando se actualiza el clima
     if (typeof cargarConsejosClima === 'function') {
       await cargarConsejosClima()
@@ -66,9 +64,8 @@ async function cargarClimaHome (forzarFresco = false) {
 }
 
 // Resto de funciones sin cambios...
-function mostrarClimaEnHome (datosClima) {
+function mostrarClimaEnHome(datosClima) {
   if (!datosClima) {
-    console.log('❌ No hay datos de clima para mostrar')
     return
   }
 
@@ -104,22 +101,21 @@ function mostrarClimaEnHome (datosClima) {
     iconoClima.textContent = icono
   }
 
-  if(humedad){
+  if (humedad) {
     humedad.textContent = `${datosClima.humidity || 0}%`  // Humedad
   }
 
-  if(viento){
+  if (viento) {
     viento.textContent = `${Math.round(datosClima.wind_kmh || 0)} km/h`  // Viento
   }
-  
-  if(sensacion){
+
+  if (sensacion) {
     sensacion.textContent = `${Math.round(datosClima.sence || 0)}°C`  // Sensación térmica
   }
 
-  console.log('✅ Clima actualizado en home')
 }
 
-function obtenerIconoClima (descripcion) {
+function obtenerIconoClima(descripcion) {
   const desc = descripcion.toLowerCase()
 
   if (desc.includes('clear') || desc.includes('sunny')) {
@@ -137,7 +133,7 @@ function obtenerIconoClima (descripcion) {
   }
 }
 
-function mostrarClimaFallback () {
+function mostrarClimaFallback() {
   const climaPorDefecto = {
     temp: 20,
     max: 25,
@@ -146,24 +142,19 @@ function mostrarClimaFallback () {
   }
 
   mostrarClimaEnHome(climaPorDefecto)
-  console.log('📦 Mostrando clima por defecto')
 }
 
 // ========== CONSEJOS DEL CLIMA ==========
 async function cargarConsejosClima() {
-  console.log('💡 Cargando consejos del clima...')
-  
+
   try {
     // Obtener datos frescos del clima (sin usar cache si es posible)
     let datosClimaDia = await obtenerClimaDiaFresco()
-    
+
     if (!datosClimaDia) {
-      console.warn('⚠️ No hay datos de clima para generar consejos')
       mostrarConsejosFallback()
       return
     }
-
-    console.log('🔍 Datos de clima para consejos:', datosClimaDia)
 
     // ✅ Si no tenemos temperatura, intentar obtener del DOM
     if (!datosClimaDia.temp) {
@@ -173,7 +164,7 @@ async function cargarConsejosClima() {
         datosClimaDia.temp = parseFloat(tempText) || 0
       }
     }
-    
+
     // ✅ Si no tenemos humedad/viento, intentar obtener del DOM
     if (!datosClimaDia.humidity) {
       const humElement = document.querySelector('.detalles .info-detalles .humedad')
@@ -181,7 +172,7 @@ async function cargarConsejosClima() {
         datosClimaDia.humidity = parseFloat(humElement.textContent) || 0
       }
     }
-    
+
     if (!datosClimaDia.wind_kmh) {
       const vientoElement = document.querySelector('.detalles .info-detalles .viento')
       if (vientoElement) {
@@ -189,9 +180,7 @@ async function cargarConsejosClima() {
       }
     }
 
-    console.log('✅ Datos finales para generar consejos:', datosClimaDia)
     const consejos = generarConsejos(datosClimaDia)
-    console.log(`📝 Consejos generados (${consejos.length}):`, consejos)
     mostrarConsejos(consejos)
 
   } catch (error) {
@@ -202,7 +191,7 @@ async function cargarConsejosClima() {
 
 function generarConsejos(clima) {
   const consejos = []
-  
+
   // Obtener datos del clima
   const temp = clima.temp || 0
   const humedad = clima.humidity || 0
@@ -210,7 +199,6 @@ function generarConsejos(clima) {
   const viento = clima.wind_kmh || 0
   const descripcion = (clima.estado || '').toLowerCase()
 
-  console.log('📊 Datos para consejos:', { temp, humedad, lluvia, viento, descripcion })
 
   // ========== Consejos por temperatura ==========
   if (temp > 30) {
@@ -262,15 +250,13 @@ function generarConsejos(clima) {
     consejos.push('🌱 Clima estable: Buen día para monitorear tus cultivos y realizar mantenimiento.')
   }
 
-  console.log(`✅ ${consejos.length} consejos generados`)
   return consejos
 }
 
 function mostrarConsejos(consejos) {
   const contenedorConsejos = document.getElementById('consejos-clima')
-  
+
   if (!contenedorConsejos) {
-    console.warn('⚠️ No se encontró contenedor de consejos (#consejos-clima)')
     return
   }
 
@@ -282,32 +268,27 @@ function mostrarConsejos(consejos) {
     const divConsejo = document.createElement('div')
     divConsejo.className = 'consejo-item'
     divConsejo.textContent = consejo
-    
+
     // Pequeña animación de entrada (opcional)
     setTimeout(() => {
       divConsejo.style.opacity = '1'
       divConsejo.style.transform = 'translateX(0)'
     }, index * 100)
-    
+
     contenedorConsejos.appendChild(divConsejo)
   })
-
-  console.log(`✅ ${consejos.length} consejos mostrados en la interfaz`)
 }
 
 function mostrarConsejosFallback() {
   const contenedorConsejos = document.getElementById('consejos-clima')
-  
+
   if (!contenedorConsejos) {
-    console.warn('⚠️ No se encontró contenedor de consejos')
     return
   }
-  
+
   contenedorConsejos.innerHTML = `
     <div class="consejo-item loading">
       🌱 No se pudieron cargar los consejos del clima
     </div>
   `
-  
-  console.log('📦 Mostrando consejos fallback')
 }

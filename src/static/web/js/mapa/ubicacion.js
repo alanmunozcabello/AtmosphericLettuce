@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return
     }
     mapaOverlay.style.display = 'flex'
-    // console.log('🗺️ Mapa abierto')
     correo = obtenerCorreoDelToken()
 
     if (!correo) {
@@ -39,7 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const usuario = await obtenerUsuario(correo)
 
       if (!usuario) {
-        console.warn('⚠️ No se pudo obtener datos del usuario')
         cerrarSesion()
         return
       }
@@ -65,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
         zoom: 16
       })
     })
-    console.log(latUsuario, lonUsuario)
     // Capa para marcadores
     vectorSource = new ol.source.Vector()
     const vectorLayer = new ol.layer.Vector({ source: vectorSource })
@@ -126,9 +123,6 @@ document.addEventListener('DOMContentLoaded', () => {
       btnConfirmar.disabled = true
       btnConfirmar.textContent = 'Obteniendo dirección...'
 
-      // ✅ MOSTRAR EN CONSOLA COMO ANTES
-      console.log('📍 Latitud:', lat)
-      console.log('📍 Longitud:', lon)
       latMod = lat
       lonMod = lon
 
@@ -148,15 +142,11 @@ document.addEventListener('DOMContentLoaded', () => {
           pais = 'Desconocido'
         }
 
-        // ✅ ACTUALIZAR PANEL CON LA INFORMACIÓN
+        // ACTUALIZAR PANEL CON LA INFORMACIÓN
         if (panelCiudad) panelCiudad.textContent = ciudad
         if (panelRegion) panelRegion.textContent = region
         if (panelPais) panelPais.textContent = pais
 
-        // ✅ MOSTRAR EN CONSOLA
-        console.log('🏙️ Ciudad:', ciudad)
-        console.log('🗺️ Región:', region)
-        console.log('🌎 País:', pais)
       } catch (error) {
         console.error('❌ Error obteniendo información:', error)
 
@@ -175,8 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   })
 
-  function matarMapa () {
-    console.log('🗑️ Destruyendo mapa...')
+  function matarMapa() {
 
     // 1. Remover todos los overlays y layers
     map.getOverlays().clear()
@@ -195,15 +184,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (mapContainer) {
       mapContainer.innerHTML = ''
     }
-
-    console.log('✅ Mapa destruido completamente')
   }
 
   // Cerrar mapa con el botón X
   btnCerrar.addEventListener('click', () => {
     mapaOverlay.style.display = 'none'
     matarMapa()
-    console.log('🗺️ Mapa cerrado (X)')
   })
 
   // Cerrar mapa con confirmar
@@ -215,8 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      console.log('📤 Enviando ubicación al backend...')
-
       // 1. Actualizar coordenadas (lat/lon via Body con UbicacionUsuario)
       const respuesta1 = await fetchConToken(
         `/usuarios/${encodeURIComponent(correo)}/ubicacion/modificar`,
@@ -237,8 +221,6 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error(error1.error || 'Error actualizando coordenadas')
       }
 
-      console.log('✅ Coordenadas actualizadas')
-
       // 2. Actualizar región/ciudad
       const respuesta2 = await fetchConToken(
         `/usuarios/${encodeURIComponent(correo)}/ubicacion/region/${encodeURIComponent(region)}/${encodeURIComponent(ciudad)}/modificar`,
@@ -252,12 +234,9 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error(error2.error || 'Error actualizando región/ciudad')
       }
 
-      console.log('✅ Región/ciudad actualizadas')
-
       // INVALIDAR CACHE DE CLIMA (nueva ubicación = nuevo clima)
       if (typeof invalidarCacheClima === 'function') {
         invalidarCacheClima()
-        console.log('🗑️ Cache de clima invalidado')
       }
 
       // ACTUALIZAR CACHÉ DEL USUARIO
@@ -281,7 +260,6 @@ document.addEventListener('DOMContentLoaded', () => {
           window.homeState.usuario = usuarioActualizado
           window.homeState.latitud = usuarioActualizado.ubicacion?.latitud || latMod
           window.homeState.longitud = usuarioActualizado.ubicacion?.longitud || lonMod
-          console.log('✅ homeState actualizado')
         }
 
         // Actualizar window.cultivosState si existe (para gestor_cultivos.html)
@@ -289,10 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
           window.cultivosState.usuarioData = usuarioActualizado
           window.cultivosState.usuarioLatitud = usuarioActualizado.ubicacion?.latitud || latMod
           window.cultivosState.usuarioLongitud = usuarioActualizado.ubicacion?.longitud || lonMod
-          console.log('✅ cultivosState actualizado')
         }
-
-        console.log('✅ Caché del usuario actualizada')
       }
 
       // 4. Actualizar input visual
@@ -307,7 +282,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // si es desde el perfil se actualiza la vista manualmente sin recargar
       if (paginaActual.includes('perfil.html')) {
-        console.log('🔄 Actualizando vista perfil.html...')
         alert('✅ Ubicación actualizada correctamente')
 
         // Actualizar elementos del DOM en perfil.html
@@ -329,7 +303,6 @@ document.addEventListener('DOMContentLoaded', () => {
       // si es desde el home se recargan los cultivos
       if (paginaActual.includes('home.html')) {
         alert('✅ Ubicación actualizada correctamente')
-        console.log('🔄 Recargando clima en home.html...')
 
         // Mostrar pantalla de carga
         const loadingScreen = document.getElementById('loadingScreen')
@@ -341,19 +314,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Invalidar cache del clima para forzar nuevos datos
         if (typeof invalidarCacheClima === 'function') {
           invalidarCacheClima()
-          console.log('✅ Cache de clima invalidado')
         }
 
         // Actualizar las variables de estado de clima con nuevas coordenadas
         if (typeof actualizarCoordsClima === 'function') {
           actualizarCoordsClima(latMod, lonMod)
-          console.log('✅ Coordenadas de clima actualizadas')
         }
 
         // Recargar clima con nuevas coordenadas (ahora sin cache)
         if (typeof cargarClimaHome === 'function') {
           await cargarClimaHome(true)  // true = forzar datos frescos
-          console.log('✅ Clima reacargado sin recarga de página')
 
           // Pequeño delay para asegurar que los datos estén frescos
           await new Promise(resolve => setTimeout(resolve, 500))
@@ -361,7 +331,6 @@ document.addEventListener('DOMContentLoaded', () => {
           // Explícitamente recargar consejos CON los nuevos datos
           if (typeof cargarConsejosClima === 'function') {
             await cargarConsejosClima()
-            console.log('✅ Consejos regenerados con nuevos datos de clima')
           }
         }
 
@@ -381,7 +350,6 @@ document.addEventListener('DOMContentLoaded', () => {
       // si es desde dias.html se recarga el clima semanal
       if (paginaActual.includes('dias.html')) {
         alert('✅ Ubicación actualizada correctamente')
-        console.log('🔄 Recargando clima en dias.html...')
 
         // Mostrar pantalla de carga
         const loadingScreen = document.getElementById('loadingScreen')
@@ -403,7 +371,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Recargar clima semanal
         if (typeof cargarClimaSemana === 'function') {
           await cargarClimaSemana()
-          console.log('✅ Clima semanal recargado')
         }
 
         // Ocultar pantalla de carga después de cargar
@@ -417,7 +384,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       alert('✅ Ubicación actualizada correctamente')
-      console.log('✅ Ubicación confirmada y guardada')
     } catch (error) {
       console.error('❌ Error actualizando ubicación:', error)
       alert(`⚠️ Error: ${error.message}`)
@@ -428,7 +394,6 @@ document.addEventListener('DOMContentLoaded', () => {
   btnCancelar.addEventListener('click', () => {
     mapaOverlay.style.display = 'none'
     matarMapa()
-    console.log('❌ Selección cancelada')
   })
 
   // Cerrar al hacer clic fuera del contenedor
@@ -436,7 +401,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target === mapaOverlay) {
       mapaOverlay.style.display = 'none'
       matarMapa()
-      console.log('🗺️ Mapa cerrado (click fuera)')
     }
   })
 })

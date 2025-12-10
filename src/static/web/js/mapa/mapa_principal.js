@@ -3,7 +3,7 @@ let mapPrincipal = null
 let vectorSourcePrincipal = null
 
 // ========== INICIALIZAR MAPA PRINCIPAL ==========
-function inicializarMapaPrincipal () {
+function inicializarMapaPrincipal() {
   const { usuarioLatitud, usuarioLongitud } = window.cultivosState
 
   mapPrincipal = new ol.Map({
@@ -35,12 +35,10 @@ function inicializarMapaPrincipal () {
   if (btnCentrar) {
     btnCentrar.addEventListener('click', centrarVistaMapa)
   }
-
-  console.log('✅ Mapa principal creado')
 }
 
 // ========== RENDERIZAR CULTIVOS EN MAPA ==========
-function renderizarMapaPrincipal () {
+function renderizarMapaPrincipal() {
   if (!vectorSourcePrincipal) return
 
   vectorSourcePrincipal.clear()
@@ -98,7 +96,6 @@ function agregarCultivosAlMapa(nuevosCultivos) {
   if (!nuevosCultivos || nuevosCultivos.length === 0) return
 
   const { colores } = window.cultivosState
-  console.log(`🗺️ Agregando ${nuevosCultivos.length} cultivos al mapa...`)
 
   nuevosCultivos.forEach((data, index) => {
     // Usar un hash simple del nombre para asignar color consistente o usar el índice si es confiable
@@ -137,7 +134,7 @@ function agregarCultivosAlMapa(nuevosCultivos) {
 }
 
 // ========== ESTILO POLÍGONO ==========
-function crearEstiloPoligono (color, seleccionado) {
+function crearEstiloPoligono(color, seleccionado) {
   return new ol.style.Style({
     stroke: new ol.style.Stroke({
       color: color,
@@ -150,11 +147,10 @@ function crearEstiloPoligono (color, seleccionado) {
 }
 
 // ========== SELECCIONAR CULTIVO ==========
-function seleccionarCultivoMapa (nombre) {
+function seleccionarCultivoMapa(nombre) {
   const { cultivosData } = window.cultivosState
 
   if (!cultivosData[nombre]) {
-    console.warn('⚠️ Cultivo no encontrado:', nombre)
     alert('⚠️ El cultivo seleccionado ya no existe')
     window.cultivosState.cultivoSeleccionado = null
 
@@ -191,12 +187,10 @@ function seleccionarCultivoMapa (nombre) {
     const extent = feature.getGeometry().getExtent()
     mapPrincipal.getView().fit(extent, { padding: [50, 50, 50, 400], maxZoom: 19 })
   }
-
-  console.log('🎯 Cultivo seleccionado:', nombre)
 }
 
 // ========== HOVER ==========
-function manejarHoverMapa (evt) {
+function manejarHoverMapa(evt) {
   const feature = mapPrincipal.forEachFeatureAtPixel(evt.pixel, (f) => f)
 
   if (feature && feature.get('cultivoNombre')) {
@@ -207,7 +201,7 @@ function manejarHoverMapa (evt) {
 }
 
 // ========== CLICK (POPUP) ==========
-function manejarClickMapa (evt) {
+function manejarClickMapa(evt) {
   // Eliminar popups previos
   document.querySelectorAll('.ol-popup-cultivo').forEach(p => p.remove())
 
@@ -245,7 +239,7 @@ function manejarClickMapa (evt) {
 }
 
 // ========== CENTRAR VISTA ==========
-function centrarVistaMapa () {
+function centrarVistaMapa() {
   const { usuarioLatitud, usuarioLongitud } = window.cultivosState
 
   mapPrincipal.getView().animate({

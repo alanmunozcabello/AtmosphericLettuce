@@ -1,7 +1,5 @@
 /* global obtenerClimaSemana, document */
 document.addEventListener('DOMContentLoaded', async () => {
-  console.log('📅 Iniciando carga de clima semanal desde DOMContentLoaded...')
-  
   // Esperar un poco para que otros scripts se inicialicen
   setTimeout(async () => {
     if (typeof cargarClimaSemana === 'function') {
@@ -10,8 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }, 1000)
 })
 
-async function cargarClimaSemana () {
-  console.log('📅 Iniciando carga de clima semanal...')
+async function cargarClimaSemana() {
 
   try {
     // Obtener datos del clima semanal
@@ -31,7 +28,7 @@ async function cargarClimaSemana () {
   }
 }
 
-function mostrarClimaSemanaEnDias (climaSemana) {
+function mostrarClimaSemanaEnDias(climaSemana) {
   const tarjetas = document.querySelectorAll('.clima-card')
 
   for (let i = 1; i <= 7; i++) {
@@ -57,15 +54,13 @@ function mostrarClimaSemanaEnDias (climaSemana) {
     if (icono) icono.textContent = obtenerIconoClima(diaData.estado)
   }
 
-  console.log('✅ Clima semanal actualizado en dias.html')
 }
 
-function mostrarClimaFallbackSemana () {
-  console.log('📦 Mostrando clima semanal por defecto')
+function mostrarClimaFallbackSemana() {
   // Mantener los datos hardcodeados como fallback
 }
 
-function obtenerIconoClima (estado) {
+function obtenerIconoClima(estado) {
   const desc = estado.toLowerCase()
 
   if (desc.includes('clear') || desc.includes('sunny')) {
