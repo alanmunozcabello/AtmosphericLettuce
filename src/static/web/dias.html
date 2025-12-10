@@ -214,7 +214,6 @@
 
 
   <!-- Botón flotante -->
-
   <div class="chatbot" id="chatToggle">🥬</div>
 
   <!-- Ventana del chat flotante -->
@@ -238,15 +237,14 @@
     </div>
 
     <div class="chat-input">
-      <input type="text" id="textoInput" placeholder="Escribe un mensaje...">
+      <textarea id="textoInput" placeholder="Escribe un mensaje..." rows="1"></textarea>
 
       <!-- Botones de acción -->
       <button id="fileBtn">📄</button>
       <button id="enviarBtn">Enviar</button>
 
       <!-- Inputs de archivo ocultos -->
-      <input type="file" id="fileInput" accept="image/*,application/pdf" multiple style="display:none">
-      <!--ahora se pueden subir multiples archivos con los formatos permitidos-->
+      <input type="file" id="fileInput" accept="image/*,application/pdf" multiple style="display:none"> <!--ahora se pueden subir multiples archivos con los formatos permitidos-->
     </div>
   </div>
   <script src="js/utilidades/autenticacion.js" defer></script>
