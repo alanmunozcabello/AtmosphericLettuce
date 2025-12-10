@@ -58,7 +58,7 @@
 
 ### 4. Nicolás Urbina
 * **Rol Principal:** QA / Líder Técnico / Backend
-* **Commits:** 113
+* **Commits:** 114
 * **Pull Requests (PRs):** 12
 * **Tareas Completadas (Trello):** 46
 * **Lead Time Promedio:** 8.3 días

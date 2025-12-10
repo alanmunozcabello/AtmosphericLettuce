@@ -69,13 +69,13 @@ src/
 ├── .env                     # Variables de entorno (crear desde .env.example)
 ├── .env.example             # Plantilla de configuración
 │
-├── controllers/             # Controladores de la aplicación
+├── models/                  # Modelos de datos y validaciones (Pydantic)
 │   ├── __init__.py
-│   ├── usuarios_controller.py          # Gestión de usuarios
-│   ├── chat_controllers.py             # Lógica del chatbot
-│   ├── clima_controller.py             # Control del clima
-│   ├── modificadora_notificaciones.py  # Modificación de notificaciones
-│   └── notificaciones_controller.py    # Control de notificaciones
+│   ├── usuario.py           # Esquemas de Usuario
+│   ├── cultivo.py           # Esquemas de Cultivo
+│   ├── chat.py              # Esquemas de Chat
+│   ├── clima.py             # Esquemas de Clima
+│   └── recuperacion.py      # Esquemas de Recuperación de contraseña
 │
 ├── routes/                  # Rutas y endpoints de la API
 │   ├── __init__.py
@@ -86,14 +86,13 @@ src/
 │
 ├── services/                # Servicios y lógica de negocio
 │   ├── __init__.py
-│   ├── usuarios_service.py          # Lógica de usuarios
+│   ├── user_service.py              # Lógica de usuarios
+│   ├── cultivo_service.py           # Lógica de cultivos
 │   ├── chat_service.py              # Servicio del chat
 │   ├── clima_service.py             # Servicio de clima
-│   ├── plant_service.py             # Servicio de plantas
-│   ├── ai_services.py               # Integración con IAs (Claude/OpenAI)
-│   ├── modificadora_service.py      # Modificación de datos
-│   ├── notificaciones_service.py    # Envío de notificaciones
-│   └── security.py                  # Autenticación y seguridad
+│   ├── ai_integration_service.py    # Integración con IAs
+│   ├── notification_service.py      # Envío de notificaciones
+│   └── auth_service.py              # Autenticación y seguridad
 │
 ├── data/                    # Archivos de datos
 │   └── DataBase.db          # Base de datos SQLite (NO incluir en git)
@@ -104,7 +103,8 @@ src/
 │   ├── scheduler.py              # Programador de tareas (APScheduler)
 │   └── sistema_de_alertas.py     # Sistema de alertas automáticas
 │
-├── utils/                   # Utilidades (si existen)
+├── middleware/              # Middlewares
+│   └── ...
 │
 └── static/                  # Frontend de la aplicación
     └── web/
@@ -134,7 +134,7 @@ src/
         │   ├── clima/
         │   │   ├── cache_clima.js          # Sistema de caché de clima
         │   │   ├── clima_dias.js           # Clima semanal
-        │   │   └── clima_home.js           # Clima en dashboard
+        │   │   ├── clima_home.js           # Clima en dashboard
         │   ├── cultivos/
         │   │   ├── crud_cultivos.js        # CRUD de cultivos
         │   │   ├── cultivos.js             # Gestión de cultivos
@@ -164,11 +164,13 @@ src/
 ### 📚 Descripción de Carpetas
 
 #### Backend (Python)
-- **controllers/**: Maneja la lógica de control y procesamiento de requests
+
+- **models/**: Define los esquemas de datos y validaciones (Pydantic)
 - **routes/**: Define los endpoints de la API REST
-- **services/**: Implementa la lógica de negocio principal
-- **tasks/**: Tareas automáticas programadas (envío de correos, alertas)
+- **services/**: Implementa la lógica de negocio principal de forma modular
+- **tasks/**: Tareas automáticas programadas en hilos separados (BackgroundScheduler)
 - **data/**: Almacenamiento de la base de datos SQLite
+- **middleware/**: Interceptores de peticiones HTTP
 
 #### Frontend (HTML/CSS/JavaScript)
 - **static/web/**: Aplicación web completa
@@ -217,7 +219,8 @@ Para ver y administrar la base de datos:
 
 La base de datos contiene las siguientes tablas:
 - **usuarios**: Almacena la información de los usuarios registrados
-- **cultivos**: Información sobre los cultivos y plantas
+- **cultivos**: Información sobre los cultivos y plantas, vinculada a los usuarios
+- **clima_guardado**: Historial de datos meteorológicos cacheados para los cultivos
 - **area_cultivo**: Información geográfica de las áreas de cultivo
 
 ### Scripts de Base de Datos
@@ -252,8 +255,7 @@ pytest ../tests/ -v --cov=. --cov-report=html
 # Solo tests de routes
 pytest ../tests/routes/ -v
 
-# Solo tests de controllers
-pytest ../tests/controllers/ -v
+
 
 # Solo tests de services
 pytest ../tests/services/ -v
@@ -267,14 +269,14 @@ pytest ../tests/routes/test_usuarios_routes.py::test_registrar_usuario -v
 ```
 tests/
 ├── routes/
-│   ├── test_usuarios_routes.py
+│   ├── test_auth_routes.py
 │   ├── test_chat_routes.py
 │   ├── test_clima_routes.py
-│   └── test_notificaciones_routes.py
-├── controllers/
-│   └── ...
+│   ├── test_notificaciones_routes.py
+│   ├── test_recuperacion_routes.py
+│   └── test_usuarios_routes.py
 └── services/
-    └── ...
+    └── test_usuarios_service.py
 ```
 
 ## 🧭 Documentación de API
