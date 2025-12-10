@@ -50,7 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Si no obtiene ni el token ni el correo entonces redirige al login, pero con jwt
   if (!CORREO) {
-    console.warn('⚠️ Usuario no identificado')
 
     // Marcar como listo
     window.perfilCargado = true
@@ -103,15 +102,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (data.avatar && data.avatar.startsWith('data:')) {
         // Si hay avatar en formato base64, mostrarlo
         avatarV.src = data.avatar
-        console.log('✅ Mostrando avatar desde cache/backend')
       } else if (data.foto_perfil && data.foto_perfil.startsWith('data:')) {
         // Si viene del backend con nombre foto_perfil
         avatarV.src = data.foto_perfil
-        console.log('✅ Mostrando foto_perfil desde backend')
       } else {
         // Avatar por defecto o placeholder
         avatarV.src = 'img/avatar-default.png' // o cualquier imagen por defecto
-        console.log('📷 Usando avatar por defecto')
       }
     }
 
@@ -142,7 +138,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const res = await fetchConToken(`/usuarios/${encodeURIComponent(CORREO)}`)
 
       if (!res || !res.ok) {
-        console.warn('No se pudo cargar el perfil desde el backend')
         // Marcar como listo
         window.perfilCargado = true
         return
@@ -164,11 +159,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (usuario?.foto_perfil && usuario.foto_perfil.startsWith('data:')) {
         // Prioridad 1: Foto del backend
         avatarFinal = usuario.foto_perfil
-        console.log('Foto de perfil cargada desde backend')
       } else if (previo.avatar && previo.avatar.startsWith('data:')) {
         // Prioridad 2: Foto del cache local
         avatarFinal = previo.avatar
-        console.log('📸 Foto de perfil mantenida desde cache')
       }
 
       // Fusiona datos previos con los nuevos del backend (ubicación/region anidadas)
@@ -187,7 +180,6 @@ document.addEventListener('DOMContentLoaded', () => {
       // Marcar como listo
       window.perfilCargado = true
     } catch (e) {
-      console.warn('No se pudo sincronizar perfil:', e)
 
       // Marcar como listo
       window.perfilCargado = true
@@ -330,7 +322,6 @@ document.addEventListener('DOMContentLoaded', () => {
       pintar(fusionado) // repinta vista y form
       modoEdicion(false) // sale de modo edición
 
-      console.log('✅ Perfil actualizado correctamente')
     } catch (err) {
       console.error('❌ No se pudo guardar en backend:', err)
       alert('No se pudo actualizar tus datos en el servidor. Intenta nuevamente.')
@@ -393,7 +384,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!file) return
 
     try {
-      console.log(`Tamaño original: ${(file.size / 1024).toFixed(2)} KB`)
 
       // Comprobar si es imagen antes de comprimir
       if (!file.type.startsWith('image/')) {
@@ -405,7 +395,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Calcular tamaño comprimido aproximado
       const compressedSize = Math.round((compressedDataUrl.length * 3) / 4)
-      console.log(`Tamaño comprimido: ${(compressedSize / 1024).toFixed(2)} KB`)
 
       if (avatarV) avatarV.src = compressedDataUrl
     } catch (error) {
@@ -422,7 +411,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 window.addEventListener('pageshow', (event) => {
   if (event.persisted) {
-    console.log('⚠️ Perfil restaurado desde caché (botón Atrás)')
 
     // Verificar sesión activa
     if (!verificarSesionActiva()) {
@@ -435,6 +423,5 @@ window.addEventListener('pageshow', (event) => {
       return
     }
 
-    console.log('✅ Sesión válida en perfil restaurado')
   }
 })

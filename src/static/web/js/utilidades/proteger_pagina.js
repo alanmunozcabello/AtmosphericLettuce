@@ -34,13 +34,11 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        console.log('🔒 Verificando sesión (DOMContentLoaded)...')
         verificarYRedirigir()
     })
 
     window.addEventListener('pageshow', (event) => {
         if (event.persisted) {
-            console.log('⚠️ Página restaurada desde caché (pageshow)')
             document.body.classList.remove('sesion-validada')
             verificarYRedirigir()
         }
@@ -48,21 +46,18 @@
 
     document.addEventListener('visibilitychange', () => {
         if (!document.hidden) {
-            console.log('👁️ Página visible de nuevo (visibilitychange)')
             verificarYRedirigir()
         }
     })
 
     setInterval(() => {
         if (!localStorage.getItem('token')) {
-            console.warn('⚠️ Token eliminado durante la sesión')
             cerrarSesion()
         }
     }, 10000)
 
     window.addEventListener('popstate', () => {
         if (!localStorage.getItem('token')) {
-            console.warn('⚠️ Navegación atrás sin token')
             document.documentElement.style.display = 'none'
             window.location.replace('login.html')
         }

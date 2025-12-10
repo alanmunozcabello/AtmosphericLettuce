@@ -52,9 +52,36 @@ Si el comando `pip` no es reconocido directamente, puede deberse a que la carpet
 
 ### 4. Configurar Variables de Entorno
 
-El proyecto requiere ciertas credenciales para conectar con servicios externos (Clima, IA, Correo). Crea un archivo llamado `.env` en la raíz del proyecto (al mismo nivel que `src/`) y usa el archivo `.env.example` como plantilla.
+El proyecto requiere credenciales para servicios externos (Clima, IA). 
 
-### 5. Configurar Base de Datos
+1.  **Copiar el archivo de ejemplo:**
+    Crea un archivo `.env` tomando como base el ejemplo proporcionado.
+
+    **En Windows (CMD):**
+    ```cmd
+    copy .env.example .env
+    ```
+
+    **En Linux/macOS:**
+    ```bash
+    cp .env.example .env
+    ```
+
+2.  **Editar `.env`:**
+    Abre el nuevo archivo `.env` y rellena las API Keys necesarias (OpenWeatherMap, Crop.Health, Gemini/DeepSeek, etc.).
+
+### 5. Configurar Gmail (Envío de Correos)
+
+Para que el sistema envíe notificaciones y correos de recuperación, debes generar el token de autenticación de Gmail.
+
+1.  Ejecuta el script de configuración:
+    ```bash
+    python scripts/setup_gmail.py
+    ```
+2.  Se abrirá una ventana del navegador para iniciar sesión con tu cuenta de Google y autorizar la aplicación.
+3.  Una vez completado, las credenciales (tokens) se guardarán automáticamente en tu archivo `.env`.
+
+### 6. Configurar Base de Datos
 
 El sistema utiliza SQLite. Sigue estos pasos para inicializar la base de datos con la estructura correcta:
 
@@ -73,7 +100,7 @@ El sistema utiliza SQLite. Sigue estos pasos para inicializar la base de datos c
     - Renombra el archivo `usuarios_nueva.db` a `DataBase.db`.
     - *(Si ya tenías una `DataBase.db` y quieres conservarla, haz una copia de seguridad antes).*
 
-### 6. Ejecutar el Servidor
+### 7. Ejecutar el Servidor
 
 Una vez configurado todo, inicia el servidor de desarrollo `uvicorn`. Asegúrate de estar dentro de la carpeta `src`:
 

@@ -9,7 +9,7 @@
 
 | Métrica | Total Equipo | Promedio por Integrante |
 |:---|:---:|:---:|
-| **Total Commits** | 359 | 89.75 |
+| **Total Commits** | 382 | 95.5 |
 | **Total Pull Requests (PRs)** | 16 | 4 |
 | **Lead Time Promedio** | 8.2 días | - |
 | **Tareas Completadas (Trello)** | 74 + 11 | 21.25 |
@@ -24,9 +24,9 @@
 
 ### 1. Alan Muñoz
 * **Rol Principal:** Backend / Frontend / QA
-* **Commits:** 141
+* **Commits:** 145
 * **Pull Requests (PRs):** 4
-* **Tareas Completadas (Trello):** 40 + 7
+* **Tareas Completadas (Trello):** 47
 * **Lead Time Promedio:** 7.1 días
 * **Áreas de Impacto:**
     * **Lógica de Negocio y Backend:** Implementación del núcleo funcional (manejo de ubicación, persistencia de cultivos).
@@ -36,9 +36,9 @@
 
 ### 2. Cristian Aliaga
 * **Rol Principal:** Líder Técnico / Backend / Frontend
-* **Commits:** 62
+* **Commits:** 70
 * **Pull Requests (PRs):** 0
-* **Tareas Completadas (Trello):** 23 + 6
+* **Tareas Completadas (Trello):** 23
 * **Lead Time Promedio:** 7.0 días
 * **Áreas de Impacto:**
     * **Arquitectura de Base de Datos:** Migración a SQLite, CRUD y persistencia de datos complejos.
@@ -47,9 +47,9 @@
 
 ### 3. John Rojas
 * **Rol Principal:** Frontend / QA / Líder Técnico
-* **Commits:** 50
+* **Commits:** 54
 * **Pull Requests (PRs):** 0
-* **Tareas Completadas (Trello):** 27 + 3
+* **Tareas Completadas (Trello):** 31
 * **Lead Time Promedio:** 8.7 días
 * **Áreas de Impacto:**
     * **Frontend y UI/UX:** Creación de la interfaz navegable HTML/CSS base.
@@ -58,9 +58,9 @@
 
 ### 4. Nicolás Urbina
 * **Rol Principal:** QA / Líder Técnico / Backend
-* **Commits:** 106
+* **Commits:** 113
 * **Pull Requests (PRs):** 12
-* **Tareas Completadas (Trello):** 39 + 7
+* **Tareas Completadas (Trello):** 46
 * **Lead Time Promedio:** 8.3 días
 * **Áreas de Impacto:**
     * **Desarrollo Full Stack:** Puente entre lógica de backend y visualización en frontend (integración, formularios, notificaciones).
@@ -109,8 +109,8 @@
 | Implementación de Búsqueda y Paginación | Cristian Aliaga, Nicolas Urbina | 27/11 | 09/12 | 12 |
 | Separar validaciones de la lógica de negocio | Nicolas Urbina | 27/11 | 09/12 | 12 |
 | Optimización de Performance | Cristian Aliaga, Nicolas Urbina | 27/11 | 09/12 | 12 |
-| Cierre de Issues y Merge Final | Todos | XX/12 | XX/12 | - |
-| Finalizar proyecto | Todos | XX/12 | XX/12 | - |
+| Cierre de Issues y Merge Final | Todos | 09/12 | 09/12 | 1 |
+| Finalizar proyecto | Todos | 09/12 | 09/12 | 1 |
 
 
 ---
@@ -129,7 +129,7 @@
 ## 📝 Conclusiones del Análisis
 
 1. **Velocidad:** El equipo mantiene un Lead Time promedio de **8.2 días**, lo cual es consistente con la complejidad de las tareas abordadas.
-2. **Calidad:** Se observa un alto número de commits (359) en relación a los PRs (16), indicando un trabajo iterativo y de refinamiento constante.
+2. **Calidad:** Se observa un alto número de commits (382) en relación a los PRs (16), indicando un trabajo iterativo y de refinamiento constante.
 3. **Distribución:** La carga de trabajo está distribuida, con Alan y Nicolás liderando en cantidad de commits y tareas transversales, mientras que Cristian y John aportan en áreas críticas de arquitectura y frontend.
 4. **Evolución Tecnológica:** El proyecto muestra una clara maduración técnica, migrando de una persistencia básica en archivos JSON hacia una base de datos relacional (SQLite) y escalando hacia la integración de IA (Deepseek) y APIs externas.
 5. **Foco Actual:** El equipo se encuentra en una etapa de **estabilización y optimización**, priorizando actualmente la seguridad (autenticación), el rendimiento (paginación, timeouts) y la calidad del código (linter, pruebas unitarias) para el cierre del proyecto.

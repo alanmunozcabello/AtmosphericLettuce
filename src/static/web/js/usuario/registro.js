@@ -109,7 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
             alert(detail);
           }
         } else {
-          console.log('Usuario registrado:', body)
           alert('Cuenta creada correctamente')
           window.location.href = 'login.html'
         }
