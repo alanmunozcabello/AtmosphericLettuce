@@ -4,14 +4,12 @@ function obtenerUsuarioCache (correo) {
   try {
     const correoToken = obtenerCorreoDelToken()
     if (!correoToken || correoToken !== correo) {
-      console.log('🚫 Cache inválido: correo no coincide con token')
       invalidarCache()
       return null
     }
 
     const usuario = JSON.parse(localStorage.getItem('usuario') || 'null')
     if (!usuario || usuario.correo !== correo) {
-      console.log('📦 Cache inválido: usuario no coincide')
       invalidarCache()
       return null
     }
@@ -21,11 +19,9 @@ function obtenerUsuarioCache (correo) {
     const CACHE_EXPIRY = 5 * 60 * 1000 // 5 minutos
 
     if ((ahora - ultimaActualizacion) < CACHE_EXPIRY) {
-      console.log('📦 Cache válido y reciente')
       return usuario
     }
 
-    console.log('📦 Cache expirado por tiempo')
     return null // ✅ Solo expirado, no invalid
   } catch (error) {
     console.error('❌ Error leyendo cache:', error)
@@ -42,13 +38,11 @@ async function obtenerUsuario (correo) {
 
   const correoToken = obtenerCorreoDelToken()
   if (!correoToken) {
-    console.log('🚫 No se pudo obtener correo del token')
     cerrarSesion()
     return null
   }
 
   if (correoToken !== correo) {
-    console.log('🚫 Intento de acceso no autorizado')
     cerrarSesion()
     return null
   }
@@ -56,13 +50,11 @@ async function obtenerUsuario (correo) {
   let usuario = obtenerUsuarioCache(correo)
 
   if (usuario) {
-    console.log('📦 Usando datos en cache - NO FETCH')
     return usuario
   }
 
   // solo ir al backend si realmente es necesario
   try {
-    console.log('🌐 Cache expirado/inexistente - cargando desde backend')
     const res = await fetchConToken(`/usuarios/${encodeURIComponent(correo)}`)
 
     if (!res || !res.ok) {
@@ -75,7 +67,6 @@ async function obtenerUsuario (correo) {
     localStorage.setItem('usuario', JSON.stringify(usuario))
     localStorage.setItem('ultimaActualizacion', Date.now())
 
-    console.log('✅ Cache actualizado desde backend')
     return usuario
   } catch (error) {
     console.error('❌ Error fetch backend:', error)
@@ -83,7 +74,6 @@ async function obtenerUsuario (correo) {
     // Si falla backend, intentar usar cache expirado como fallback -> estrategia de respaldo para mostrar los datos expirados como ultimo recurso -> preguntar al profe si es buena idea hacer esto
     const cacheExpirado = JSON.parse(localStorage.getItem('usuario') || 'null')
     if (cacheExpirado && cacheExpirado.correo === correo) {
-      console.log('📦 Usando cache expirado como fallback')
       return cacheExpirado
     }
 
@@ -122,7 +112,6 @@ function actualizarCacheUsuario(nuevosdatos) {
     localStorage.setItem('usuario', JSON.stringify(usuarioActualizado))
     localStorage.setItem('ultimaActualizacion', Date.now())
 
-    console.log('✅ Cache actualizado:', usuarioActualizado)
   } catch (error) {
     console.error('❌ Error actualizando cache:', error)
   }
@@ -131,7 +120,6 @@ function actualizarCacheUsuario(nuevosdatos) {
 function invalidarCache () {
   localStorage.removeItem('usuario')
   localStorage.removeItem('ultimaActualizacion')
-  console.log('🗑️ Cache invalidado')
 }
 
 // función auxiliar para debugging
@@ -141,13 +129,6 @@ function verEstadoCache (correo) {
   const ultimaActualizacion = parseInt(localStorage.getItem('ultimaActualizacion') || '0')
   const ahora = Date.now()
 
-  console.log('🔍 Estado del cache:')
-  console.log('   Correo solicitado:', correo)
-  console.log('   Correo del token:', correoToken)
-  console.log('   Usuario en cache:', usuario?.correo)
-  console.log('   Última actualización:', new Date(ultimaActualizacion).toLocaleString())
-  console.log('   Expirado:', (ahora - ultimaActualizacion) > 5 * 60 * 1000)
-  console.log('   Token válido:', !!localStorage.getItem('token'))
 }
 
 // Invalidar cache de clima cuando cambien las coordenadas del usuario
@@ -162,7 +143,6 @@ function invalidarCacheClimaSiCambiaUbicacion (usuarioNuevo) {
 
     // Si las coordenadas cambiaron, invalidar cache de clima
     if (latAnterior !== latNueva || lonAnterior !== lonNueva) {
-      console.log('🌍 Coordenadas cambiaron, invalidando cache de clima')
       invalidarCacheClima()
     }
   } catch (error) {

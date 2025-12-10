@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.getItem('correoUsuario')
 
   if (!CORREO) {
-    console.warn('⚠️ Usuario no identificado')
     window.location.href = 'login.html'
   }
   // commit prueba post actualización
@@ -114,7 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
           cultivos: body.cultivos || {},
           foto_perfil: body.foto_perfil || ''
         }
-        console.log(usuarioCompleto.cultivos)
 
         localStorage.setItem('correoUsuario', vEmail)
         localStorage.setItem('usuario', JSON.stringify(usuarioCompleto)) // ✅ CACHE COMPLETO

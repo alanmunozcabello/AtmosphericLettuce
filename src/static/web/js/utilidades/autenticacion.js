@@ -10,7 +10,6 @@ function verificarSesionActiva() {
   const token = localStorage.getItem('token')
 
   if (!token) {
-    console.warn('⚠️ No hay token, redirigiendo a login...')
     window.location.replace('login.html')
     return false
   }
@@ -20,7 +19,6 @@ function verificarSesionActiva() {
     const ahora = Math.floor(Date.now() / 1000)
 
     if (payload.exp < ahora) {
-      console.warn('⚠️ Token expirado, redirigiendo a login...')
       localStorage.clear()
       window.location.replace('login.html')
       return false
@@ -76,10 +74,8 @@ async function fetchConToken(url, options = {}) {
  * Cierra sesión de forma segura
  */
 function cerrarSesion() {
-  console.log('👋 Cerrando sesión...')
   localStorage.clear()
   sessionStorage.clear()
-  console.log('✅ Sesión cerrada correctamente')
   if (window.location.pathname.includes('login.html')) {
     window.location.replace('login.html')
   } else {
@@ -108,7 +104,6 @@ function obtenerCorreoDelToken() {
 window.addEventListener('popstate', function (event) {
   const token = localStorage.getItem('token')
   if (!token) {
-    console.warn('⚠️ Intento de volver atrás sin token')
     window.history.pushState(null, '', 'login.html')
     window.location.replace('login.html')
   }
