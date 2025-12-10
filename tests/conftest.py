@@ -2,10 +2,11 @@ import pytest
 import sys
 from pathlib import Path
 
+# Agregar src al path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from fastapi.testclient import TestClient
-from services.jwt_service import crear_token
+from services.auth_service import crear_token
 from app import app
 
 @pytest.fixture
@@ -24,4 +25,4 @@ def auth_headers():
 @pytest.fixture
 def correo_test():
     """Correo de prueba por defecto"""
-    return "ejemplo8@lechuga.com"
+    return "test_user@lechuga.com"
