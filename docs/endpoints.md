@@ -154,21 +154,28 @@
   }
   ```
 
-## 📍 Gestión de Ubicación
+### 📍 Gestión de Ubicación
 
 ### 📡 Modificar Ubicación (Latitud / Longitud)
-- **URL**: `/usuarios/{correo}/ubicacion/{lat}/{lon}/modificar`
+- **URL**: `/usuarios/{correo}/ubicacion/modificar`
 - **Método**: PATCH
-- **Descripción**: Actualiza las coordenadas de ubicación del usuario
-- **Parámetros**:
+- **Descripción**: Actualiza las coordenadas de ubicación del usuario.
+- **Parámetros (Query)**:
   - `correo`: Email del usuario
-  - `lat`: Latitud
-  - `lon`: Longitud
+- **Body**:
+  ```json
+  {
+    "latitud": -33.4489,
+    "longitud": -70.6693,
+    "ciudad": "Santiago",
+    "region": "Región Metropolitana"
+  }
+  ```
 
 ### 🌎 Modificar Región y Ciudad
 - **URL**: `/usuarios/{correo}/ubicacion/region/{region}/{ciudad}/modificar`
 - **Método**: PATCH
-- **Descripción**: Actualiza la región y ciudad del usuario
+- **Descripción**: Actualiza manualmente la región y ciudad del usuario.
 - **Parámetros**:
   - `correo`: Email del usuario
   - `region`: Nombre de la región
@@ -179,9 +186,8 @@
 ### 🌾 Obtener Cultivos del Usuario
 - **URL**: `/usuarios/{correo}/cultivos`
 - **Método**: GET
-- **Descripción**: Obtiene los cultivos de un usuario con paginación
-- **Parámetros**:
-  - `correo`: Email del usuario
+- **Descripción**: Obtiene los cultivos de un usuario con paginación.
+- **Parámetros (Query)**:
   - `pagina`: Número de página (Opcional, default: 1)
   - `limite`: Cantidad por página (Opcional, default: 20)
 
@@ -189,13 +195,11 @@
 - **URL**: `/usuarios/{correo}/cultivos/nombres`
 - **Método**: GET
 - **Descripción**: Obtiene una lista simple solo con los nombres de los cultivos del usuario. Ideal para selectores.
-- **Parámetros**:
-  - `correo`: Email del usuario
 
 ### 🔍 Filtrar Cultivos
 - **URL**: `/cultivos/filtrar`
 - **Método**: GET
-- **Descripción**: Busca y filtra cultivos con múltiples criterios
+- **Descripción**: Busca y filtra cultivos con múltiples criterios.
 - **Parámetros (Query Params)**:
   - `correo`: Email del usuario (Opcional)
   - `buscar`: Texto a buscar en nombre del cultivo (Opcional)
@@ -214,9 +218,7 @@
 ### ➕ Agregar Cultivo
 - **URL**: `/usuarios/{correo}/agregar_cultivo`
 - **Método**: POST
-- **Descripción**: Agrega un nuevo cultivo al usuario
-- **Parámetros**:
-  - `correo`: Email del usuario
+- **Descripción**: Agrega un nuevo cultivo al usuario.
 - **Body**:
   ```json
   {
@@ -228,13 +230,11 @@
 ### 🧾 Modificar Formulario de Cultivo
 - **URL**: `/usuarios/{correo}/cultivos/modificar_formulario_cultivo`
 - **Método**: PATCH
-- **Descripción**: Modifica los datos del formulario de un cultivo
-- **Parámetros**:
-  - `correo`: Email del usuario
+- **Descripción**: Modifica los datos del formulario de un cultivo.
 - **Body**:
   ```json
   {
-    "nombre_cultivo": "string",
+    "cultivo": "Nombre del Cultivo",
     "hectareas": 0,
     "fecha_siembra": "string",
     "notas": "string",
@@ -260,9 +260,7 @@
 ### 📏 Modificar Área de Cultivo
 - **URL**: `/usuarios/{correo}/cultivo/modificar_area_cultivo`
 - **Método**: PATCH
-- **Descripción**: Modifica el área y coordenadas de un cultivo
-- **Parámetros**:
-  - `correo`: Email del usuario
+- **Descripción**: Modifica el área y coordenadas de un cultivo.
 - **Body**:
   ```json
   {
@@ -280,24 +278,33 @@
 ### ❌ Eliminar Cultivo
 - **URL**: `/usuarios/{correo}/{cultivo}/eliminar`
 - **Método**: DELETE
-- **Descripción**: Elimina un cultivo específico del usuario
-- **Parámetros**:
-  - `correo`: Email del usuario
-  - `cultivo`: Nombre del cultivo
+- **Descripción**: Elimina un cultivo específico del usuario.
+
 
 ## 🤖 Endpoints de Chat (API Externa)
 
 ### 💬 Realizar Consulta al Chat
 - **URL**: `/chat/consulta`
 - **Método**: POST
-- **Descripción**: Realiza una consulta al chatbot
+- **Descripción**: Realiza una consulta al chatbot. Requiere autenticación.
+- **Headers**:
+  - `Authorization`: `Bearer <token>`
 - **Body**:
   ```json
   {
-    "payload": "object"
+    "texto": "string (opcional)",
+    "pdf": ["base64_string", "..."] (opcional),
+    "imagen": ["base64_string", "..."] (opcional),
+    "correo": "string",
+    "cultivo": "string"
   }
   ```
-- **Respuesta**: Retorna un objeto con la respuesta del chatbot
+- **Respuesta**:
+  ```json
+  {
+    "respuesta": "Texto de respuesta del bot..."
+  }
+  ```
 
 ## ☀️ Endpoints de Clima (API Externa)
 
@@ -343,5 +350,12 @@
 - **URL**: `/notificaciones/enviar_codigo`
 - **Método**: POST
 - **Descripción**: Envía un código de verificación por correo electrónico
-- **Parámetros**:
+- **Parámetros (Query)**:
   - `correo`: Email del destinatario
+
+### 🔔 Verificar Estado de Notificaciones
+- **URL**: `/notificaciones/verificar_estado_notificaciones`
+- **Método**: POST
+- **Descripción**: Verifica si un usuario tiene activadas las notificaciones.
+- **Parámetros (Query)**:
+  - `correo`: Email del usuario

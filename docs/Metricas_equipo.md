@@ -26,7 +26,7 @@
 * **Rol Principal:** Backend / Frontend / QA
 * **Commits:** 145
 * **Pull Requests (PRs):** 4
-* **Tareas Completadas (Trello):** 40 + 7
+* **Tareas Completadas (Trello):** 47
 * **Lead Time Promedio:** 7.1 días
 * **Áreas de Impacto:**
     * **Lógica de Negocio y Backend:** Implementación del núcleo funcional (manejo de ubicación, persistencia de cultivos).
@@ -38,7 +38,7 @@
 * **Rol Principal:** Líder Técnico / Backend / Frontend
 * **Commits:** 70
 * **Pull Requests (PRs):** 0
-* **Tareas Completadas (Trello):** 23 + 6
+* **Tareas Completadas (Trello):** 23
 * **Lead Time Promedio:** 7.0 días
 * **Áreas de Impacto:**
     * **Arquitectura de Base de Datos:** Migración a SQLite, CRUD y persistencia de datos complejos.
@@ -49,7 +49,7 @@
 * **Rol Principal:** Frontend / QA / Líder Técnico
 * **Commits:** 54
 * **Pull Requests (PRs):** 0
-* **Tareas Completadas (Trello):** 27 + 3
+* **Tareas Completadas (Trello):** 31
 * **Lead Time Promedio:** 8.7 días
 * **Áreas de Impacto:**
     * **Frontend y UI/UX:** Creación de la interfaz navegable HTML/CSS base.
@@ -60,7 +60,7 @@
 * **Rol Principal:** QA / Líder Técnico / Backend
 * **Commits:** 113
 * **Pull Requests (PRs):** 12
-* **Tareas Completadas (Trello):** 39 + 7
+* **Tareas Completadas (Trello):** 46
 * **Lead Time Promedio:** 8.3 días
 * **Áreas de Impacto:**
     * **Desarrollo Full Stack:** Puente entre lógica de backend y visualización en frontend (integración, formularios, notificaciones).
