@@ -24,7 +24,7 @@
 
 ### 1. Alan Muñoz
 * **Rol Principal:** Backend / Frontend / QA
-* **Commits:** 145
+* **Commits:** 151
 * **Pull Requests (PRs):** 4
 * **Tareas Completadas (Trello):** 47
 * **Lead Time Promedio:** 7.1 días
@@ -36,7 +36,7 @@
 
 ### 2. Cristian Aliaga
 * **Rol Principal:** Líder Técnico / Backend / Frontend
-* **Commits:** 70
+* **Commits:** 72
 * **Pull Requests (PRs):** 0
 * **Tareas Completadas (Trello):** 23
 * **Lead Time Promedio:** 7.0 días
@@ -109,8 +109,8 @@
 | Implementación de Búsqueda y Paginación | Cristian Aliaga, Nicolas Urbina | 27/11 | 09/12 | 12 |
 | Separar validaciones de la lógica de negocio | Nicolas Urbina | 27/11 | 09/12 | 12 |
 | Optimización de Performance | Cristian Aliaga, Nicolas Urbina | 27/11 | 09/12 | 12 |
-| Cierre de Issues y Merge Final | Todos | 09/12 | 09/12 | 1 |
-| Finalizar proyecto | Todos | 09/12 | 09/12 | 1 |
+| Cierre de Issues y Merge Final | Todos | 09/12 | 10/12 | 1 |
+| Finalizar proyecto | Todos | 10/12 | 10/12 | 1 |
 
 
 ---
