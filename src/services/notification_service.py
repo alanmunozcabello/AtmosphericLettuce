@@ -153,7 +153,7 @@ def generar_html_dashboard(correo, usuario_data, clima_data, consejos_ia):
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(html_renderizado)
         
-        return ruta_salida
+        return output_path
     
     except Exception as e:
         print(f"Error generando HTML dashboard: {e}")
@@ -203,7 +203,7 @@ def generar_html_warning(correo, usuario_data, cultivos_alertas, condiciones_ini
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(html_renderizado)
 
-        return ruta_salida
+        return output_path
 
     except Exception as e:
         print(f"Error generando HTML warning: {e}")

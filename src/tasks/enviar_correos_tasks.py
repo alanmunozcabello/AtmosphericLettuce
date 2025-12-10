@@ -27,7 +27,7 @@ def enviar_correos_a_todos():
         try:
             # Obtener nombres de cultivos (ligeros)
             nombres_cultivos = obtener_nombres_cultivos(correo)
-            if not names_cultivos or isinstance(nombres_cultivos, dict): # Handle error/empty
+            if not nombres_cultivos or isinstance(nombres_cultivos, dict): # Handle error/empty
                 print(f"⚠️ {correo}: Sin cultivos o error al obtenerlos")
                 continue
 
