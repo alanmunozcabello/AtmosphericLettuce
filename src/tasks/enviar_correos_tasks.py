@@ -10,7 +10,8 @@ from services.clima_service import guardar_clima_semanal
 from services.notification_service import (
     enviar_archivo,
     generar_dashboard_completo,
-    generar_html_warning
+    generar_html_warning,
+    generar_html_dashboard
 )
 from services.clima_service import clima_semana_service
 from services.ai_integration_service import deepseek_para_correos
@@ -113,9 +114,14 @@ def enviar_correos_a_todos():
             # Idealmente refactorizaríamos generar_dashboard_completo para aceptar datos.
             # Por ahora, dejémoslo funcional.
             
-            generar_dashboard_completo(correo)
-            enviar_archivo(correo, "services/Archivos_HTML/salida.html")
-            print(f"✅ Correo enviado a {correo}")
+            # Generar y enviar usando los datos ya recolectados
+            path_html = generar_html_dashboard(correo, usuario, clima, consejos)
+            
+            if path_html:
+                enviar_archivo(correo, path_html)
+                print(f"✅ Correo enviado a {correo}")
+            else:
+                print(f"❌ Error al generar HTML para {correo}")
 
         except Exception as e:
             print(f"Error al procesar {correo}: {e}")
